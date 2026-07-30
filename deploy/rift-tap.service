@@ -1,0 +1,29 @@
+# /etc/systemd/system/rift-tap.service
+#
+# Install on the Pi:
+#   sudo cp rift-tap.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable rift-tap   ← starts on every boot
+#   sudo systemctl start rift-tap    ← start right now
+#
+# Check status / logs:
+#   sudo systemctl status rift-tap
+#   journalctl -u rift-tap -f
+
+[Unit]
+Description=Rift Tap NFC Card Scanner
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/rift-tap
+# Activate the Python virtual environment, then launch the server.
+ExecStart=/home/pi/rift-tap/.venv/bin/uvicorn src.server:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+# If the NFC reader isn't ready on the first try, the service will
+# restart automatically after 5 seconds until it succeeds.
+
+[Install]
+WantedBy=multi-user.target

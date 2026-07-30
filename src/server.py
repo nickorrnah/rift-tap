@@ -217,7 +217,7 @@ async def lifespan(app: FastAPI):
     db.close()
 
 
-app = FastAPI(title="Riftbound Card Scanner", lifespan=lifespan)
+app = FastAPI(title="Rift Tap", lifespan=lifespan)
 
 # Serve card images at /images/<filename>
 IMAGE_DIR.mkdir(parents=True, exist_ok=True)

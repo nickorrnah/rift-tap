@@ -137,17 +137,17 @@ python scripts/seed_db.py
 SIMULATE_NFC=false python -m uvicorn src.server:app --host 0.0.0.0 --port 8000
 
 # Install as a systemd service (auto-starts on boot)
-sudo cp deploy/riftbound-scanner.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable riftbound-scanner
-sudo systemctl start riftbound-scanner
+sudo cp deploy/rift-tap.service /etc/systemd/system/
+ sudo systemctl daemon-reload
+ sudo systemctl enable rift-tap
+ sudo systemctl start rift-tap
 ```
 
-Set the Pi's hostname to `riftbound-scanner` for a fixed local URL:
+Set the Pi's hostname to `rift-tap` for a fixed local URL:
 ```bash
-sudo hostnamectl set-hostname riftbound-scanner
+sudo hostnamectl set-hostname rift-tap
 ```
-Then use `http://riftbound-scanner.local:8000` from any device on your network — no IP address needed.
+Then use `http://rift-tap.local:8000` from any device on your network — no IP address needed.
 
 ---
 
@@ -170,7 +170,7 @@ rift-tap/
 │   ├── seed_db.py       # Load test card data
 │   └── explore_api.py   # Riot API endpoint discovery
 ├── deploy/
-│   └── riftbound-scanner.service   # systemd unit file
+│   └── rift-tap.service             # systemd unit file
 ├── images/              # Card images served by the overlay
 ├── data/                # SQLite database (auto-created)
 └── requirements.txt
