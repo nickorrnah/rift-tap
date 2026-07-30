@@ -1,0 +1,104 @@
+Riftbound
+Developer API Policy
+Before you begin, read through the General and Game Policies, Terms of Use and Legal Notices. Developers must adhere to policy changes as they arise.
+
+Registration
+If your product serves players, you must register it with us regardless of whether or not your product uses official documented APIs. You must make sure its description and metadata are kept up to date with the current version of your product.
+
+Monetization
+To monetize your product, you must abide by the following:
+
+Your product must NOT simulate or replicate Riftbound gameplay.
+Your product cannot feature betting or gambling functionality.
+Your product must be registered on the Developer Portal and your product status is either Approved
+You must have a free tier of access for players, which may include advertising.
+Your content must be transformative if you are charging players for it.
+What is transformative?
+Was value added to the original by creating new information, new aesthetics, new insights, and understandings? If so, then it was transformative.
+Acceptable ways to charge players are:
+Subscriptions, donations, or crowdfunding.
+Currencies that cannot be exchanged back into fiat.
+Your monetization cannot gouge players or be unfair, as decided by Riot.
+If you are unsure if your monetization platform is acceptable, contact us through the Developer Support Platform.
+
+Security
+You must adhere to the following security policies:
+
+Do not share your Riot Games account information with anyone.
+Do not use a Production API key to run multiple projects. You may only have one product per key.
+Use SSL/HTTPS when accessing the APIs so your API key is kept safe.
+Your API key may not be included in your code, especially if you plan on distributing a binary.
+This key should only be shared with your teammates. If you need to share an API key for your product with teammates, make sure your product is owned by a group in the Developer portal. Add additional accounts to that account as needed.
+Game Integrity
+Products cannot create an unfair advantage for players, like a cheating program or giving some players an advantage that others would not otherwise have.
+Brand Integrity
+You can’t state or imply that you or your App are endorsed or sponsored by Riot, or do anything that reflects adversely upon the reputation of Riot or Riftbound.
+Your App must include the following statement specified in Section 6 of Riot’s Legal Jibber Jabber in a place that’s clear and easy to find.
+[The title of your Project] was created under Riot Games' "Legal Jibber Jabber" policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.
+App Policy
+Use Cases
+Riot analyzes two main factors when evaluating applications:
+
+Is the use case good and approved?
+Does the developer show they will deliver on that use case?
+To demonstrate that your app meets the use case, you should have one or more of the following:
+
+Be an established brand that wants to add Riot Games to its portfolio.
+New app that is fully functional and testable by Riot.
+Prototype that is mostly testable by Riot.
+Mockups that clearly express your product intent and the user flow.
+Riot needs to see the user flow to understand what your intended player experience is, such as account creation process, login pipeline, or queuing up for match pipeline. You must also send a link to a working site, mockup, prototype, or rendering where it is easy to understand the user flows of the tool.
+
+Examples of Approved Use Cases
+Approved use cases usually contain one or all of the following:
+
+Deck builders
+Card libraries
+Examples of Unapproved Use Cases
+The following use cases will not be approved:
+
+Apps create a digital Riftbound gameplay experience with automated rule enforcement (where the software controls/enforces the rules)
+No standalone clients solely for Riftbound. We expect Apps or mods that facilitate manual
+Riftbound gameplay to live within platforms broadly applicable to multiple games.
+Apps with a small, personal audience.
+Apps that do not provide a link to a site or mockup
+Apps with “middle-man” type of data usage, such as an app that obtains data from our API and gives or sells it to a third-party company
+Blockchain apps or apps that trade in the crypto space
+Gambling
+Apps that implement a skill-based matchmaking, player-facing rank, or ladder system of any kind
+Apps that publish or retain metagame-defining data for Riftbound
+“Metagame-defining data” includes, without limitation, play rates for certain decks or cards, win rates for certain decks or cards, or match-up win percentage differentials
+Implementation of Riftbound cards
+All Riftbound cards must display the official English text or—if available via the API—Riot’s official translation for your desired language. If no official translation exists for your desired language, you may include your own accurate translation, but it must be displayed alongside the official English text.
+Your App may only use Riftbound assets (including cards) provided by the Riot API. No external or unofficial materials.
+If Riot previews Riftbound cards that are not yet available to play in an official game format,you may implement them in your App, as long as you clearly label them as previewed and unreleased.
+Your App must implement all applicable rules for Riftbound found within the Riot API. This requirement applies not just to player-to-player gameplay within your App, but also to any non-gameplay features you include in your App. For example, if your App offers a built-in deckbuilding function, it must enforce the official deckbuilding rules from the Riot API.
+We realize that some cards and/or features may be challenging to implement digitally, or require time to integrate into your App. In those cases, we simply ask that you make a reasonable effort to properly adapt these elements in a timely manner, especially as Riftbound continues to evolve. For example, if we release new card properties and your App features a card search function with card property filters, we would expect those new properties to become searchable within a reasonable time period.
+
+RSO Integration
+RSO, or Riot Sign On, allows players to safely link their Riot Account to other applications. This access is only available to developers with an app that uses the API to simulate or replicate Riftbound gameplay.
+
+Getting Riftbound Digital Tool Approval
+Approval for Riftbound RSO access is contingent on your receipt of an approved API key for an app that simulates or replicates Riftbound gameplay. If you already have an API key but want to apply for a new one specific to such a Riftbound app, you may request one at our support site after reading through our policies. If approved, we will contact you in the developer portal app messaging to kick off the RSO integration process.
+
+If your app simulates or replicates Riftbound gameplay, it must meet the following criteria in addition to the policies listed above:
+
+No automated rule enforcement
+No standalone clients solely for Riftbound. We expect Apps or mods that facilitate manual Riftbound gameplay to live within platforms broadly applicable to multiple games.
+If your App implements any official play format of Riftbound, you may not modify that play format or alter the official rules for that format (including by implementing any custom balance changes or banlists).
+If your App implements any custom play format of Riftbound, you must make it clear that that format is unofficial.
+Custom play formats that can only be implemented in a digital environment (vs. physical play) are not permitted. For example, you may not modify objects in hidden zones, create new custom objects for the duration of a game, or offer randomization that is difficult to implement in a physical space.
+Implementing RSO
+Client Secret Basic RSO instructions: Implementing Riot Sign On
+JWT RSO instructions: Implementing RSO - JWT
+Sample RSO Node App
+Players should be directed to login at this link: https://auth.riotgames.com/authorize?client_id=&redirect_uri=&response_type=code&scope=openid+offline_access.
+
+After logging in, players are redirected back to the redirect_uri you specified. See Implementing Riot Sign On and Sample RSO Node App for information about how to integrate with RSO and to view a sample Node web server that implements the example.
+
+Your RSO client has access to endpoints that will allow you to identify who logged in. For Legends of Runeterra, you will use /riot/account/v1/accounts/me:
+
+curl --location --request GET 'https://americas.api.riotgames.com/riot/account/v1/accounts/me' --header 'Authorization: Bearer {accessToken}'
+curl --location --request GET 'https://europe.api.riotgames.com/riot/account/v1/accounts/me' --header 'Authorization: Bearer {accessToken}' 
+curl --location --request GET 'https://asia.api.riotgames.com/riot/account/v1/accounts/me' --header 'Authorization: Bearer {accessToken}' 
+The accounts data returned from each cluster is identical. We recommend using the cluster closest to your servers.
