@@ -23,23 +23,27 @@ html, body {
 
 /* ── Design tokens ────────────────────────────────────────────────────────── */
 :root {
-  --panel-width:        300px;
-  --panel-bg:           rgba(10, 10, 20, 0.88);
-  --panel-border:       2px solid rgba(180, 140, 60, 0.7);  /* gold-ish */
-  --panel-radius:       12px;
-  --panel-padding:      14px;
-  --panel-shadow:       0 4px 24px rgba(0, 0, 0, 0.6);
+  --panel-width:   300px;
+  --panel-bg:      rgba(10, 10, 20, 0.88);
+  --panel-border:  2px solid rgba(180, 140, 60, 0.7);
+  --panel-radius:  12px;
+  --panel-padding: 14px;
+  --panel-shadow:  0 4px 24px rgba(0, 0, 0, 0.6);
 
-  --text-name:          #f0d070;
-  --text-meta:          #a0b8cc;
-  --text-rules:         #ddeeff;
+  --text-name:  #f0d070;
+  --text-meta:  #a0b8cc;
+  --text-rules: #ddeeff;
 
-  --transition-in:      0.35s ease-out;
-  --transition-out:     0.6s ease-in;
+  --panel-bottom: 40px;
+  --panel-right:  40px;
 
-  /* Bottom-right corner with a bit of breathing room */
-  --panel-bottom:       40px;
-  --panel-right:        40px;
+  /* Set by JS per-animation; overridden via panel inline style */
+  --enter-anim:    enter-slide-right;
+  --exit-anim:     exit-fade;
+  --anim-dur-in:   0.45s;
+  --anim-ease-in:  ease-out;
+  --anim-dur-out:  0.4s;
+  --anim-ease-out: ease-in;
 }
 
 /* ── Card panel ───────────────────────────────────────────────────────────── */
@@ -58,22 +62,135 @@ html, body {
   display:        flex;
   flex-direction: column;
   gap:            10px;
-
-  /* Start invisible and slightly lower so the entrance feels like a rise */
-  opacity:        0;
-  transform:      translateY(16px);
-  transition:     opacity var(--transition-in), transform var(--transition-in);
 }
 
-/* .visible is added by JavaScript when a card arrives */
-#card-panel.visible {
-  opacity:    1;
-  transform:  translateY(0);
+#card-panel.hidden   { display: none; }
+
+#card-panel.entering {
+  animation: var(--enter-anim) var(--anim-dur-in) var(--anim-ease-in) both;
+}
+#card-panel.exiting  {
+  animation: var(--exit-anim)  var(--anim-dur-out) var(--anim-ease-out) both;
 }
 
-/* .hidden removes the element from layout entirely once the transition ends */
-#card-panel.hidden {
-  display: none;
+/* ── Entrance keyframes ───────────────────────────────────────────────────── */
+@keyframes enter-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes enter-slide-right {
+  from { opacity: 0; transform: translateX(80px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes enter-slide-left {
+  from { opacity: 0; transform: translateX(-80px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes enter-slide-up {
+  from { opacity: 0; transform: translateY(80px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes enter-slide-down {
+  from { opacity: 0; transform: translateY(-80px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes enter-zoom {
+  from { opacity: 0; transform: scale(0.65); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes enter-slam {
+  0%   { opacity: 1; transform: scale(1.7); }
+  55%  {             transform: scale(0.95); }
+  75%  {             transform: scale(1.04); }
+  100% {             transform: scale(1); }
+}
+@keyframes enter-bounce {
+  0%   { opacity: 0; transform: translateY(90px); }
+  50%  { opacity: 1; transform: translateY(-18px); }
+  72%  {             transform: translateY(9px); }
+  88%  {             transform: translateY(-5px); }
+  100% {             transform: none; }
+}
+@keyframes enter-elastic {
+  0%   { opacity: 0; transform: scale(0); }
+  45%  { opacity: 1; transform: scale(1.2); }
+  65%  {             transform: scale(0.92); }
+  82%  {             transform: scale(1.06); }
+  100% {             transform: scale(1); }
+}
+@keyframes enter-flip-h {
+  from { opacity: 0; transform: perspective(700px) rotateY(-90deg); }
+  to   { opacity: 1; transform: perspective(700px) rotateY(0deg); }
+}
+@keyframes enter-flip-v {
+  from { opacity: 0; transform: perspective(700px) rotateX(90deg); }
+  to   { opacity: 1; transform: perspective(700px) rotateX(0deg); }
+}
+/* Rotate animations — transform-origin is set inline by JS */
+@keyframes enter-rotate-ccw {
+  from { opacity: 0; transform: rotate(-90deg); }
+  to   { opacity: 1; transform: rotate(0deg); }
+}
+@keyframes enter-rotate-cw {
+  from { opacity: 0; transform: rotate(90deg); }
+  to   { opacity: 1; transform: rotate(0deg); }
+}
+
+/* ── Exit keyframes ───────────────────────────────────────────────────────── */
+@keyframes exit-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes exit-slide-right {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateX(80px); }
+}
+@keyframes exit-slide-left {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateX(-80px); }
+}
+@keyframes exit-slide-up {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(-80px); }
+}
+@keyframes exit-slide-down {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(80px); }
+}
+@keyframes exit-zoom {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.65); }
+}
+@keyframes exit-slam {
+  0%   {             transform: scale(1); }
+  35%  {             transform: scale(1.25); }
+  100% { opacity: 0; transform: scale(0); }
+}
+@keyframes exit-bounce {
+  0%   {             transform: none; }
+  30%  {             transform: translateY(-14px); }
+  100% { opacity: 0; transform: translateY(90px); }
+}
+@keyframes exit-elastic {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  {             transform: scale(1.12); }
+  100% { opacity: 0; transform: scale(0); }
+}
+@keyframes exit-flip-h {
+  from { opacity: 1; transform: perspective(700px) rotateY(0deg); }
+  to   { opacity: 0; transform: perspective(700px) rotateY(90deg); }
+}
+@keyframes exit-flip-v {
+  from { opacity: 1; transform: perspective(700px) rotateX(0deg); }
+  to   { opacity: 0; transform: perspective(700px) rotateX(-90deg); }
+}
+@keyframes exit-rotate-ccw {
+  from { opacity: 1; transform: rotate(0deg); }
+  to   { opacity: 0; transform: rotate(-90deg); }
+}
+@keyframes exit-rotate-cw {
+  from { opacity: 1; transform: rotate(0deg); }
+  to   { opacity: 0; transform: rotate(90deg); }
 }
 
 /* ── Card image ───────────────────────────────────────────────────────────── */

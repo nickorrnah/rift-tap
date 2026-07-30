@@ -21,7 +21,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rift Tap — Tag Assignment</title>
+  <title>Rift Tap — Card Assignment</title>
   <style>
     /* ── Reset & base ─────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; }
@@ -53,87 +53,33 @@
       color: #6a7a9a;
     }
 
-    /* ── Overlay toggle ─────────────────────────────────────────────── */
-    .toggle-group {
+    /* ── Back button & settings link ────────────────────────────────────────── */
+    .back-btn {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-left: 24px;
-      font-size: 0.82rem;
-      color: #a0b8d0;
-    }
-    .toggle-switch {
-      position: relative;
-      width: 40px;
-      height: 22px;
-      flex-shrink: 0;
-    }
-    .toggle-switch input { opacity: 0; width: 0; height: 0; }
-    .toggle-track {
-      position: absolute;
-      inset: 0;
-      background: #2a2d3a;
-      border-radius: 22px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .toggle-track::after {
-      content: '';
-      position: absolute;
-      left: 3px;
-      top: 3px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #6a7a9a;
-      transition: transform 0.2s, background 0.2s;
-    }
-    .toggle-switch input:checked + .toggle-track { background: #2a4a2f; }
-    .toggle-switch input:checked + .toggle-track::after {
-      transform: translateX(18px);
-      background: #4caf50;
-    }
-
-    /* ── Demo mode button ──────────────────────────────────────────── */
-    .demo-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: 16px;
-    }
-    #demo-btn {
-      padding: 6px 14px;
-      border-radius: 6px;
-      border: 1px solid #3a3d4a;
-      background: #0f1117;
-      color: #a0b8d0;
-      font-size: 0.82rem;
+      gap: 6px;
+      font-size: 0.88rem;
       font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      color: #a0b8d0;
+      text-decoration: none;
+      padding: 8px 14px;
+      border: 1px solid #2a2d3a;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
     }
-    #demo-btn:hover { background: #1a1d27; }
-    #demo-btn.active {
-      background: #1a3a1f;
-      color: #4caf50;
-      border-color: #2a5a2f;
-      animation: pulse-border 2s infinite;
+    .back-btn:hover { background: #2a2d3a; color: #f0d070; border-color: #f0d070; }
+    .settings-link {
+      margin-left: auto;
+      font-size: 0.82rem;
+      color: #a0b8d0;
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid #2a2d3a;
+      border-radius: 6px;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
     }
-    @keyframes pulse-border {
-      0%, 100% { border-color: #2a5a2f; }
-      50%       { border-color: #4caf50; }
-    }
-    .demo-interval {
-      width: 44px;
-      background: #0f1117;
-      border: 1px solid #3a3d4a;
-      border-radius: 4px;
-      color: #d0d8e8;
-      padding: 4px 6px;
-      font-size: 0.8rem;
-      text-align: center;
-    }
-    .demo-label { font-size: 0.75rem; color: #4a5a6a; }
+    .settings-link:hover { background: #2a2d3a; border-color: #f0d070; color: #f0d070; }
 
     .ws-badge {
       margin-left: auto;
@@ -340,22 +286,12 @@
 <body>
 
 <header>
+  <a class="back-btn" href="/">← Back</a>
   <div>
-    <h1>Rift Tap — Admin</h1>
-    <div class="subtitle">Tag Assignment Interface</div>
+    <h1>Rift Tap — Card Assignment</h1>
+    <div class="subtitle">Assign NFC tags to cards</div>
   </div>
-  <label class="toggle-group" title="Show card name, type, and rules text in the OBS overlay">
-    <span>Card info in overlay</span>
-    <span class="toggle-switch">
-      <input type="checkbox" id="toggle-info" />
-      <span class="toggle-track"></span>
-    </span>
-  </label>
-  <div class="demo-group">
-    <input class="demo-interval" type="number" id="demo-interval" value="5" min="1" max="60" title="Seconds between demo scans" />
-    <span class="demo-label">s</span>
-    <button id="demo-btn" title="Fire continuous demo scans so you can position the overlay in OBS">&#9654; Demo</button>
-  </div>
+  <a class="settings-link" href="/admin/settings.html" title="Settings">⚙️ Settings</a>
   <span id="ws-badge" class="ws-badge">● Connecting…</span>
 </header>
 
@@ -688,9 +624,7 @@
   }
 
   // ── Boot ───────────────────────────────────────────────────────────────
-  connectWs();  // Fetch initial settings so the toggle reflects the server state on load.
-  fetch("/api/settings").then(r => r.json()).then(applySettings).catch(console.error);
-  fetch("/api/demo").then(r => r.json()).then(applyDemoState).catch(console.error);
+  connectWs();
   refreshAssignments();
   refreshScanLog();
 

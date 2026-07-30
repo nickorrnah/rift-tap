@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rift Tap</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #d0d8e8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .logo {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #f0d070;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .logo span { color: #a0b8d0; font-weight: 400; }
+
+    .tagline {
+      font-size: 0.95rem;
+      color: #6a7a9a;
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 740px;
+    }
+
+    .card {
+      background: #1a1d27;
+      border: 1px solid #2a2d3a;
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s, transform 0.15s, background 0.2s;
+    }
+    .card:hover {
+      border-color: #f0d070;
+      background: #1f2230;
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f0d070;
+    }
+    .card-desc {
+      font-size: 0.82rem;
+      color: #6a7a9a;
+      line-height: 1.5;
+    }
+
+    /* Status dot — reuses the WebSocket connection indicator */
+    .status-row {
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: #4a5a6a;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #888;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    .dot.connected { background: #4caf50; }
+
+    footer {
+      margin-top: 48px;
+      font-size: 0.72rem;
+      color: #3a4a5a;
+      text-align: center;
+      line-height: 1.7;
+    }
+    footer a { color: #4a6a8a; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="logo">Rift <span>Tap</span></div>
+  <div class="tagline">NFC card scanner overlay for Riftbound streamers</div>
+
+  <div class="cards">
+    <a class="card" href="/overlay/index.html">
+      <div class="card-icon">📺</div>
+      <div class="card-title">OBS Overlay</div>
+      <div class="card-desc">Add this URL as a Browser Source in OBS. Card art fades in when a tagged sleeve is tapped.</div>
+    </a>
+
+    <a class="card" href="/admin/index.html">
+      <div class="card-icon">🏷️</div>
+      <div class="card-title">Card Assignment</div>
+      <div class="card-desc">Assign NFC tags to cards and manage your full card library.</div>
+    </a>
+
+    <a class="card" href="/admin/settings.html">
+      <div class="card-icon">⚙️</div>
+      <div class="card-title">Settings</div>
+      <div class="card-desc">Configure the overlay display, card info toggle, demo mode, and display duration.</div>
+    </a>
+
+    <a class="card" href="/docs">
+      <div class="card-icon">📖</div>
+      <div class="card-title">API Docs</div>
+      <div class="card-desc">Interactive documentation for all REST endpoints. Try requests live from the browser.</div>
+    </a>
+  </div>
+
+  <div class="status-row">
+    <div class="dot" id="dot"></div>
+    <span id="status-text">Connecting…</span>
+  </div>
+
+  <footer>
+    Rift Tap is not endorsed or sponsored by Riot Games.<br>
+    All Riftbound assets are the property of Riot Games.<br>
+    <a href="https://github.com/nickorrnah/rift-tap" target="_blank">github.com/nickorrnah/rift-tap</a>
+  </footer>
+
+  <script>
+    // Show live WebSocket connection status so you can tell at a glance
+    // whether the server is reachable from this browser.
+    const dot  = document.getElementById("dot");
+    const text = document.getElementById("status-text");
+    let retryDelay = 1000;
+
+    function connect() {
+      const proto = location.protocol === "https:" ? "wss:" : "ws:";
+      const ws = new WebSocket(`${proto}//${location.host}/ws`);
+
+      ws.addEventListener("open", () => {
+        dot.className = "dot connected";
+        text.textContent = "Server connected";
+        retryDelay = 1000;
+      });
+      ws.addEventListener("close", () => {
+        dot.className = "dot";
+        text.textContent = `Reconnecting in ${retryDelay / 1000}s…`;
+        setTimeout(connect, retryDelay);
+        retryDelay = Math.min(retryDelay * 2, 30000);
+      });
+    }
+
+    connect();
+  </script>
+
+</body>
+</html>

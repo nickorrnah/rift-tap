@@ -50,7 +50,11 @@ db = CardDatabase(DB_PATH)
 # Overlay display settings — lives in memory, resets on server restart.
 # Kept simple intentionally; persist to DB later if needed.
 overlay_settings: dict = {
-    "show_card_info": False,   # default: image only, no text panel
+    "show_card_info":     False,
+    "display_duration":   8.0,
+    "show_status_dot":    False,
+    "entrance_animation": "slide-right",
+    "exit_animation":     "fade",
 }
 
 # Demo mode — fires simulated scans on a timer so streamers can set up
@@ -187,7 +191,7 @@ async def nfc_scan_loop():
                     "rules_text":     card.rules_text,
                     "image_filename": card.image_filename,
                 },
-                "display_duration": DISPLAY_DURATION_SECONDS,
+                "display_duration": overlay_settings["display_duration"],
             }
         else:
             log.warning("Unknown tag: %s", uid)
@@ -344,7 +348,8 @@ async def update_settings(body: dict):
 
     Example body: { "show_card_info": true }
     """
-    allowed = {"show_card_info"}
+    allowed = {"show_card_info", "display_duration", "show_status_dot",
+               "entrance_animation", "exit_animation"}
     unknown = set(body) - allowed
     if unknown:
         raise HTTPException(400, f"Unknown settings: {unknown}")
@@ -375,15 +380,8 @@ async def health():
     return {"status": "ok"}
 
 
-# ── Root redirect ─────────────────────────────────────────────────────────────
+# ── Root page ─────────────────────────────────────────────────────────────────
 
 @app.get("/")
 async def root():
-    return HTMLResponse("""
-        <h2>Riftbound Card Scanner</h2>
-        <ul>
-          <li><a href="/overlay/index.html">OBS Overlay</a></li>
-          <li><a href="/admin/index.html">Admin / Tag Assignment</a></li>
-          <li><a href="/docs">API docs</a></li>
-        </ul>
-    """)
+    return FileResponse(str(BASE_DIR / "index.html"))

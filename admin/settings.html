@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rift Tap — Settings</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #d0d8e8;
+      min-height: 100vh;
+    }
+
+    /* ── Header ───────────────────────────────────────────────────────────── */
+    header {
+      background: #1a1d27;
+      border-bottom: 1px solid #2a2d3a;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header h1 { margin: 0; font-size: 1.2rem; color: #f0d070; font-weight: 700; }
+    header .subtitle { font-size: 0.8rem; color: #6a7a9a; }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #a0b8d0;
+      text-decoration: none;
+      padding: 8px 14px;
+      border: 1px solid #2a2d3a;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .back-btn:hover { background: #2a2d3a; color: #f0d070; border-color: #f0d070; }
+
+    .ws-badge {
+      margin-left: auto;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #2a2d3a;
+      color: #888;
+    }
+    .ws-badge.connected { background: #1a3a1f; color: #4caf50; }
+
+    /* ── Layout ───────────────────────────────────────────────────────────── */
+    main {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── Setting group panels ─────────────────────────────────────────────── */
+    .panel {
+      background: #1a1d27;
+      border: 1px solid #2a2d3a;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 14px 18px 10px;
+      font-size: 0.75rem;
+      color: #6a7a9a;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid #2a2d3a;
+    }
+
+    /* ── Individual setting rows ──────────────────────────────────────────── */
+    .setting-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      gap: 16px;
+      border-bottom: 1px solid #1e2130;
+    }
+    .setting-row:last-child { border-bottom: none; }
+
+    .setting-info { flex: 1; }
+    .setting-label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #d0d8e8;
+      margin-bottom: 3px;
+    }
+    .setting-desc { font-size: 0.78rem; color: #6a7a9a; line-height: 1.4; }
+
+    /* ── Toggle switch ────────────────────────────────────────────────────── */
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #2a2d3a;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #6a7a9a;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-track { background: #2a4a2f; }
+    .toggle-switch input:checked + .toggle-track::after {
+      transform: translateX(20px);
+      background: #4caf50;
+    }
+
+    /* ── Demo controls ────────────────────────────────────────────────────── */
+    .demo-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .demo-interval {
+      width: 52px;
+      background: #0f1117;
+      border: 1px solid #3a3d4a;
+      border-radius: 6px;
+      color: #d0d8e8;
+      padding: 6px 8px;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .demo-label { font-size: 0.75rem; color: #4a5a6a; }
+    #demo-btn {
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: 1px solid #3a3d4a;
+      background: #0f1117;
+      color: #a0b8d0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    #demo-btn:hover { background: #1a1d27; }
+    #demo-btn.active {
+      background: #1a3a1f;
+      color: #4caf50;
+      border-color: #2a5a2f;
+      animation: pulse-border 2s infinite;
+    }
+    @keyframes pulse-border {
+      0%, 100% { border-color: #2a5a2f; }
+      50%       { border-color: #4caf50; }
+    }
+
+    /* ── Select dropdowns ─────────────────────────────────────────────────── */
+    select {
+      background: #0f1117;
+      border: 1px solid #3a3d4a;
+      border-radius: 6px;
+      color: #d0d8e8;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      min-width: 170px;
+    }
+    select:focus { outline: none; border-color: #f0d070; }
+
+    /* ── Display duration input ─────────────────────────────────────────── */
+    .number-input {
+      width: 64px;
+      background: #0f1117;
+      border: 1px solid #3a3d4a;
+      border-radius: 6px;
+      color: #d0d8e8;
+      padding: 6px 8px;
+      font-size: 0.85rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .unit-label { font-size: 0.78rem; color: #4a5a6a; flex-shrink: 0; }
+
+    /* ── Toast ────────────────────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a3a1f;
+      color: #80e090;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+      z-index: 999;
+      pointer-events: none;
+    }
+    #toast.error { background: #3a1a1a; color: #e08080; }
+    #toast.show  { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="back-btn" href="/">← Back</a>
+  <div>
+    <h1>Rift Tap — Settings</h1>
+    <div class="subtitle">Overlay and scanner configuration</div>
+  </div>
+  <span id="ws-badge" class="ws-badge">● Connecting…</span>
+</header>
+
+<main>
+
+  <!-- ── Animations ────────────────────────────────────────────────────── -->
+  <div class="panel">
+    <div class="panel-header">Animations</div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Entrance</div>
+        <div class="setting-desc">How the card appears when scanned.</div>
+      </div>
+      <select id="select-enter"></select>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Exit</div>
+        <div class="setting-desc">How the card disappears after the display duration.</div>
+      </div>
+      <select id="select-exit"></select>
+    </div>
+
+  </div>
+
+  <!-- ── Overlay ────────────────────────────────────────────────────────── -->
+  <div class="panel">
+    <div class="panel-header">Overlay</div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Show card info</div>
+        <div class="setting-desc">Display card name, type, traits, and rules text alongside the image in the OBS overlay.</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-info" />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Show connection dot</div>
+        <div class="setting-desc">Show the green WebSocket status indicator in the corner of the OBS overlay. Useful for debugging; off by default for clean streams.</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-dot" />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="setting-row">
+        <div class="setting-label">Display duration</div>
+        <div class="setting-desc">How long the card stays visible before fading out. Set to <strong>0</strong> to keep the card on screen indefinitely — it will stay until the next card is scanned.</div>
+      </div>
+      <input class="number-input" type="number" id="display-duration" min="0" max="120" value="8" />
+      <span class="unit-label">seconds</span>
+    </div>
+
+  </div>
+
+  <!-- ── Demo ───────────────────────────────────────────────────────────── -->
+  <div class="panel">
+    <div class="panel-header">Demo Mode</div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Continuous demo scans</div>
+        <div class="setting-desc">Fire card scans automatically on a timer. Use this to position and size the overlay in OBS without needing physical hardware.</div>
+      </div>
+      <div class="demo-controls">
+        <input class="demo-interval" type="number" id="demo-interval" value="5" min="1" max="60" title="Seconds between scans" />
+        <span class="demo-label">s</span>
+        <button id="demo-btn">▶ Start</button>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ── WebSocket ──────────────────────────────────────────────────────────
+  const wsBadge = document.getElementById("ws-badge");
+  let retryDelay = 1000;
+
+  function connectWs() {
+    const proto = location.protocol === "https:" ? "wss:" : "ws:";
+    const ws = new WebSocket(`${proto}//${location.host}/ws`);
+
+    ws.addEventListener("open", () => {
+      wsBadge.textContent = "● Live";
+      wsBadge.className = "ws-badge connected";
+      retryDelay = 1000;
+    });
+    ws.addEventListener("message", (e) => {
+      let msg;
+      try { msg = JSON.parse(e.data); } catch { return; }
+      if (msg.event === "settings")   applySettings(msg);
+      if (msg.event === "demo_state") applyDemoState(msg);
+    });
+    ws.addEventListener("close", () => {
+      wsBadge.textContent = "● Reconnecting…";
+      wsBadge.className = "ws-badge";
+      setTimeout(connectWs, retryDelay);
+      retryDelay = Math.min(retryDelay * 2, 30000);
+    });
+  }
+
+  // ── Animation dropdowns ────────────────────────────────────────────────
+  const ANIM_OPTIONS = [
+    { value: "fade",          label: "Fade" },
+    { value: "slide-right",   label: "Slide from Right" },
+    { value: "slide-left",    label: "Slide from Left" },
+    { value: "slide-up",      label: "Slide from Bottom" },
+    { value: "slide-down",    label: "Slide from Top" },
+    { value: "zoom",          label: "Zoom In / Out" },
+    { value: "slam",          label: "Slam" },
+    { value: "bounce",        label: "Bounce" },
+    { value: "elastic",       label: "Elastic Pop" },
+    { value: "flip-h",        label: "Flip Horizontal" },
+    { value: "flip-v",        label: "Flip Vertical" },
+    { value: "rotate-tl-ccw", label: "Rotate — Top Left, Counter-clockwise" },
+    { value: "rotate-tl-cw",  label: "Rotate — Top Left, Clockwise" },
+    { value: "rotate-tr-cw",  label: "Rotate — Top Right, Clockwise" },
+    { value: "rotate-tr-ccw", label: "Rotate — Top Right, Counter-clockwise" },
+    { value: "rotate-bl-cw",  label: "Rotate — Bottom Left, Clockwise" },
+    { value: "rotate-bl-ccw", label: "Rotate — Bottom Left, Counter-clockwise" },
+    { value: "rotate-br-ccw", label: "Rotate — Bottom Right, Counter-clockwise" },
+    { value: "rotate-br-cw",  label: "Rotate — Bottom Right, Clockwise" },
+  ];
+
+  const selectEnterEl = document.getElementById("select-enter");
+  const selectExitEl  = document.getElementById("select-exit");
+
+  ANIM_OPTIONS.forEach(o => {
+    selectEnterEl.add(new Option(o.label, o.value));
+    selectExitEl.add(new Option(o.label, o.value));
+  });
+
+  selectEnterEl.addEventListener("change", () => postSettings({ entrance_animation: selectEnterEl.value }));
+  selectExitEl.addEventListener("change",  () => postSettings({ exit_animation:     selectExitEl.value  }));
+
+  // ── Overlay settings ───────────────────────────────────────────────────
+  const toggleInfoEl      = document.getElementById("toggle-info");
+  const toggleDotEl       = document.getElementById("toggle-dot");
+  const displayDurationEl = document.getElementById("display-duration");
+
+  function applySettings(s) {
+    toggleInfoEl.checked = !!s.show_card_info;
+    toggleDotEl.checked  = !!s.show_status_dot;
+    if (s.display_duration    != null) displayDurationEl.value = s.display_duration;
+    if (s.entrance_animation)          selectEnterEl.value     = s.entrance_animation;
+    if (s.exit_animation)              selectExitEl.value      = s.exit_animation;
+  }
+
+  toggleInfoEl.addEventListener("change", () => postSettings({ show_card_info:  toggleInfoEl.checked }));
+  toggleDotEl.addEventListener("change",  () => postSettings({ show_status_dot: toggleDotEl.checked  }));
+
+  // Debounce the duration field so we don't fire on every keystroke.
+  let durationTimer = null;
+  displayDurationEl.addEventListener("input", () => {
+    clearTimeout(durationTimer);
+    durationTimer = setTimeout(() => postSettings({
+      display_duration: parseFloat(displayDurationEl.value) || 8,
+    }), 600);
+  });
+
+  async function postSettings(body) {
+    try {
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      showToast("Settings error: " + err.message, true);
+    }
+  }
+
+  // ── Demo mode ──────────────────────────────────────────────────────────
+  const demoBtnEl      = document.getElementById("demo-btn");
+  const demoIntervalEl = document.getElementById("demo-interval");
+
+  function applyDemoState(state) {
+    demoBtnEl.classList.toggle("active", !!state.active);
+    demoBtnEl.textContent = state.active ? "⏹ Stop" : "▶ Start";
+    if (state.interval) demoIntervalEl.value = state.interval;
+  }
+
+  demoBtnEl.addEventListener("click", async () => {
+    const turningOn = !demoBtnEl.classList.contains("active");
+    try {
+      await fetch("/api/demo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          active:   turningOn,
+          interval: parseInt(demoIntervalEl.value, 10) || 5,
+        }),
+      });
+    } catch (err) {
+      showToast("Demo error: " + err.message, true);
+    }
+  });
+
+  // ── Toast ──────────────────────────────────────────────────────────────
+  let toastTimer = null;
+  const toastEl  = document.getElementById("toast");
+  function showToast(msg, isError = false) {
+    toastEl.textContent = msg;
+    toastEl.className = isError ? "error show" : "show";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toastEl.className = isError ? "error" : ""; }, 3000);
+  }
+
+  // ── Boot ───────────────────────────────────────────────────────────────
+  connectWs();
+  fetch("/api/settings").then(r => r.json()).then(applySettings).catch(console.error);
+  fetch("/api/demo").then(r => r.json()).then(applyDemoState).catch(console.error);
+})();
+</script>
+
+</body>
+</html>
