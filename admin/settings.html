@@ -233,6 +233,35 @@
 
 <main>
 
+  <!-- ── Card Library Sync ──────────────────────────────────────────────── -->
+  <div class="panel">
+    <div class="panel-header">Card Library</div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Card library</div>
+        <div class="setting-desc">Update the card list and download any new card images. Only missing images are fetched — existing ones are untouched. Requires internet access on this device.</div>
+      </div>
+      <button id="sync-btn" class="btn btn-primary" style="flex-shrink:0">Update Cards</button>
+    </div>
+
+    <div id="sync-log" style="
+      display: none;
+      margin: 0 18px 14px;
+      background: #0f1117;
+      border: 1px solid #2a2d3a;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #6a9a6a;
+      max-height: 160px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    "></div>
+
+  </div>
+
   <!-- ── Animations ────────────────────────────────────────────────────── -->
   <div class="panel">
     <div class="panel-header">Animations</div>
@@ -335,6 +364,9 @@
       try { msg = JSON.parse(e.data); } catch { return; }
       if (msg.event === "settings")   applySettings(msg);
       if (msg.event === "demo_state") applyDemoState(msg);
+      if (msg.event === "sync_progress" || msg.event === "sync_complete" || msg.event === "sync_error") {
+        handleSyncEvent(msg);
+      }
     });
     ws.addEventListener("close", () => {
       wsBadge.textContent = "● Reconnecting…";
@@ -449,6 +481,55 @@
     toastEl.className = isError ? "error show" : "show";
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toastEl.className = isError ? "error" : ""; }, 3000);
+  }
+
+  // ── Card library sync ──────────────────────────────────────────────────
+  const syncBtnEl = document.getElementById("sync-btn");
+  const syncLogEl = document.getElementById("sync-log");
+
+  function appendSyncLog(msg) {
+    syncLogEl.style.display = "block";
+    syncLogEl.textContent += msg + "\n";
+    syncLogEl.scrollTop = syncLogEl.scrollHeight;
+  }
+
+  syncBtnEl.addEventListener("click", async () => {
+    syncBtnEl.disabled = true;
+    syncBtnEl.textContent = "Updating…";
+    syncLogEl.textContent = "";
+    syncLogEl.style.display = "block";
+    try {
+      const res = await fetch("/api/sync", { method: "POST" });
+      if (!res.ok) {
+        const err = await res.json();
+        appendSyncLog("Error: " + (err.detail || res.statusText));
+        syncBtnEl.disabled = false;
+        syncBtnEl.textContent = "Sync Now";
+      }
+    } catch (err) {
+      appendSyncLog("Error: " + err.message);
+      syncBtnEl.disabled = false;
+      syncBtnEl.textContent = "Update Cards";
+    }
+  });
+
+  // Listen for sync progress/complete events over the existing WebSocket.
+  // (The connectWs message handler below will route these here.)
+  function handleSyncEvent(msg) {
+    if (msg.event === "sync_progress") {
+      appendSyncLog(msg.message);
+    } else if (msg.event === "sync_complete") {
+      appendSyncLog(
+        `\nDone! ${msg.stats.images_downloaded} images downloaded, ` +
+        `${msg.stats.errors} errors.`
+      );
+      syncBtnEl.disabled = false;
+      syncBtnEl.textContent = "Update Cards";
+    } else if (msg.event === "sync_error") {
+      appendSyncLog("Failed: " + msg.message);
+      syncBtnEl.disabled = false;
+      syncBtnEl.textContent = "Update Cards";
+    }
   }
 
   // ── Boot ───────────────────────────────────────────────────────────────

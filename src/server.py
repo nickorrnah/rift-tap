@@ -38,6 +38,7 @@ from fastapi.staticfiles import StaticFiles
 
 from card_db import CardDatabase, Card
 from nfc_reader import create_reader
+from led_feedback import blink_success, blink_unknown
 from config import BASE_DIR, IMAGE_DIR, DISPLAY_DURATION_SECONDS, DB_PATH
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s — %(message)s")
@@ -177,6 +178,7 @@ async def nfc_scan_loop():
 
         if card:
             log.info("Card found: %s (%s)", card.name, uid)
+            await blink_success()
             payload = {
                 "event":    "card_scanned",
                 "uid":      uid,
@@ -195,6 +197,7 @@ async def nfc_scan_loop():
             }
         else:
             log.warning("Unknown tag: %s", uid)
+            await blink_unknown()
             payload = {
                 "event": "unknown_tag",
                 "uid":   uid,
@@ -378,6 +381,55 @@ async def recent_scans(limit: int = 20):
 @app.get("/api/health")
 async def health():
     return {"status": "ok"}
+
+
+# Tracks an in-progress sync so we don't start two at once.
+_sync_task: Optional[asyncio.Task] = None
+_sync_log:  list[str] = []
+
+
+@app.get("/api/sync/status")
+async def sync_status():
+    return {
+        "running": _sync_task is not None and not _sync_task.done(),
+        "log":     _sync_log[-50:],   # last 50 lines
+    }
+
+
+@app.post("/api/sync")
+async def start_sync():
+    """
+    Begin a card library sync in the background.
+    Returns immediately; poll /api/sync/status for progress.
+    """
+    global _sync_task, _sync_log
+
+    if _sync_task and not _sync_task.done():
+        raise HTTPException(409, "Sync already in progress")
+
+    _sync_log = []
+
+    async def _run():
+        # Import here so the module is only loaded when actually needed
+        # and avoids any import-time side effects on startup.
+        import sys, pathlib
+        sys.path.insert(0, str(pathlib.Path(__file__).parent.parent / "scripts"))
+        from sync_cards import sync
+
+        async def _log(msg: str):
+            _sync_log.append(msg)
+            await manager.broadcast({"event": "sync_progress", "message": msg})
+
+        try:
+            stats = await sync(progress_callback=_log)
+            await manager.broadcast({"event": "sync_complete", "stats": stats})
+        except Exception as exc:
+            msg = f"Sync failed: {exc}"
+            _sync_log.append(msg)
+            await manager.broadcast({"event": "sync_error", "message": msg})
+
+    _sync_task = asyncio.create_task(_run())
+    return {"status": "started"}
 
 
 # ── Root page ─────────────────────────────────────────────────────────────────
