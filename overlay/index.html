@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+  overlay/index.html — OBS Browser Source
+
+  Add this to OBS as a Browser Source pointing to:
+    http://<raspberry-pi-ip>:8000/overlay/index.html
+
+  Recommended OBS Browser Source settings:
+    Width:  1920   (match your stream resolution)
+    Height: 1080
+    FPS:    30
+    ✓ Shutdown source when not visible
+    ✓ Refresh browser when scene becomes active
+
+  How it works:
+    1. The page connects to the Python server via WebSocket.
+    2. When a "card_scanned" message arrives, the card image and info
+       fade in.
+    3. A timer hides the card after the configured duration.
+    4. If the connection drops, it retries automatically — this handles
+       the server restarting without needing to refresh OBS.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Riftbound Overlay</title>
+  <link rel="stylesheet" href="overlay.css" />
+</head>
+<body>
+
+  <!-- The card panel sits in the bottom-right corner by default.
+       Move it in overlay.css by changing #card-panel positioning. -->
+  <div id="card-panel" class="hidden">
+    <img id="card-image" src="" alt="" />
+    <div id="card-info">
+      <div id="card-name"></div>
+      <div id="card-meta"></div>
+      <div id="card-rules"></div>
+    </div>
+  </div>
+
+  <!-- Small status dot — remove from your final stream layout if you want -->
+  <div id="status-dot" title="WebSocket connection status"></div>
+
+  <script src="overlay.js"></script>
+</body>
+</html>

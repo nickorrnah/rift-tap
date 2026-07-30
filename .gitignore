@@ -1,0 +1,43 @@
+# ── Secrets & local config ────────────────────────────────────────────────────
+.env
+
+# ── Database ──────────────────────────────────────────────────────────────────
+# The database is created fresh via scripts/seed_db.py — no need to track it.
+data/
+
+# ── Card images ───────────────────────────────────────────────────────────────
+# Images sourced from the Riot API are not redistributable.
+# Keep the placeholder SVG; exclude everything else in images/.
+images/*
+!images/placeholder.svg
+!images/punching-poro.png
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+ngrok.log
+
+# ── OS junk ───────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+# ── Cloned subfolder (from GitHub repo init) ──────────────────────────────────
+rift-tap/
+# ── Editor ────────────────────────────────────────────────────────────────────
+.idea/
+*.swp
+*.swo

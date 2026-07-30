@@ -1,0 +1,144 @@
+/*
+  overlay.css
+
+  The overlay uses CSS custom properties (variables) at the top so you can
+  easily restyle the card panel without hunting through the whole file.
+
+  The fade animation is done with CSS transitions rather than JavaScript —
+  the browser handles the interpolation, which is smoother and cheaper.
+*/
+
+/* ── Reset & base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin:     0;
+  padding:    0;
+  width:      100%;
+  height:     100%;
+  overflow:   hidden;
+  background: transparent;   /* critical — lets the game/desktop show through */
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Design tokens ────────────────────────────────────────────────────────── */
+:root {
+  --panel-width:        300px;
+  --panel-bg:           rgba(10, 10, 20, 0.88);
+  --panel-border:       2px solid rgba(180, 140, 60, 0.7);  /* gold-ish */
+  --panel-radius:       12px;
+  --panel-padding:      14px;
+  --panel-shadow:       0 4px 24px rgba(0, 0, 0, 0.6);
+
+  --text-name:          #f0d070;
+  --text-meta:          #a0b8cc;
+  --text-rules:         #ddeeff;
+
+  --transition-in:      0.35s ease-out;
+  --transition-out:     0.6s ease-in;
+
+  /* Bottom-right corner with a bit of breathing room */
+  --panel-bottom:       40px;
+  --panel-right:        40px;
+}
+
+/* ── Card panel ───────────────────────────────────────────────────────────── */
+#card-panel {
+  position:       fixed;
+  bottom:         var(--panel-bottom);
+  right:          var(--panel-right);
+  width:          var(--panel-width);
+
+  background:     var(--panel-bg);
+  border:         var(--panel-border);
+  border-radius:  var(--panel-radius);
+  padding:        var(--panel-padding);
+  box-shadow:     var(--panel-shadow);
+
+  display:        flex;
+  flex-direction: column;
+  gap:            10px;
+
+  /* Start invisible and slightly lower so the entrance feels like a rise */
+  opacity:        0;
+  transform:      translateY(16px);
+  transition:     opacity var(--transition-in), transform var(--transition-in);
+}
+
+/* .visible is added by JavaScript when a card arrives */
+#card-panel.visible {
+  opacity:    1;
+  transform:  translateY(0);
+}
+
+/* .hidden removes the element from layout entirely once the transition ends */
+#card-panel.hidden {
+  display: none;
+}
+
+/* ── Card image ───────────────────────────────────────────────────────────── */
+#card-image {
+  width:         100%;
+  border-radius: 8px;
+  object-fit:    contain;
+  max-height:    340px;
+}
+
+/* ── Text ─────────────────────────────────────────────────────────────────── */
+#card-info {
+  display:        flex;
+  flex-direction: column;
+  gap:            4px;
+}
+
+#card-name {
+  font-size:   1.1rem;
+  font-weight: 700;
+  color:       var(--text-name);
+  line-height: 1.2;
+}
+
+#card-meta {
+  font-size:  0.78rem;
+  color:      var(--text-meta);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+#card-rules {
+  font-size:   0.82rem;
+  color:       var(--text-rules);
+  line-height: 1.45;
+  margin-top:  4px;
+
+  /* Clamp to 4 lines so long rules text doesn't blow out the panel */
+  display:            -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow:           hidden;
+}
+
+/* .info-hidden = image-only mode: drop the box, keep the image */
+#card-panel.info-hidden {
+  background: transparent;
+  border:      none;
+  box-shadow:  none;
+  padding:     0;
+}
+#card-panel.info-hidden #card-info {
+  display: none;
+}
+
+/* ── Status dot ───────────────────────────────────────────────────────────── */
+#status-dot {
+  position:      fixed;
+  top:           12px;
+  right:         12px;
+  width:         10px;
+  height:        10px;
+  border-radius: 50%;
+  background:    #888;
+  transition:    background 0.3s;
+}
+#status-dot.connected    { background: #4caf50; }
+#status-dot.disconnected { background: #f44336; }

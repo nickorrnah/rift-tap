@@ -1,0 +1,26 @@
+# ── Core web framework ────────────────────────────────────────────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+websockets>=12.0
+
+# ── HTTP client (API calls + exploration) ────────────────────────────────────
+httpx>=0.27.0
+
+# ── Environment variable loading ──────────────────────────────────────────────
+# Reads the .env file automatically so secrets never have to be hardcoded.
+python-dotenv>=1.0.0
+
+# ── Raspberry Pi / NFC ────────────────────────────────────────────────────────
+# These are only needed on the actual Raspberry Pi.
+# They won't install on a regular PC, which is fine — set SIMULATE_NFC=true
+# (the default) and skip these until you're ready to test real hardware.
+#
+# Uncomment when running on the Pi:
+# adafruit-circuitpython-pn532>=2.3.0
+# RPi.GPIO>=0.7.0
+# spidev>=3.6         # required for SPI interface
+# smbus2>=0.4.0       # required for I2C interface (alternative to SPI)
+
+# ── Development / optional ────────────────────────────────────────────────────
+# httpx is used by FastAPI's test client.  Nice to have for writing tests later.
+httpx>=0.27.0

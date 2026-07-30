@@ -1,0 +1,75 @@
+Riftbound
+Introduction
+Since we announced Riftbound less than a year ago, we’ve been humbled by the level of enthusiasm that's steadily growing in this new community. We’re working hard to get Riftbound out to players around the world so you can turn your theorycrafts into physical decks for game nights at home, at your favorite LGS, or anywhere else your Riftbound journeys take you.
+
+Before then, we need to take a moment to share our philosophy and policy on 3rd party digital tools for playing Riftbound. Riftbound is designed for social play, mixing deep strategy with deception, negotiation, and mastermind moments that create lasting memories; the game has been built from the ground up to optimize for that. While digital clones have grown in popularity for their accessibility and ability to quickly optimize decks around the current meta, and we’ve seen interest from players in establishing their own for Riftbound, Riot’s policy prohibits any fan project that crosses the line into making a game using Riot IP. In the case of Riftbound, we’re especially concerned with projects that enable Riftbound gameplay with automated rules, interactions, and resolutions, with less need for social interaction.
+
+That means tools like card galleries or deck managers are generally encouraged because we want players to be able to theorycraft, deckbuild, and share their latest brews with the Riftbound community. When those tools become standalone games, however, and remove the manual and social aspects of Riftbound that we’ve built around, they can warp the experience in a way that’s unhealthy for the long-term development of both the Riftbound community and the game itself.
+
+Our overall goal is to support creative projects that enrich the Riftbound community and provide a better player experience. If your App aligns with that mission, we’d love to hear about it and work with you to help bring it to life. Read on for more information on how you can set up your App using our API in compliance with our Legal Jibber Jabber and this, our Digital tools policy.
+
+Digital Tools Policy
+If you’re interested in building an app for Riftbound (your “App”), you’ll need either a written license from us or a valid App-specific API key, as laid out in our Legal Jibber Jabber. Securing that API key will require your App to integrate with Riot’s application programming interface (the “Riot API”), which you can access through the Riot Developer Portal. Once connected, the Riot API will give you authorized access to select Riftbound assets—including card art, rulesets, and other materials—for use in your App.
+
+You can find information below on:
+
+How to apply for your API key
+What we look for when reviewing applications (including specific examples of what we’re likely to approve and what’s not allowed)
+Key design and functionality guidelines for your App
+Please note that we are not looking to approve Apps that enable automated rules enforcement for Riftbound gameplay at this time. We want players to learn and experience Riftbound the way it's intended for a tabletop game—social, interacting with your opponent(s)/allies, and without the assistance of digital trackers and interactions. If you have an App that supports that type of gameplay, please apply for an API key and we’ll approve those Apps on a case-by-case basis.
+
+How do I secure my Riot API key?
+Securing your API key starts with filling out an application through the Developer Portal. Your application will ask for:
+
+Your name and contact information
+A description of your App (including your App’s use case, a demonstration of how it delivers on that use case, and its user flow)
+Where your project will be distributed
+The platform(s) your App will be available on
+A valid URL where your App can be accessed or downloaded.
+If your App isn’t fully functional and testable by Riot yet, you may submit a working prototype or detailed mock-up that clearly expresses your product’s purpose and the user flow. Your application, including the description of your intended App, must be complete and reasonably comprehensive for us to approve your application.
+
+What factors will Riot consider when deciding to approve my application for an API key?
+We may grant, deny, or even revoke API keys at our sole discretion. To help guide you, we’ve included some examples of approved and prohibited use cases below, but these aren’t a complete list. We may still approve or decline projects that fall outside these examples, depending on the specifics.
+
+If you're unsure if your proposed use case is acceptable, contact us through the Developer Support Platform.
+
+Examples of Approved Use Cases
+Deckbuilders
+Card libraries
+Examples of Prohibited Use Cases
+If your App allows users to simulate or replicate Riftbound gameplay:
+
+No automated rule enforcement (where the software controls or enforces the rules).
+No standalone clients solely for Riftbound. We expect Apps or mods that facilitate manual Riftbound gameplay to live within platforms broadly applicable to multiple games.
+You can’t monetize your App, including via in-app advertisements. Optional donations are allowed (if payments are not accepted within your App), but rewards for play are not.
+No skill-based matchmaking, player-facing rank or ladder systems (like leaderboards, tournament brackets implemented directly within your App, or other indicators of a player’s skill level).
+No publishing or retaining metagame-defining data for Riftbound. “Metagame-defining data” includes, without limitation, play rates for certain decks or cards, win rates for certain decks or cards, or match-up win percentage differentials.
+Other Design and Functionality Requirements
+In addition to the examples of approved and prohibited use cases, there are a few important design and functionality guidelines your App must follow. These ensure a consistent experience for the Riftbound community, and help protect the integrity of the game. Even if your App fits within an approved use case, you’ll still need to meet the following requirements to receive (and keep) your API key.
+
+Monetization. To monetize your App:
+Your App must not simulate or replicate Riftbound gameplay.
+Your App must have a valid API key approved by Riot.
+Your App must have a free tier of access for players.
+Any content you charge for within your App must be transformative. “Transformative” means you added value to original materials and data by creating new information, new aesthetics, new insights, or new understandings.
+Your App can’t feature betting or gambling functionality.
+You can’t charge players any non-fiat currencies that can be exchanged back into fiat currency.
+Your monetization practices can’t be unfair, as decided by Riot.
+Implementation of Riftbound cards:
+All Riftbound cards must display the official English text or—if available via the API—Riot’s official translation for your desired language. If no official translation exists for your desired language, you may include your own accurate translation, but it must be displayed alongside the official English text.
+Your App may only use Riftbound assets (including cards) provided by the Riot API. No external or unofficial materials.
+If Riot previews Riftbound cards that are not yet available to play in an official game format, you may implement them in your App, as long as you clearly label them as previewed and unreleased.
+Official and custom play formats:
+If your App implements any official format of Riftbound or core rules related to that format (such as deckbuilding restrictions), you may not modify or alter that format or the related core rules (including by implementing any custom balance changes or banlists).
+If your App implements any custom format of Riftbound, you must make it clear that that format is unofficial.
+Custom formats that can only be implemented in a digital environment (vs. physical play) are not permitted. For example, you may not modify objects in hidden zones, create new custom objects for the duration of a game, or offer randomization that is difficult to implement in a physical space.
+Brand integrity:
+You can’t state or imply that you or your App are endorsed or sponsored by Riot, or do anything that reflects adversely upon the reputation of Riot or Riftbound.
+Your App must include the statement specified in Section 6 of Riot’s Legal Jibber Jabber in a place that’s clear and easy to find.
+We realize that some cards and/or features may be challenging to implement digitally, or require time to integrate into your App. In those cases, we ask that you make a reasonable effort to properly adapt these elements in a timely manner, especially as Riftbound continues to evolve. For example, if we release new card properties and your App features a card search function with card property filters, we would expect those new properties to become searchable within a reasonable time period.
+
+RSO Integration
+Apps using the Riot API to simulate or replicate gameplay will need to integrate with Riot Sign-On (“RSO”), which allows players to securely link their Riot accounts to your App. Implementation guidance for RSO is available in the Developer Portal after your App application has been approved.
+
+Once you have your API key, you and your App must follow all of Riot’s API Terms, API Policies, and the Legal Jibber Jabber.
+
