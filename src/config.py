@@ -7,6 +7,16 @@ WebSocket port or the scan cooldown.
 """
 
 import os
+from pathlib import Path
+
+# Load .env from the project root before reading any settings.
+# This is a no-op if the file doesn't exist (e.g. in CI or when
+# variables are set directly in the environment).
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+except ImportError:
+    pass  # python-dotenv not installed; rely on environment variables
 
 # ── Database ──────────────────────────────────────────────────────────────────
 # Using pathlib here keeps paths portable across operating systems.

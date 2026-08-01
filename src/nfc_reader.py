@@ -224,12 +224,16 @@ class PN532Reader(NFCReader):
 
     async def scan_loop(self) -> AsyncIterator[TagScan]:
         log.info("PN532 reader active on %s", self._interface)
+        import functools
         last_card_id: Optional[str] = None
         last_scan_time: float = 0.0
 
         while True:
+            # read_passive_target(card_baud, timeout) — use functools.partial
+            # so 0.5 is passed as the timeout kwarg, not as card_baud.
+            poll = functools.partial(self._pn532.read_passive_target, timeout=0.5)
             uid_bytes: Optional[bytes] = await asyncio.get_event_loop().run_in_executor(
-                None, self._pn532.read_passive_target, 0.5
+                None, poll
             )
 
             if uid_bytes is None:
