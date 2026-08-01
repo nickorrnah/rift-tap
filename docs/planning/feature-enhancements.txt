@@ -5,16 +5,11 @@ Rift Tap
 
         Put overlay preview on the settings page
 
-        Display duration setting is not allowing for a value of 0, even though 0 should be how indefinite display is enabled
-
         Setting for battlefield cards to be displayed in landscape instead of portrait
         
         Better chip programming flows
-            text list injection
-            continuous write toggle, whatever card is selected will get written to whatever gets scanned
-            Have search also search by card id
-                user should be able to type in ven031 and that card would show up
             When card ID is displayed in search, it should show the letters in all caps so instead of ven-031 it would show VEN-031
+                this is working for deck import, but not for single card search
 
         Add riftbound card backs (blue, white, black) for animations
 		    also add toggle for showing card backs

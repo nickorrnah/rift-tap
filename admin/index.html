@@ -71,15 +71,16 @@
     .back-btn:hover { background: #2a2d3a; color: #f0d070; border-color: #f0d070; }
     .settings-link {
       margin-left: auto;
-      font-size: 0.82rem;
-      color: #a0b8d0;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #f0d070;
       text-decoration: none;
-      padding: 6px 12px;
-      border: 1px solid #2a2d3a;
-      border-radius: 6px;
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      padding: 8px 16px;
+      border: 1px solid rgba(240,208,112,0.4);
+      border-radius: 8px;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .settings-link:hover { background: #2a2d3a; border-color: #f0d070; color: #f0d070; }
+    .settings-link:hover { background: #2a2d3a; border-color: #f0d070; }
 
     .ws-badge {
       margin-left: auto;
@@ -292,13 +293,6 @@
     <div class="subtitle">Assign NFC tags to cards</div>
   </div>
   <a class="settings-link" href="/admin/settings.html" title="Settings">⚙️ Settings</a>
-  <label class="toggle-group" title="Keep writing the selected card to every sleeve tapped — no need to click Write each time" style="margin-left:8px">
-    <span style="font-size:0.8rem;color:#a0b8d0">Continuous</span>
-    <span class="toggle-switch">
-      <input type="checkbox" id="toggle-continuous" />
-      <span class="toggle-track"></span>
-    </span>
-  </label>
   <span id="ws-badge" class="ws-badge">● Connecting…</span>
 </header>
 
@@ -323,14 +317,15 @@
     <div id="search-results"></div>
     <button class="btn btn-primary" id="assign-btn" disabled>
         Write to Tag
-      </button>
-  </div>
+      </button>    <label style="display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #1e2130;cursor:pointer"
+           title="Keep writing the selected card to every sleeve tapped — no need to click Write each time">
+      <span class="toggle-switch">
+        <input type="checkbox" id="toggle-continuous" />
+        <span class="toggle-track"></span>
+      </span>
+      <span style="font-size:0.82rem;color:#a0b8d0">Continuous mode — auto-write same card on every scan</span>
+    </label>  </div>
 
-  <!-- ── Existing assignments ───────────────────────────────────────────── -->
-  <div class="panel full-width">
-    <h2>Current Assignments</h2>
-    <div id="assignment-list"><p class="empty-msg">Loading…</p></div>
-  </div>
 
   <!-- ── Recent scan log ───────────────────────────────────────────────── -->
   <div class="panel full-width">
@@ -357,8 +352,7 @@
         <button id="deck-parse-btn" class="btn btn-primary">Parse Deck List</button>
         <button id="deck-clear-btn" class="btn" style="background:#2a2d3a;color:#a0b8d0">Clear</button>
       </div>
-      <div id="deck-queue" style="margin-top:14px;display:flex;flex-direction:column;gap:6px"></div>
-      <div id="deck-write-bar" style="display:none;margin-top:12px;padding:12px;background:#0f1117;border:1px solid #2a2d3a;border-radius:8px">
+      <div id="deck-write-bar" style="display:none;position:sticky;top:0;z-index:10;margin-bottom:12px;padding:12px;background:#1a1d27;border:1px solid #f0d070;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.5)">
         <div style="font-size:0.88rem;color:#f0d070;font-weight:700" id="deck-current-label">Ready</div>
         <div style="font-size:0.78rem;color:#6a7a9a;margin-top:4px" id="deck-progress-label"></div>
         <div style="display:flex;gap:8px;margin-top:10px">
@@ -367,7 +361,14 @@
           <button id="deck-stop-btn"  class="btn" style="background:#3a1a1a;color:#f08080">Stop</button>
         </div>
       </div>
+      <div id="deck-queue" style="margin-top:14px;display:flex;flex-direction:column;gap:6px"></div>
     </div>
+  </div>
+
+  <!-- ── Current Assignments (moved to bottom — more for debugging than daily use) -->
+  <div class="panel full-width">
+    <h2>Current Assignments</h2>
+    <div id="assignment-list"><p class="empty-msg">Loading…</p></div>
   </div>
 
 </main>
@@ -468,13 +469,17 @@
   const continuousToggle = document.getElementById("toggle-continuous");
 
   function handleTagWritten(msg) {
-    showToast(`Written! ${escHtml(msg.card_id.toUpperCase())} → tag`);
+    showToast(`Written! ${escHtml(msg.card_id.toUpperCase())} \u2192 tag`);
     pendingUid = null;
     scanStatusEl.className = "ok";
-    handleDeckWriteSuccess();  // advance deck queue if active
+
+    // If the deck import queue is active, let it handle advancement exclusively.
+    if (deckActive) {
+      handleDeckWriteSuccess();
+      return;
+    }
 
     if (continuousToggle.checked && selectedCardId) {
-      // Re-arm immediately — next sleeve tap will write the same card
       scanStatusEl.textContent = `Continuous: tap next sleeve to write ${selectedCardName}`;
       fetch("/api/write-tag", {
         method: "POST",
@@ -482,7 +487,7 @@
         body: JSON.stringify({ card_id: selectedCardId }),
       }).catch(err => showToast("Re-arm error: " + err.message, true));
     } else {
-      scanStatusEl.textContent = `Card locked: ${selectedCardName} — tap next sleeve or search a new card`;
+      scanStatusEl.textContent = `Card locked: ${selectedCardName} \u2014 tap next sleeve or search a new card`;
       assignBtn.disabled = false;
       updateAssignBtn();
     }
