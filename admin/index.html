@@ -292,6 +292,13 @@
     <div class="subtitle">Assign NFC tags to cards</div>
   </div>
   <a class="settings-link" href="/admin/settings.html" title="Settings">⚙️ Settings</a>
+  <label class="toggle-group" title="Keep writing the selected card to every sleeve tapped — no need to click Write each time" style="margin-left:8px">
+    <span style="font-size:0.8rem;color:#a0b8d0">Continuous</span>
+    <span class="toggle-switch">
+      <input type="checkbox" id="toggle-continuous" />
+      <span class="toggle-track"></span>
+    </span>
+  </label>
   <span id="ws-badge" class="ws-badge">● Connecting…</span>
 </header>
 
@@ -329,6 +336,38 @@
   <div class="panel full-width">
     <h2>Recent Scans</h2>
     <div id="scan-log"><p class="empty-msg">Loading…</p></div>
+  </div>
+
+  <!-- ── Deck list import ──────────────────────────────────────────────── -->
+  <div class="panel full-width" id="deck-import-panel">
+    <h2 style="display:flex;align-items:center;justify-content:space-between">
+      Deck Import
+      <button id="deck-toggle-btn" class="btn" style="font-size:0.78rem;padding:4px 10px;background:#1a1d27;border:1px solid #2a2d3a;color:#6a7a9a">▼ Expand</button>
+    </h2>
+    <div id="deck-import-body" style="display:none">
+      <p style="font-size:0.82rem;color:#6a7a9a;margin:0 0 12px">
+        Paste a deck list to pre-load a write queue. Tap each sleeve in order and it will write the correct card ID automatically.
+      </p>
+      <textarea id="deck-list-input" rows="8" placeholder="Legend:&#10;1 Kha'Zix, Voidreaver&#10;&#10;MainDeck:&#10;3 Stacked Deck&#10;..." style="
+        width:100%;background:#0f1117;border:1px solid #3a3d4a;border-radius:6px;
+        color:#d0d8e8;padding:9px 12px;font-size:0.82rem;font-family:monospace;
+        resize:vertical;outline:none;box-sizing:border-box;
+      "></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button id="deck-parse-btn" class="btn btn-primary">Parse Deck List</button>
+        <button id="deck-clear-btn" class="btn" style="background:#2a2d3a;color:#a0b8d0">Clear</button>
+      </div>
+      <div id="deck-queue" style="margin-top:14px;display:flex;flex-direction:column;gap:6px"></div>
+      <div id="deck-write-bar" style="display:none;margin-top:12px;padding:12px;background:#0f1117;border:1px solid #2a2d3a;border-radius:8px">
+        <div style="font-size:0.88rem;color:#f0d070;font-weight:700" id="deck-current-label">Ready</div>
+        <div style="font-size:0.78rem;color:#6a7a9a;margin-top:4px" id="deck-progress-label"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button id="deck-write-btn" class="btn btn-primary">Write Current Card</button>
+          <button id="deck-skip-btn"  class="btn" style="background:#2a2d3a;color:#a0b8d0">Skip</button>
+          <button id="deck-stop-btn"  class="btn" style="background:#3a1a1a;color:#f08080">Stop</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 </main>
@@ -425,14 +464,29 @@
     updateAssignBtn();
   }
 
+  // ── Continuous write ───────────────────────────────────────────────────
+  const continuousToggle = document.getElementById("toggle-continuous");
+
   function handleTagWritten(msg) {
     showToast(`Written! ${escHtml(msg.card_id.toUpperCase())} → tag`);
     pendingUid = null;
-    scanUidEl.textContent = "Waiting for next scan…";
-    scanStatusEl.textContent = `Card locked: ${selectedCardName} — tap next sleeve or search a new card`;
     scanStatusEl.className = "ok";
-    assignBtn.disabled = false;
-    updateAssignBtn();
+    handleDeckWriteSuccess();  // advance deck queue if active
+
+    if (continuousToggle.checked && selectedCardId) {
+      // Re-arm immediately — next sleeve tap will write the same card
+      scanStatusEl.textContent = `Continuous: tap next sleeve to write ${selectedCardName}`;
+      fetch("/api/write-tag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ card_id: selectedCardId }),
+      }).catch(err => showToast("Re-arm error: " + err.message, true));
+    } else {
+      scanStatusEl.textContent = `Card locked: ${selectedCardName} — tap next sleeve or search a new card`;
+      assignBtn.disabled = false;
+      updateAssignBtn();
+    }
+    refreshAssignments();
   }
 
   // ── Card search ────────────────────────────────────────────────────────
@@ -601,6 +655,211 @@
     toastEl.className = isError ? "error show" : "show";
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toastEl.className = isError ? "error" : ""; }, 3000);
+  }
+
+  // ── Deck list import ───────────────────────────────────────────────────
+  const deckToggleBtn  = document.getElementById("deck-toggle-btn");
+  const deckImportBody = document.getElementById("deck-import-body");
+  const deckListInput  = document.getElementById("deck-list-input");
+  const deckParseBtn   = document.getElementById("deck-parse-btn");
+  const deckClearBtn   = document.getElementById("deck-clear-btn");
+  const deckQueueEl    = document.getElementById("deck-queue");
+  const deckWriteBar   = document.getElementById("deck-write-bar");
+  const deckCurrentLbl = document.getElementById("deck-current-label");
+  const deckProgressLbl= document.getElementById("deck-progress-label");
+  const deckWriteBtn   = document.getElementById("deck-write-btn");
+  const deckSkipBtn    = document.getElementById("deck-skip-btn");
+  const deckStopBtn    = document.getElementById("deck-stop-btn");
+
+  let deckQueue    = [];  // [{count, name, cardId, cardName, altCards}]
+  let deckIndex    = 0;
+  let deckActive   = false;
+
+  deckToggleBtn.addEventListener("click", () => {
+    const open = deckImportBody.style.display !== "none";
+    deckImportBody.style.display = open ? "none" : "block";
+    deckToggleBtn.textContent = open ? "▼ Expand" : "▲ Collapse";
+  });
+
+  deckClearBtn.addEventListener("click", () => {
+    deckListInput.value = "";
+    deckQueueEl.innerHTML = "";
+    deckWriteBar.style.display = "none";
+    deckQueue = []; deckIndex = 0; deckActive = false;
+  });
+
+  // Parse the deck list text into flat card entries (duplicated by count)
+  function parseDeckList(text) {
+    const entries = [];
+    text.split("\n").forEach(line => {
+      line = line.trim();
+      if (!line || line.endsWith(":")) return;
+      const m = line.match(/^(\d+)\s+(.+)$/);
+      if (!m) return;
+      const count = parseInt(m[1], 10);
+      const name  = m[2].trim();
+      for (let i = 0; i < count; i++) entries.push({ name, cardId: null, cardName: null, altCards: [], status: "pending" });
+    });
+    return entries;
+  }
+
+  // Pick the "simplest" card from a list of matches (shortest ID, no letter suffix)
+  function pickDefault(cards) {
+    return cards.slice().sort((a, b) => {
+      // prefer no trailing letter (base version)
+      const aHasSuffix = /[a-z]$/.test(a.id);
+      const bHasSuffix = /[a-z]$/.test(b.id);
+      if (aHasSuffix !== bHasSuffix) return aHasSuffix ? 1 : -1;
+      return a.id.length - b.id.length || a.id.localeCompare(b.id);
+    })[0];
+  }
+
+  deckParseBtn.addEventListener("click", async () => {
+    const raw = deckListInput.value.trim();
+    if (!raw) { showToast("Paste a deck list first", true); return; }
+
+    const entries = parseDeckList(raw);
+    if (!entries.length) { showToast("No valid card lines found", true); return; }
+
+    deckParseBtn.disabled = true;
+    deckParseBtn.textContent = "Resolving…";
+    deckQueueEl.innerHTML = "";
+
+    // Resolve each unique card name once
+    const nameCache = {};
+    for (const e of entries) {
+      if (!nameCache[e.name]) {
+        try {
+          const res = await fetch(`/api/cards/search?q=${encodeURIComponent(e.name)}`);
+          const cards = await res.json();
+          // Filter to exact-name matches (case-insensitive)
+          const exact = cards.filter(c => c.name.toLowerCase() === e.name.toLowerCase());
+          nameCache[e.name] = exact.length ? exact : cards.slice(0, 4);
+        } catch { nameCache[e.name] = []; }
+      }
+      const matches = nameCache[e.name];
+      if (matches.length === 0) {
+        e.status = "unknown";
+      } else {
+        const def = pickDefault(matches);
+        e.cardId   = def.id;
+        e.cardName = def.name;
+        e.altCards = matches.filter(c => c.id !== def.id);
+        e.status   = "resolved";
+      }
+    }
+
+    deckQueue = entries;
+    deckIndex = 0;
+    renderDeckQueue();
+    deckParseBtn.disabled = false;
+    deckParseBtn.textContent = "Parse Deck List";
+  });
+
+  function renderDeckQueue() {
+    const resolved  = deckQueue.filter(e => e.status === "resolved").length;
+    const unknown   = deckQueue.filter(e => e.status === "unknown").length;
+    deckQueueEl.innerHTML = `
+      <div style="font-size:0.8rem;color:#6a7a9a;margin-bottom:8px">
+        ${deckQueue.length} cards — ${resolved} resolved, ${unknown} unmatched
+      </div>` +
+      deckQueue.map((e, i) => {
+        const past    = i < deckIndex && deckActive;
+        const current = i === deckIndex && deckActive;
+        const bg      = current ? "#1a3a1f" : past ? "#0f1117" : "#0f1117";
+        const opacity = past ? "0.5" : "1";
+        const altHtml = e.altCards.length ? `<div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">${
+          e.altCards.map(a => `<span class="alt-card" data-idx="${i}" data-id="${escHtml(a.id)}" data-name="${escHtml(a.name)}"
+            style="font-size:0.72rem;padding:2px 8px;border-radius:4px;background:#2a2d3a;color:#a0b8d0;cursor:pointer">${escHtml(a.id.toUpperCase())}</span>`).join("")
+        }</div>` : "";
+        return `<div style="padding:8px 10px;background:${bg};border-radius:6px;opacity:${opacity};border:1px solid ${current ? "#4caf50" : "#2a2d3a"}">
+          <span style="font-size:0.88rem;font-weight:600;color:${e.status === "unknown" ? "#f08080" : "#d0d8e8"}">${escHtml(e.name)}</span>
+          ${e.status === "resolved" ? `<span style="font-size:0.75rem;color:#6a7a9a;margin-left:8px">${escHtml(e.cardId.toUpperCase())}</span>` : `<span style="font-size:0.75rem;color:#f08080;margin-left:8px">not found</span>`}
+          ${altHtml}
+        </div>`;
+      }).join("");
+
+    // Alt card click — swap the resolved card
+    deckQueueEl.querySelectorAll(".alt-card").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        deckQueue[idx].cardId   = btn.dataset.id;
+        deckQueue[idx].cardName = btn.dataset.name;
+        renderDeckQueue();
+      });
+    });
+
+    // Show write bar if any resolved
+    const hasResolved = deckQueue.some(e => e.status === "resolved");
+    if (hasResolved) {
+      deckWriteBar.style.display = "block";
+      updateDeckWriteBar();
+    }
+  }
+
+  function updateDeckWriteBar() {
+    if (deckIndex >= deckQueue.length) {
+      deckCurrentLbl.textContent  = "All done!";
+      deckProgressLbl.textContent = `${deckQueue.length} cards processed`;
+      deckWriteBtn.disabled = true;
+      deckActive = false;
+      return;
+    }
+    const e = deckQueue[deckIndex];
+    deckCurrentLbl.textContent  = e.status === "resolved"
+      ? `${e.cardId.toUpperCase()} — ${e.cardName}`
+      : `⚠ ${e.name} (not found — will skip)`;
+    deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
+    deckWriteBtn.disabled = e.status !== "resolved";
+  }
+
+  deckWriteBtn.addEventListener("click", async () => {
+    const e = deckQueue[deckIndex];
+    if (!e || e.status !== "resolved") return;
+    deckActive = true;
+    deckWriteBtn.disabled = true;
+    deckCurrentLbl.textContent = `Hold sleeve on reader to write ${e.cardName}…`;
+    try {
+      await fetch("/api/write-tag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ card_id: e.cardId }),
+      });
+      // Advance happens in handleTagWritten via WebSocket
+    } catch (err) {
+      showToast("Write error: " + err.message, true);
+      deckWriteBtn.disabled = false;
+    }
+  });
+
+  deckSkipBtn.addEventListener("click", () => {
+    deckIndex++;
+    renderDeckQueue();
+    updateDeckWriteBar();
+  });
+
+  deckStopBtn.addEventListener("click", () => {
+    deckActive = false;
+    deckWriteBar.style.display = "none";
+    deckQueue = []; deckIndex = 0;
+    deckQueueEl.innerHTML = "";
+  });
+
+  // Hook into the existing tag_written WebSocket event to advance the deck queue
+  function handleDeckWriteSuccess() {
+    if (!deckActive || deckQueue.length === 0) return;
+    deckIndex++;
+    renderDeckQueue();
+    updateDeckWriteBar();
+    // Auto-arm next card
+    const next = deckQueue[deckIndex];
+    if (next && next.status === "resolved") {
+      fetch("/api/write-tag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ card_id: next.cardId }),
+      }).catch(() => {});
+    }
   }
 
   // ── Boot ───────────────────────────────────────────────────────────────

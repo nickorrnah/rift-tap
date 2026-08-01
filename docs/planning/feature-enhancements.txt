@@ -1,0 +1,30 @@
+Rift Tap
+    Software Improvements
+        Save settings and preserve them on restart.
+            default behaviour should have the simulate scans set to false
+
+        Put overlay preview on the settings page
+
+        Display duration setting is not allowing for a value of 0, even though 0 should be how indefinite display is enabled
+
+        Setting for battlefield cards to be displayed in landscape instead of portrait
+        
+        Better chip programming flows
+            text list injection
+            continuous write toggle, whatever card is selected will get written to whatever gets scanned
+            Have search also search by card id
+                user should be able to type in ven031 and that card would show up
+            When card ID is displayed in search, it should show the letters in all caps so instead of ven-031 it would show VEN-031
+
+        Add riftbound card backs (blue, white, black) for animations
+		    also add toggle for showing card backs
+		
+    Hardware Improvements    
+        Visual/audio feedback of a scan
+            will need to find a small, low profile mic and led module that
+        
+        For pro model with a screen, add feature for touchscreen to act as a point tracker like a lifeboard
+	
+	
+	
+	

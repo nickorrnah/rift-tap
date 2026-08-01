@@ -345,6 +345,28 @@
 
     <div class="setting-row">
       <div class="setting-info">
+        <div class="setting-label">Show card back</div>
+        <div class="setting-desc">Briefly show the card back before revealing the card face on each scan. Card back colour is chosen by card type.</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-card-back" />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Landscape battlefield cards</div>
+        <div class="setting-desc">Rotate Battlefield-type cards 90° clockwise so they display in landscape orientation, matching how they sit on the table.</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-landscape" />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
         <div class="setting-label">Display duration</div>
         <div class="setting-desc">How long the card stays visible before fading out. Set to <strong>0</strong> to keep the card on screen indefinitely — it will stay until the next card is scanned.</div>
       </div>
@@ -354,6 +376,29 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- ── Overlay preview ────────────────────────────────────────────────── -->
+  <div class="panel">
+    <div class="panel-header">Overlay Preview</div>
+    <div style="padding:14px 18px">
+      <div class="setting-desc" style="margin-bottom:10px">Live preview of the OBS Browser Source. Enable demo mode above to see card animations.</div>
+      <div id="overlay-preview-wrap" style="
+        width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:8px;
+        border:1px solid #2a2d3a; background:#000; position:relative;
+      ">
+        <iframe
+          id="overlay-preview"
+          src="/overlay/index.html"
+          scrolling="no"
+          style="
+            width:1920px; height:1080px; border:none; display:block;
+            transform-origin:top left;
+            pointer-events:none;
+          "
+        ></iframe>
+      </div>
+    </div>
   </div>
 
   <!-- ── Demo ───────────────────────────────────────────────────────────── -->
@@ -461,26 +506,34 @@
   // ── Overlay settings ───────────────────────────────────────────────────
   const toggleInfoEl      = document.getElementById("toggle-info");
   const toggleDotEl       = document.getElementById("toggle-dot");
+  const toggleCardBackEl  = document.getElementById("toggle-card-back");
+  const toggleLandscapeEl = document.getElementById("toggle-landscape");
   const displayDurationEl = document.getElementById("display-duration");
 
   function applySettings(s) {
-    toggleInfoEl.checked = !!s.show_card_info;
-    toggleDotEl.checked  = !!s.show_status_dot;
+    toggleInfoEl.checked      = !!s.show_card_info;
+    toggleDotEl.checked       = !!s.show_status_dot;
+    toggleCardBackEl.checked  = !!s.show_card_back;
+    toggleLandscapeEl.checked = !!s.landscape_battlefields;
     if (s.display_duration    != null) displayDurationEl.value = s.display_duration;
     if (s.entrance_animation)          selectEnterEl.value     = s.entrance_animation;
     if (s.exit_animation)              selectExitEl.value      = s.exit_animation;
   }
 
-  toggleInfoEl.addEventListener("change", () => postSettings({ show_card_info:  toggleInfoEl.checked }));
-  toggleDotEl.addEventListener("change",  () => postSettings({ show_status_dot: toggleDotEl.checked  }));
+  toggleInfoEl.addEventListener("change",      () => postSettings({ show_card_info:        toggleInfoEl.checked }));
+  toggleDotEl.addEventListener("change",       () => postSettings({ show_status_dot:       toggleDotEl.checked  }));
+  toggleCardBackEl.addEventListener("change",  () => postSettings({ show_card_back:        toggleCardBackEl.checked }));
+  toggleLandscapeEl.addEventListener("change", () => postSettings({ landscape_battlefields: toggleLandscapeEl.checked }));
 
   // Debounce the duration field so we don't fire on every keystroke.
   let durationTimer = null;
   displayDurationEl.addEventListener("input", () => {
     clearTimeout(durationTimer);
-    durationTimer = setTimeout(() => postSettings({
-      display_duration: parseFloat(displayDurationEl.value) || 8,
-    }), 600);
+    durationTimer = setTimeout(() => {
+      // Use ?? instead of || so that 0 (indefinite display) is preserved
+      const val = displayDurationEl.value.trim();
+      postSettings({ display_duration: val === "" ? 8 : parseFloat(val) });
+    }, 600);
   });
 
   async function postSettings(body) {
@@ -663,6 +716,18 @@
       syncBtnEl.textContent = "Update Cards";
     }
   }
+
+  // ── Overlay preview scaling ────────────────────────────────────────────
+  function scaleOverlayPreview() {
+    const wrap   = document.getElementById("overlay-preview-wrap");
+    const iframe = document.getElementById("overlay-preview");
+    if (!wrap || !iframe) return;
+    const scale = wrap.clientWidth / 1920;
+    iframe.style.transform = `scale(${scale})`;
+    wrap.style.height = (1080 * scale) + "px";
+  }
+  scaleOverlayPreview();
+  window.addEventListener("resize", scaleOverlayPreview);
 
   // ── Boot ───────────────────────────────────────────────────────────────
   connectWs();

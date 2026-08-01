@@ -199,6 +199,18 @@ html, body {
   border-radius: 8px;
   object-fit:    contain;
   max-height:    340px;
+  transition:    opacity 0.3s ease;  /* smooth back→face cross-fade */
+}
+
+/* Landscape battlefield cards — rotate 90° clockwise and constrain */
+#card-panel.landscape #card-image {
+  transform:  rotate(90deg);
+  max-height: none;
+  max-width:  100%;
+  width:      auto;
+  height:     280px;
+  display:    block;
+  margin:     0 auto;
 }
 
 /* ── Text ─────────────────────────────────────────────────────────────────── */

@@ -48,8 +48,26 @@ log = logging.getLogger(__name__)
 
 db = CardDatabase(DB_PATH)
 
-# The active NFC reader — kept as module-level state so the write endpoint
-# can call write_card_id() on the same instance the scan loop is using.
+# ── Overlay settings ──────────────────────────────────────────────────────────
+# Defaults used on first run; after that values are loaded from the DB and
+# persisted there so they survive server restarts.
+_SETTINGS_DEFAULTS: dict = {
+    "show_card_info":        False,
+    "display_duration":      8.0,
+    "show_status_dot":       False,
+    "entrance_animation":    "slide-right",
+    "exit_animation":        "fade",
+    "show_card_back":        False,
+    "landscape_battlefields": True,
+}
+
+def _load_settings() -> dict:
+    saved = db.get_settings()
+    merged = dict(_SETTINGS_DEFAULTS)
+    merged.update(saved)   # saved values win over defaults
+    return merged
+
+overlay_settings: dict = _load_settings()
 _reader: Optional[NFCReader] = None
 
 # When set, the next tag scan will write this card_id to the tag instead of
@@ -419,11 +437,13 @@ async def update_settings(body: dict):
     Example body: { "show_card_info": true }
     """
     allowed = {"show_card_info", "display_duration", "show_status_dot",
-               "entrance_animation", "exit_animation"}
+               "entrance_animation", "exit_animation",
+               "show_card_back", "landscape_battlefields"}
     unknown = set(body) - allowed
     if unknown:
         raise HTTPException(400, f"Unknown settings: {unknown}")
     overlay_settings.update(body)
+    db.save_settings(body)          # persist across restarts
     await manager.broadcast({"event": "settings", **overlay_settings})
     return overlay_settings
 

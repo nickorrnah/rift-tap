@@ -26,7 +26,9 @@
   let hideTimer    = null;
   let retryDelay   = 1000;
   const MAX_DELAY  = 30000;
-  let showCardInfo = false;
+  let showCardInfo         = false;
+  let showCardBack         = false;
+  let landscapeBattlefields = true;
   let enterAnim    = "slide-right";
   let exitAnim     = "fade";
   let panelState   = "hidden"; // "hidden" | "entering" | "visible" | "exiting"
@@ -125,6 +127,24 @@
     }
     if (settings.entrance_animation) { enterAnim = settings.entrance_animation; }
     if (settings.exit_animation)     { exitAnim  = settings.exit_animation; }
+    if (settings.show_card_back         !== undefined) showCardBack          = !!settings.show_card_back;
+    if (settings.landscape_battlefields !== undefined) landscapeBattlefields = !!settings.landscape_battlefields;
+  }
+
+  // ── Card back helpers ──────────────────────────────────────────────────────
+  const LANDSCAPE_TYPES  = ["battlefield"];
+  const BACK_BLACK_TYPES = ["battlefield", "legend"];
+  const BACK_WHITE_TYPES = ["rune"];
+
+  function getCardBack(cardType) {
+    var t = (cardType || "").toLowerCase();
+    if (BACK_BLACK_TYPES.indexOf(t) !== -1) return IMAGE_BASE + "back-black.webp";
+    if (BACK_WHITE_TYPES.indexOf(t) !== -1) return IMAGE_BASE + "back-white.webp";
+    return IMAGE_BASE + "back-blue.webp";
+  }
+
+  function isLandscape(cardType) {
+    return landscapeBattlefields && LANDSCAPE_TYPES.indexOf((cardType || "").toLowerCase()) !== -1;
   }
 
   // ── Animation helpers ──────────────────────────────────────────────────────
@@ -145,28 +165,51 @@
   function populateContent(card) {
     imgEl.src = card.image_filename ? IMAGE_BASE + card.image_filename : PLACEHOLDER_IMAGE;
     imgEl.alt = card.name;
+    imgEl.style.opacity = "1"; // reset any leftover cross-fade opacity
     nameEl.textContent = card.name;
     var costStr = card.cost != null ? ("Cost " + card.cost + "  \u00b7  ") : "";
     metaEl.textContent = costStr + (card.card_type || "") + (card.traits ? ("  \u00b7  " + card.traits) : "");
     rulesEl.textContent = card.rules_text || "";
+    panel.classList.toggle("landscape", isLandscape(card.card_type));
   }
 
-  function startEntrance(durationSeconds) {
+  function startEntrance(card, durationSeconds) {
     var cfg = ENTER_MAP[enterAnim] || ENTER_MAP["fade"];
     applyEnterCfg(cfg);
     panel.classList.remove("hidden");
     panelState = "entering";
-    void panel.offsetWidth; // force reflow
-    panel.classList.add("entering");
-    panel.addEventListener("animationend", function () {
-      panel.classList.remove("entering");
-      panelState = "visible";
-    }, { once: true });
-    // Start the hide timer from the moment of the scan, not after the
-    // entrance animation ends — gives the full configured duration every time.
-    if (durationSeconds > 0) {
-      hideTimer = setTimeout(hideCard, durationSeconds * 1000);
+
+    if (showCardBack) {
+      // Show card back during entrance, then cross-fade to card face
+      var backSrc = getCardBack(card.card_type);
+      var faceSrc = card.image_filename ? IMAGE_BASE + card.image_filename : PLACEHOLDER_IMAGE;
+      imgEl.src = backSrc;
+      imgEl.style.opacity = "1";
+      void panel.offsetWidth;
+      panel.classList.add("entering");
+      panel.addEventListener("animationend", function () {
+        panel.classList.remove("entering");
+        panelState = "visible";
+        // Brief pause on card back, then fade to face
+        setTimeout(function () {
+          imgEl.style.opacity = "0";
+          setTimeout(function () {
+            imgEl.src = faceSrc;
+            imgEl.style.opacity = "1";
+          }, 300);
+        }, 500);
+      }, { once: true });
+    } else {
+      void panel.offsetWidth;
+      panel.classList.add("entering");
+      panel.addEventListener("animationend", function () {
+        panel.classList.remove("entering");
+        panelState = "visible";
+      }, { once: true });
     }
+
+    // Timer starts from the scan moment regardless of back/face reveal timing
+    if (durationSeconds > 0) hideTimer = setTimeout(hideCard, durationSeconds * 1000);
   }
 
   function doSimultaneousSwitch(card, durationSeconds) {
@@ -194,19 +237,7 @@
     }, { once: true });
 
     populateContent(card);
-    var enterCfg = ENTER_MAP[enterAnim] || ENTER_MAP["fade"];
-    applyEnterCfg(enterCfg);
-    panelState = "entering";
-    void panel.offsetWidth;
-    panel.classList.add("entering");
-    panel.addEventListener("animationend", function () {
-      panel.classList.remove("entering");
-      panelState = "visible";
-    }, { once: true });
-    // Timer starts from the scan, not from when the entrance animation ends.
-    if (durationSeconds > 0) {
-      hideTimer = setTimeout(hideCard, durationSeconds * 1000);
-    }
+    startEntrance(card, durationSeconds);
   }
 
   // ── Card display ───────────────────────────────────────────────────────────
@@ -225,7 +256,7 @@
     }
 
     populateContent(card);
-    startEntrance(durationSeconds);
+    startEntrance(card, durationSeconds);
   }
 
   function hideCard() {

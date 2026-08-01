@@ -16,6 +16,7 @@ Key concepts used here:
 """
 
 import sqlite3
+import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -114,6 +115,13 @@ class CardDatabase:
                     card_id    TEXT,          -- NULL if unassigned at scan time
                     scanned_at TEXT NOT NULL DEFAULT (datetime('now'))
                 );
+
+                -- Persists overlay settings across server restarts.
+                -- Each row is a key/value pair (value stored as JSON).
+                CREATE TABLE IF NOT EXISTS app_settings (
+                    key   TEXT PRIMARY KEY,
+                    value TEXT NOT NULL
+                );
             """)
 
     # ── Card CRUD ─────────────────────────────────────────────────────────────
@@ -154,11 +162,26 @@ class CardDatabase:
         return self._row_to_card(row) if row else None
 
     def search_cards(self, query: str) -> list[Card]:
-        """Case-insensitive substring search on card name."""
-        rows = self._conn.execute(
-            "SELECT * FROM cards WHERE name LIKE ? ORDER BY name LIMIT 50",
-            (f"%{query}%",)
-        ).fetchall()
+        """
+        Search by name OR card ID.
+        Supports formats like "Ahri", "ven-031", "VEN031", "VEN-031".
+        ID matches are sorted before name matches.
+        """
+        q      = f"%{query}%"
+        # Normalised query: lowercase, hyphens removed — matches "ven031" → "ven-031"
+        q_norm = f"%{query.lower().replace('-', '').replace(' ', '')}%"
+        rows = self._conn.execute("""
+            SELECT * FROM cards
+            WHERE name LIKE ?
+               OR LOWER(id) LIKE LOWER(?)
+               OR REPLACE(LOWER(id), '-', '') LIKE ?
+            ORDER BY
+                CASE WHEN LOWER(id) = LOWER(?) THEN 0
+                     WHEN LOWER(id) LIKE LOWER(?) THEN 1
+                     ELSE 2 END,
+                name
+            LIMIT 50
+        """, (q, q, q_norm, query, q)).fetchall()
         return [self._row_to_card(r) for r in rows]
 
     # ── Tag assignment ────────────────────────────────────────────────────────
@@ -190,6 +213,34 @@ class CardDatabase:
             WHERE ta.uid = ?
         """, (uid,)).fetchone()
         return self._row_to_card(row) if row else None
+
+    # ── App settings (persistent overlay config) ─────────────────────────────
+
+    def get_settings(self) -> dict:
+        """Load all persisted settings.  Returns {} if nothing saved yet."""
+        rows = self._conn.execute(
+            "SELECT key, value FROM app_settings"
+        ).fetchall()
+        return {r["key"]: json.loads(r["value"]) for r in rows}
+
+    def save_setting(self, key: str, value) -> None:
+        """Persist a single setting value (JSON-serialised)."""
+        with self._conn:
+            self._conn.execute("""
+                INSERT INTO app_settings (key, value)
+                VALUES (?, ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value
+            """, (key, json.dumps(value)))
+
+    def save_settings(self, settings: dict) -> None:
+        """Persist multiple settings at once."""
+        with self._conn:
+            for k, v in settings.items():
+                self._conn.execute("""
+                    INSERT INTO app_settings (key, value)
+                    VALUES (?, ?)
+                    ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                """, (k, json.dumps(v)))
 
     # ── Scan log ──────────────────────────────────────────────────────────────
 
