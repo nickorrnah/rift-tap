@@ -356,7 +356,6 @@
         <div style="font-size:0.88rem;color:#f0d070;font-weight:700" id="deck-current-label">Ready</div>
         <div style="font-size:0.78rem;color:#6a7a9a;margin-top:4px" id="deck-progress-label"></div>
         <div style="display:flex;gap:8px;margin-top:10px">
-          <button id="deck-write-btn" class="btn btn-primary">Write Current Card</button>
           <button id="deck-skip-btn"  class="btn" style="background:#2a2d3a;color:#a0b8d0">Skip</button>
           <button id="deck-stop-btn"  class="btn" style="background:#3a1a1a;color:#f08080">Stop</button>
         </div>
@@ -672,7 +671,6 @@
   const deckWriteBar   = document.getElementById("deck-write-bar");
   const deckCurrentLbl = document.getElementById("deck-current-label");
   const deckProgressLbl= document.getElementById("deck-progress-label");
-  const deckWriteBtn   = document.getElementById("deck-write-btn");
   const deckSkipBtn    = document.getElementById("deck-skip-btn");
   const deckStopBtn    = document.getElementById("deck-stop-btn");
 
@@ -692,6 +690,19 @@
     deckWriteBar.style.display = "none";
     deckQueue = []; deckIndex = 0; deckActive = false;
   });
+
+  // Arm the current entry's write-tag request
+  function deckRearm() {
+    const e = deckQueue[deckIndex];
+    if (!e || e.status !== "resolved") return;
+    deckCurrentLbl.textContent  = `Tap a sleeve \u2014 writing: ${e.cardId.toUpperCase()} \u2014 ${e.cardName}`;
+    deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
+    fetch("/api/write-tag", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ card_id: e.cardId }),
+    }).catch(err => showToast("Arm error: " + err.message, true));
+  }
 
   // Parse the deck list text into flat card entries (duplicated by count)
   function parseDeckList(text) {
@@ -759,6 +770,15 @@
     renderDeckQueue();
     deckParseBtn.disabled = false;
     deckParseBtn.textContent = "Parse Deck List";
+
+    // Auto-start: arm the first resolved card immediately
+    const firstResolved = entries.findIndex(e => e.status === "resolved");
+    if (firstResolved !== -1) {
+      deckIndex  = firstResolved;
+      deckActive = true;
+      deckWriteBar.style.display = "block";
+      deckRearm();
+    }
   });
 
   function renderDeckQueue() {
@@ -804,43 +824,31 @@
 
   function updateDeckWriteBar() {
     if (deckIndex >= deckQueue.length) {
-      deckCurrentLbl.textContent  = "All done!";
+      deckCurrentLbl.textContent  = "\u2713 All done!";
       deckProgressLbl.textContent = `${deckQueue.length} cards processed`;
-      deckWriteBtn.disabled = true;
       deckActive = false;
       return;
     }
     const e = deckQueue[deckIndex];
-    deckCurrentLbl.textContent  = e.status === "resolved"
-      ? `${e.cardId.toUpperCase()} — ${e.cardName}`
-      : `⚠ ${e.name} (not found — will skip)`;
-    deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
-    deckWriteBtn.disabled = e.status !== "resolved";
+    if (e.status === "resolved") {
+      deckCurrentLbl.textContent  = `Tap a sleeve \u2014 writing: ${e.cardId.toUpperCase()} \u2014 ${e.cardName}`;
+      deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
+    } else {
+      deckCurrentLbl.textContent  = `\u26a0 ${e.name} not found \u2014 click Skip`;
+      deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
+    }
   }
 
-  deckWriteBtn.addEventListener("click", async () => {
-    const e = deckQueue[deckIndex];
-    if (!e || e.status !== "resolved") return;
-    deckActive = true;
-    deckWriteBtn.disabled = true;
-    deckCurrentLbl.textContent = `Hold sleeve on reader to write ${e.cardName}…`;
-    try {
-      await fetch("/api/write-tag", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ card_id: e.cardId }),
-      });
-      // Advance happens in handleTagWritten via WebSocket
-    } catch (err) {
-      showToast("Write error: " + err.message, true);
-      deckWriteBtn.disabled = false;
-    }
-  });
+  // Write button removed — queue arms itself automatically after parse.
+  // Skip and Stop remain for manual control.
 
   deckSkipBtn.addEventListener("click", () => {
     deckIndex++;
+    // Skip any further unresolved entries automatically
+    while (deckIndex < deckQueue.length && deckQueue[deckIndex].status !== "resolved") deckIndex++;
     renderDeckQueue();
     updateDeckWriteBar();
+    if (deckActive && deckIndex < deckQueue.length) deckRearm();
   });
 
   deckStopBtn.addEventListener("click", () => {
@@ -854,16 +862,12 @@
   function handleDeckWriteSuccess() {
     if (!deckActive || deckQueue.length === 0) return;
     deckIndex++;
+    // Auto-skip any unresolved entries
+    while (deckIndex < deckQueue.length && deckQueue[deckIndex].status !== "resolved") deckIndex++;
     renderDeckQueue();
     updateDeckWriteBar();
-    // Auto-arm next card
-    const next = deckQueue[deckIndex];
-    if (next && next.status === "resolved") {
-      fetch("/api/write-tag", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ card_id: next.cardId }),
-      }).catch(() => {});
+    if (deckIndex < deckQueue.length) {
+      deckRearm();
     }
   }
 
