@@ -9,7 +9,7 @@ data/
 # ── Card images ───────────────────────────────────────────────────────────────
 # Images sourced from the Riot API are not redistributable.
 # Keep the placeholder SVG; exclude everything else in images/.
-images/*
+#images/*
 !images/placeholder.svg
 !images/punching-poro.png
 
