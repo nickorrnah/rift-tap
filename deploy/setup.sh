@@ -133,6 +133,10 @@ info "Enabling I2C for PN532 HAT..."
 raspi-config nonint do_i2c 0   # 0 = enable
 apt-get install -y --no-install-recommends i2c-tools python3-smbus > /dev/null
 
+# PN532 HAT DIP switch reminder
+warn "Verify PN532 HAT DIP switch: SCL=ON, SDA=ON, all others=OFF"
+warn "Verify mode jumpers:          I0=H (right, top pins), I1=L (left, bottom pins)"
+
 # =============================================================================
 # 6. App installation
 # =============================================================================
@@ -148,18 +152,24 @@ else
 fi
 
 # Python virtual environment
+# --system-site-packages lets the venv use system lgpio/RPi.GPIO
+# which avoids needing to compile C extensions from source.
 info "  Setting up Python venv..."
-apt-get install -y --no-install-recommends python3-venv python3-pip > /dev/null
-sudo -u "$APP_USER" python3 -m venv "$APP_DIR/.venv"
+apt-get install -y --no-install-recommends \
+    python3-venv python3-pip python3-lgpio python3-rpi.gpio swig > /dev/null
+sudo -u "$APP_USER" python3 -m venv "$APP_DIR/.venv" --system-site-packages
 
-# Install dependencies — core only (NFC libs installed separately below)
+# Install core dependencies from PyPI directly.
+# piwheels sometimes ships broken wheels for newer Python versions;
+# forcing PyPI ensures we get the correct packages.
 sudo -u "$APP_USER" "$APP_DIR/.venv/bin/pip" install --quiet \
-    fastapi "uvicorn[standard]" websockets httpx python-dotenv
+    --index-url https://pypi.org/simple \
+    "fastapi>=0.111.0" "uvicorn[standard]>=0.29.0" websockets httpx python-dotenv
 
-# Install Pi-specific NFC libraries
+# Install Adafruit NFC libraries
 sudo -u "$APP_USER" "$APP_DIR/.venv/bin/pip" install --quiet \
-    adafruit-circuitpython-pn532 RPi.GPIO spidev smbus2 || \
-    warn "  NFC libraries not installed (may need manual install on Pi hardware)"
+    adafruit-circuitpython-pn532 adafruit-blinka RPi.GPIO smbus2 || \
+    warn "  NFC libraries not fully installed — may need manual fix"
 
 # =============================================================================
 # 7. Environment configuration
