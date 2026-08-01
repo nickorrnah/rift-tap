@@ -700,7 +700,7 @@
     fetch("/api/write-tag", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ card_id: e.cardId }),
+      body: JSON.stringify({ card_id: e.cardId, timeout_seconds: 300 }),  // 5 min between taps
     }).catch(err => showToast("Arm error: " + err.message, true));
   }
 

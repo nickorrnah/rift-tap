@@ -73,7 +73,12 @@ _reader: Optional[NFCReader] = None
 # When set, the next tag scan will write this card_id to the tag instead of
 # broadcasting a card event.  Cleared after a successful write or timeout.
 _pending_write: Optional[str] = None
-_pending_write_deadline: float = 0.0  # monotonic time after which we give up
+_pending_write_deadline: float = 0.0
+# UID of the last successfully written tag.
+# Cleared when a DIFFERENT UID is seen, meaning the card was lifted and a new
+# one placed.  Prevents the deck queue from writing twice to the same chip in
+# a single tap when the re-arm fires before the card is removed.
+_last_write_uid: Optional[str] = None
 
 # Overlay display settings — lives in memory, resets on server restart.
 # Kept simple intentionally; persist to DB later if needed.
@@ -204,15 +209,23 @@ async def nfc_scan_loop():
       - Writes a pending card_id to the tag (if a write was requested), or
       - Looks up the card_id in the database and broadcasts to the overlay.
     """
-    global _reader, _pending_write, _pending_write_deadline
+    global _reader, _pending_write, _pending_write_deadline, _last_write_uid
     _reader = create_reader()
     async for scan in _reader.scan_loop():
         import time as _time
 
-        # When demo mode is active in simulation, suppress NFC scan events
-        # so demo has full control of the overlay. On real hardware, physical
-        # taps always override demo mode.
         if demo_state["active"] and SIMULATE_NFC:
+            continue
+
+        # ── UID-based write lock ─────────────────────────────────────────────────────
+        # A different UID arriving means the previous card was lifted off the
+        # reader — the lock is cleared so the new card can be written to.
+        if _last_write_uid is not None and scan.uid != _last_write_uid:
+            _last_write_uid = None
+
+        # Same card still sitting on the reader after a write — skip until removed.
+        if _last_write_uid == scan.uid:
+            await asyncio.sleep(0.05)
             continue
 
         # ── Write mode ────────────────────────────────────────────────────────
@@ -227,6 +240,7 @@ async def nfc_scan_loop():
                 success = await _reader.write_card_id(card_id_to_write)
                 if success:
                     log.info("Wrote card_id=%s to tag %s", card_id_to_write, scan.uid)
+                    _last_write_uid  = scan.uid   # lock this UID until card is lifted
                     db.assign_tag(scan.uid, card_id_to_write)   # record for admin UI
                     db.log_scan(scan.uid, card_id_to_write)
                     await blink_success()
@@ -473,10 +487,11 @@ async def write_tag(body: dict):
     if card is None:
         raise HTTPException(404, f"Card {card_id!r} not in database")
 
+    timeout_seconds = float(body.get("timeout_seconds", 60))  # default 60 s
     _pending_write          = card_id
-    _pending_write_deadline = _time.monotonic() + 30.0   # 30-second window
+    _pending_write_deadline = _time.monotonic() + timeout_seconds
 
-    log.info("Pending write queued: card_id=%s (30 s window)", card_id)
+    log.info("Pending write queued: card_id=%s (%.0f s window)", card_id, timeout_seconds)
     return {"status": "waiting", "card_id": card_id}
 
 
