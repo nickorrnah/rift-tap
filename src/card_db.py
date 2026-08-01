@@ -179,10 +179,9 @@ class CardDatabase:
 
     def lookup_uid(self, uid: str) -> Optional[Card]:
         """
-        Given a raw NFC UID, return the assigned Card (or None).
-
-        This is the hot path — it runs on every single scan.
-        The JOIN means one query instead of two, keeping latency low.
+        DEPRECATED — kept for migration compatibility only.
+        Card IDs are now read directly from tag NDEF data.
+        Will be removed in a future version.
         """
         row = self._conn.execute("""
             SELECT c.*

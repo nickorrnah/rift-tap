@@ -172,6 +172,39 @@
       50%       { border-color: #4caf50; }
     }
 
+    /* ── Search results (shared with admin page) ─────────────────────────── */
+    .result-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: #0f1117;
+      border: 1px solid #2a2d3a;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .result-row:hover, .result-row.selected {
+      border-color: #f0d070;
+      background: #1f2030;
+    }
+    .result-name { font-weight: 600; flex: 1; font-size: 0.9rem; }
+    .result-meta { font-size: 0.75rem; color: #6a7a9a; }
+
+    /* ── Text inputs ──────────────────────────────────────────────────────── */
+    input[type="text"] {
+      width: 100%;
+      background: #0f1117;
+      border: 1px solid #3a3d4a;
+      border-radius: 6px;
+      color: #d0d8e8;
+      padding: 9px 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus { border-color: #f0d070; }
+
     /* ── Select dropdowns ─────────────────────────────────────────────────── */
     select {
       background: #0f1117;
@@ -311,11 +344,14 @@
     </div>
 
     <div class="setting-row">
+      <div class="setting-info">
         <div class="setting-label">Display duration</div>
         <div class="setting-desc">How long the card stays visible before fading out. Set to <strong>0</strong> to keep the card on screen indefinitely — it will stay until the next card is scanned.</div>
       </div>
-      <input class="number-input" type="number" id="display-duration" min="0" max="120" value="8" />
-      <span class="unit-label">seconds</span>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        <input class="number-input" type="number" id="display-duration" min="0" max="120" value="8" />
+        <span class="unit-label">seconds</span>
+      </div>
     </div>
 
   </div>
@@ -335,6 +371,18 @@
         <button id="demo-btn">▶ Start</button>
       </div>
     </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Demo card</div>
+        <div class="setting-desc">Show a specific card on every demo scan, or pick a random card with an image each cycle.</div>
+      </div>
+    </div>
+    <div style="padding: 0 18px 14px; display:flex; gap:8px; align-items:center;">
+      <input type="text" id="demo-card-search" placeholder="Search card name… (blank = random)" autocomplete="off" />
+      <button class="btn" id="demo-card-clear" style="background:#2a2d3a;color:#a0b8d0;padding:8px 12px;flex-shrink:0">✕ Random</button>
+    </div>
+    <div id="demo-card-results" style="margin:0 18px 14px;display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto"></div>
 
   </div>
 
@@ -450,11 +498,20 @@
   // ── Demo mode ──────────────────────────────────────────────────────────
   const demoBtnEl      = document.getElementById("demo-btn");
   const demoIntervalEl = document.getElementById("demo-interval");
+  const demoCardSearch = document.getElementById("demo-card-search");
+  const demoCardClear  = document.getElementById("demo-card-clear");
+  const demoCardResults= document.getElementById("demo-card-results");
+  let   demoCardId     = null;  // null = random
+  let   demoSearchTimer = null;
 
   function applyDemoState(state) {
     demoBtnEl.classList.toggle("active", !!state.active);
     demoBtnEl.textContent = state.active ? "⏹ Stop" : "▶ Start";
     if (state.interval) demoIntervalEl.value = state.interval;
+    if (state.card_id !== undefined) {
+      demoCardId = state.card_id;
+      if (!state.card_id) demoCardSearch.value = "";
+    }
   }
 
   demoBtnEl.addEventListener("click", async () => {
@@ -466,6 +523,7 @@
         body: JSON.stringify({
           active:   turningOn,
           interval: parseInt(demoIntervalEl.value, 10) || 5,
+          card_id:  demoCardId,
         }),
       });
     } catch (err) {
@@ -473,9 +531,83 @@
     }
   });
 
+  // Demo card search — identical pattern to the card assignment search
+  demoCardSearch.addEventListener("input", () => {
+    clearTimeout(demoSearchTimer);
+    const q = demoCardSearch.value.trim();
+    if (q.length < 2) { demoCardResults.innerHTML = ""; return; }
+    demoSearchTimer = setTimeout(() => fetchDemoCards(q), 250);
+  });
+
+  async function fetchDemoCards(q) {
+    try {
+      const res = await fetch(`/api/cards/search?q=${encodeURIComponent(q)}`);
+      if (!res.ok) throw new Error(res.statusText);
+      renderDemoResults(await res.json());
+    } catch (err) { console.error("Demo search error:", err); }
+  }
+
+  function renderDemoResults(cards) {
+    if (!cards.length) {
+      demoCardResults.innerHTML = '<div class="empty-msg">No cards found</div>';
+      return;
+    }
+    demoCardResults.innerHTML = cards.map(c => `
+      <div class="result-row" data-id="${c.id}" data-name="${escHtml(c.name)}">
+        <span class="result-name">${escHtml(c.name)}</span>
+            <span class="result-meta">${escHtml(c.id.toUpperCase())}${c.card_type ? ' · ' + escHtml(c.card_type) : ''}</span>
+      </div>`).join("");
+
+    demoCardResults.querySelectorAll(".result-row").forEach(row => {
+      row.addEventListener("click", async () => {
+        // Highlight selected row, keep results visible (same as assignment page)
+        demoCardResults.querySelectorAll(".result-row").forEach(r => r.classList.remove("selected"));
+        row.classList.add("selected");
+        demoCardId = row.dataset.id;
+        demoCardSearch.value = row.dataset.name;
+        try {
+          await fetch("/api/demo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              active:   demoBtnEl.classList.contains("active"),
+              card_id:  demoCardId,
+              interval: parseInt(demoIntervalEl.value, 10) || 5,
+            }),
+          });
+          showToast(`Demo locked to: ${row.dataset.name}`);
+        } catch (err) { showToast("Demo error: " + err.message, true); }
+      });
+    });
+  }
+
+  function demo_state_active() {
+    return demoBtnEl.classList.contains("active");
+  }
+
+  demoCardClear.addEventListener("click", async () => {
+    demoCardId = null;
+    demoCardSearch.value = "";
+    demoCardResults.innerHTML = "";
+    await fetch("/api/demo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ active: demo_state_active(), card_id: null,
+                             interval: parseInt(demoIntervalEl.value,10)||5 }),
+    });
+    showToast("Demo set to random cards");
+  });
+
   // ── Toast ──────────────────────────────────────────────────────────────
   let toastTimer = null;
   const toastEl  = document.getElementById("toast");
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
   function showToast(msg, isError = false) {
     toastEl.textContent = msg;
     toastEl.className = isError ? "error show" : "show";

@@ -1,5 +1,6 @@
 # ── Secrets & local config ────────────────────────────────────────────────────
 .env
+riot.txt
 
 # ── Database ──────────────────────────────────────────────────────────────────
 # The database is created fresh via scripts/seed_db.py — no need to track it.

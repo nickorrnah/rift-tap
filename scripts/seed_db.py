@@ -1,71 +1,98 @@
 """
-scripts/seed_db.py — Populate the database with test cards and tag mappings.
+scripts/seed_db.py — Build the card database from the compiled card ID list.
 
-Run this once before starting the server:
+Data source: docs/planning/card-id-list.txt
+  Format:    {card_id}\t{card_name}  (one card per line)
+  Example:   ogn-001\tBlazing Scorcher
+
+Image lookup: images/{card_id}.webp
+  Cards with no downloaded image get image_filename="" and will show
+  the placeholder in the overlay until their image is available.
+
+Run:
     cd card-scanner
     python scripts/seed_db.py
-
-You can run it again at any time — upsert_card is idempotent (safe to
-repeat without duplicating data).
 """
 
 import sys
 from pathlib import Path
 
-# Make sure imports from src/ work when run from the project root.
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from card_db import CardDatabase, Card
-from config import DB_PATH
+from config import DB_PATH, BASE_DIR, IMAGE_DIR
 
-# ── Test cards ────────────────────────────────────────────────────────────────
-# These are fictional Riftbound-style cards for prototype testing.
-# Replace with real card data once you have it.
-
-TEST_CARDS: list[Card] = [
-    Card(
-        id="riftbound_card_00001",
-        name="Punching Poro",
-        set_code="OGN",
-        card_number="001",
-        card_type="Unit",
-        cost=1,
-        traits="Poro",
-        rules_text="When Punching Poro attacks, it deals 1 damage to the defender.",
-        image_filename="punching-poro.png",
-    ),
-]
-
-# ── Simulated NFC UIDs ────────────────────────────────────────────────────────
-# These match the UIDs in SimulatedReader._SIMULATED_UIDS in nfc_reader.py.
-# When running in simulation mode, tapping these "virtual tags" will show
-# the corresponding cards in the overlay.
-
-TEST_ASSIGNMENTS = {
-    "04:A2:91:7C:3B:12:80": "riftbound_card_00001",
-    "04:B3:12:5D:4E:23:91": "riftbound_card_00001",
-    "04:C4:33:6E:5F:34:A2": "riftbound_card_00001",
-    "04:D5:54:7F:60:45:B3": "riftbound_card_00001",
-    "04:E6:75:80:71:56:C4": "riftbound_card_00001",
-}
+CARD_LIST = BASE_DIR / "docs" / "planning" / "card-id-list.txt"
 
 
 def seed():
+    if not CARD_LIST.exists():
+        print(f"ERROR: card list not found at {CARD_LIST}")
+        sys.exit(1)
+
     db = CardDatabase(DB_PATH)
 
-    print(f"Seeding database at {DB_PATH} …")
+    lines = CARD_LIST.read_text(encoding="utf-8").splitlines()
+    cards = []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
 
-    for card in TEST_CARDS:
+        # Support both tab and space as separator (some lines use spaces)
+        if "\t" in line:
+            parts = line.split("\t", 1)
+        else:
+            parts = line.split(" ", 1)
+
+        card_id = parts[0].strip().rstrip("*")  # strip trailing * (special marker)
+        name    = parts[1].strip() if len(parts) > 1 else card_id  # fall back to ID if no name
+
+        # Check if the image exists
+        image_path = IMAGE_DIR / f"{card_id}.webp"
+        image_filename = f"{card_id}.webp" if image_path.exists() else ""
+
+        cards.append(Card(
+            id=card_id,
+            name=name,
+            set_code=card_id.split("-")[0].upper() if "-" in card_id else "",
+            card_number=card_id.split("-")[1] if "-" in card_id else "",
+            card_type="",
+            cost=None,
+            traits="",
+            rules_text="",
+            image_filename=image_filename,
+        ))
+
+    print(f"Seeding {len(cards)} cards into {DB_PATH} ...")
+
+    # ── Test card ───────────────────────────────────────────────────────
+    # A hand-drawn placeholder used for OBS setup and demo mode.
+    # Always inserted regardless of the card list.
+    cards.insert(0, Card(
+        id="tst-000",
+        name="Placeholder Card",
+        set_code="TST",
+        card_number="000",
+        card_type="",
+        cost=None,
+        traits="",
+        rules_text="",
+        image_filename="punching-poro.png",
+    ))
+
+    for card in cards:
         db.upsert_card(card)
-        print(f"  + {card.id}  {card.name}")
 
-    for uid, card_id in TEST_ASSIGNMENTS.items():
-        db.assign_tag(uid, card_id)
-        print(f"  → {uid}  ⇒  {card_id}")
+    with_image    = sum(1 for c in cards if c.image_filename)
+    without_image = sum(1 for c in cards if not c.image_filename)
 
-    db.close()
+    print(f"  {with_image} cards with images")
+    print(f"  {without_image} cards missing images (will show placeholder)")
     print("Done.")
+    db.close()
 
 
 if __name__ == "__main__":
     seed()
+

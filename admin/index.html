@@ -306,7 +306,7 @@
 
   <!-- ── Assign ─────────────────────────────────────────────────────────── -->
   <div class="panel">
-    <h2>Assign to Card</h2>
+    <h2>Write to Tag</h2>
     <input
       type="text"
       id="card-search"
@@ -315,8 +315,8 @@
     />
     <div id="search-results"></div>
     <button class="btn btn-primary" id="assign-btn" disabled>
-      Assign Tag → Card
-    </button>
+        Write to Tag
+      </button>
   </div>
 
   <!-- ── Existing assignments ───────────────────────────────────────────── -->
@@ -373,9 +373,21 @@
       let msg;
       try { msg = JSON.parse(e.data); } catch { return; }
 
-      if (msg.event === "card_scanned" || msg.event === "unknown_tag") {
+      if (msg.event === "card_scanned" || msg.event === "blank_tag" || msg.event === "unknown_card_id") {
         handleIncomingScan(msg);
         refreshScanLog();
+      } else if (msg.event === "tag_written") {
+        handleTagWritten(msg);
+        refreshAssignments();
+        refreshScanLog();
+      } else if (msg.event === "write_failed") {
+        showToast("Write failed — hold the card flat on the reader and try again", true);
+        assignBtn.disabled = false;
+        assignBtn.textContent = `Write to Tag → ${selectedCardName}`;
+      } else if (msg.event === "write_timeout") {
+        showToast("Timed out — no tag detected within 30 seconds", true);
+        assignBtn.disabled = false;
+        assignBtn.textContent = `Write to Tag → ${selectedCardName}`;
       } else if (msg.event === "settings") {
         applySettings(msg);
       } else if (msg.event === "demo_state") {
@@ -397,16 +409,29 @@
     scanUidEl.textContent = msg.uid;
 
     if (msg.event === "card_scanned") {
-      scanStatusEl.textContent = `✓ Already assigned to: ${msg.card.name}`;
+      // Tag already has a card ID written on it
+      scanStatusEl.textContent = `✓ Tag contains: ${msg.card.name}`;
       scanStatusEl.className = "ok";
+    } else if (msg.event === "unknown_card_id") {
+      // Tag has a card ID but it’s not in this device’s database
+      scanStatusEl.textContent = `⚠ Card ID “${msg.card_id.toUpperCase()}” not in local library — update cards first`;
+      scanStatusEl.className = "warning";
     } else {
-      scanStatusEl.textContent = "⚠ Unassigned tag — search and assign below";
+      // blank_tag: no card ID on tag yet
+      scanStatusEl.textContent = "□ Blank tag — search for a card and write to it";
       scanStatusEl.className = "warning";
     }
 
-    // Keep the selected card intact so the user can assign multiple copies
-    // of the same card back-to-back without re-searching.
-    // Only the UID and status line update; the search field stays put.
+    updateAssignBtn();
+  }
+
+  function handleTagWritten(msg) {
+    showToast(`Written! ${escHtml(msg.card_id.toUpperCase())} → tag`);
+    pendingUid = null;
+    scanUidEl.textContent = "Waiting for next scan…";
+    scanStatusEl.textContent = `Card locked: ${selectedCardName} — tap next sleeve or search a new card`;
+    scanStatusEl.className = "ok";
+    assignBtn.disabled = false;
     updateAssignBtn();
   }
 
@@ -444,7 +469,7 @@
     searchResultsEl.innerHTML = cards.map(c => `
       <div class="result-row" data-id="${c.id}" data-name="${escHtml(c.name)}">
         <span class="result-name">${escHtml(c.name)}</span>
-        <span class="result-meta">${escHtml(c.set_code)} · ${escHtml(c.card_type)}</span>
+        <span class="result-meta">${escHtml(c.id)}${c.card_type ? ' · ' + escHtml(c.card_type) : ''}</span>
       </div>
     `).join("");
 
@@ -459,88 +484,43 @@
     });
   }
 
-  // ── Assign button ──────────────────────────────────────────────────────
+  // ── Write button ──────────────────────────────────────────────────────
   function updateAssignBtn() {
-    assignBtn.disabled = !(pendingUid && selectedCardId);
-    if (pendingUid && selectedCardId) {
-      assignBtn.textContent = `Assign → ${selectedCardName}`;
+    assignBtn.disabled = !selectedCardId;
+    if (selectedCardId) {
+      assignBtn.textContent = pendingUid
+        ? `Write to Tag → ${selectedCardName}`
+        : `Write to Tag → ${selectedCardName} (tap a sleeve)`;
     } else {
-      assignBtn.textContent = "Assign Tag → Card";
+      assignBtn.textContent = "Write to Tag";
     }
   }
 
   assignBtn.addEventListener("click", async () => {
-    if (!pendingUid || !selectedCardId) return;
+    if (!selectedCardId) return;
     try {
-      const res = await fetch("/api/assign", {
+      assignBtn.disabled = true;
+      assignBtn.textContent = "Waiting for tag…";
+      const res = await fetch("/api/write-tag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid: pendingUid, card_id: selectedCardId }),
+        body: JSON.stringify({ card_id: selectedCardId }),
       });
       if (!res.ok) throw new Error(await res.text());
-      showToast(`Assigned!  ${pendingUid.slice(0, 14)}… → ${selectedCardName}`);
-      // Clear only the UID — keep the card selection so the next scan
-      // can be assigned to the same card immediately.
-      pendingUid = null;
-      scanUidEl.textContent = "Waiting for next scan…";
-      scanStatusEl.textContent = `Card locked: ${selectedCardName} — scan next tag or search a new card`;
+      scanStatusEl.textContent = `Hold sleeve on reader to write ${selectedCardName}…`;
       scanStatusEl.className = "ok";
-      updateAssignBtn();
-      refreshAssignments();
+      // Result arrives via WebSocket: tag_written, write_failed, or write_timeout
     } catch (err) {
       showToast("Error: " + err.message, true);
+      assignBtn.disabled = false;
+      updateAssignBtn();
     }
   });
 
-  // ── Demo mode ───────────────────────────────────────────────────────────
-  const demoBtnEl      = document.getElementById("demo-btn");
-  const demoIntervalEl = document.getElementById("demo-interval");
-
-  function applyDemoState(state) {
-    demoBtnEl.classList.toggle("active", !!state.active);
-    demoBtnEl.textContent = state.active ? "⏹ Demo ON" : "▶ Demo";
-    if (state.interval) demoIntervalEl.value = state.interval;
-  }
-
-  demoBtnEl.addEventListener("click", async () => {
-    const turningOn = !demoBtnEl.classList.contains("active");
-    try {
-      await fetch("/api/demo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          active:   turningOn,
-          interval: parseInt(demoIntervalEl.value, 10) || 5,
-        }),
-      });
-    } catch (err) {
-      showToast("Demo error: " + err.message, true);
-    }
-  });
-
-  // ── Settings ───────────────────────────────────────────────────────────
-  const toggleInfoEl = document.getElementById("toggle-info");
-
-  function applySettings(settings) {
-    // Keep the checkbox in sync when a settings broadcast arrives
-    // (e.g. from another admin tab).
-    toggleInfoEl.checked = !!settings.show_card_info;
-  }
-
-  toggleInfoEl.addEventListener("change", async () => {
-    try {
-      await fetch("/api/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ show_card_info: toggleInfoEl.checked }),
-      });
-      // The server broadcasts the change back via WebSocket, so applySettings
-      // will fire for all connected clients including this tab.
-    } catch (err) {
-      showToast("Settings error: " + err.message, true);
-      toggleInfoEl.checked = !toggleInfoEl.checked;  // revert on failure
-    }
-  });
+  // Demo/settings controls live on settings.html — these are no-op stubs
+  // so WebSocket broadcasts don't throw when they arrive on this page.
+  function applyDemoState(state) {}
+  function applySettings(settings) {}
 
   // ── Assignments list ───────────────────────────────────────────────────
   async function refreshAssignments() {

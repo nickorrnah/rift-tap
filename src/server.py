@@ -37,9 +37,9 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from card_db import CardDatabase, Card
-from nfc_reader import create_reader
+from nfc_reader import create_reader, NFCReader, TagScan
 from led_feedback import blink_success, blink_unknown
-from config import BASE_DIR, IMAGE_DIR, DISPLAY_DURATION_SECONDS, DB_PATH
+from config import BASE_DIR, IMAGE_DIR, DISPLAY_DURATION_SECONDS, DB_PATH, SIMULATE_NFC
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s — %(message)s")
 log = logging.getLogger(__name__)
@@ -47,6 +47,15 @@ log = logging.getLogger(__name__)
 # ── Shared state ──────────────────────────────────────────────────────────────
 
 db = CardDatabase(DB_PATH)
+
+# The active NFC reader — kept as module-level state so the write endpoint
+# can call write_card_id() on the same instance the scan loop is using.
+_reader: Optional[NFCReader] = None
+
+# When set, the next tag scan will write this card_id to the tag instead of
+# broadcasting a card event.  Cleared after a successful write or timeout.
+_pending_write: Optional[str] = None
+_pending_write_deadline: float = 0.0  # monotonic time after which we give up
 
 # Overlay display settings — lives in memory, resets on server restart.
 # Kept simple intentionally; persist to DB later if needed.
@@ -62,7 +71,8 @@ overlay_settings: dict = {
 # their OBS scene without needing real NFC hardware present.
 demo_state: dict = {
     "active":   False,
-    "interval": 5,    # seconds between demo scans
+    "interval": 5,
+    "card_id":  "tst-000",  # default demo card; change via settings or set to None for random
 }
 demo_task: Optional[asyncio.Task] = None
 
@@ -112,43 +122,49 @@ manager = ConnectionManager()
 
 async def demo_scan_loop():
     """
-    Fires a real card scan event on a timer using whatever cards are
-    currently assigned in the database.  Rotates through all assigned
-    cards in sequence so the overlay shows real imagery.
+    Fires card scan events on a timer.
 
-    This runs as a cancellable asyncio Task — cancelling it (when demo
-    mode is turned off) raises CancelledError internally which exits the
-    loop cleanly.
+    If demo_state["card_id"] is set, always shows that specific card.
+    Otherwise picks a random card with an image from the full library
+    each cycle.
     """
     log.info("Demo scan loop started (interval: %ds)", demo_state["interval"])
-    assigned: list[dict] = []
-    idx = 0
 
     while True:
         await asyncio.sleep(demo_state["interval"])
 
-        # Refresh the card list each cycle so newly assigned tags show up.
-        rows = db._conn.execute(
-            "SELECT ta.uid FROM tag_assignments ta"
-        ).fetchall()
-        assigned = [r["uid"] for r in rows]
+        specific_id = demo_state.get("card_id")
 
-        if not assigned:
-            log.warning("Demo mode: no assigned tags in database — nothing to show")
-            continue
+        if specific_id:
+            card = db.get_card_by_id(specific_id)
+            if not card:
+                log.warning("Demo: card_id %r not in database", specific_id)
+                continue
+        else:
+            # Pick a random card that has an image.
+            # OFFSET approach is more reliable than ORDER BY RANDOM() on large tables.
+            count_row = db._conn.execute(
+                "SELECT COUNT(*) AS n FROM cards WHERE image_filename != ''"
+            ).fetchone()
+            total = count_row["n"] if count_row else 0
+            if total == 0:
+                log.warning("Demo mode: no cards with images in database")
+                continue
+            import random as _random
+            offset = _random.randint(0, total - 1)
+            row = db._conn.execute(
+                "SELECT id FROM cards WHERE image_filename != '' LIMIT 1 OFFSET ?",
+                (offset,)
+            ).fetchone()
+            card = db.get_card_by_id(row["id"])
+            if not card:
+                continue
 
-        uid = assigned[idx % len(assigned)]
-        idx += 1
-
-        card: Optional[Card] = db.lookup_uid(uid)
-        if not card:
-            continue
-
-        log.info("Demo scan: %s (%s)", card.name, uid)
+        log.info("Demo scan: %s", card.name)
         payload = {
             "event": "card_scanned",
-            "uid":   uid,
-            "demo":  True,   # flag so the overlay/admin can style it differently if desired
+            "uid":   "demo",
+            "demo":  True,
             "card": {
                 "id":             card.id,
                 "name":           card.name,
@@ -160,28 +176,69 @@ async def demo_scan_loop():
                 "rules_text":     card.rules_text,
                 "image_filename": card.image_filename,
             },
-            "display_duration": DISPLAY_DURATION_SECONDS,
+            "display_duration": overlay_settings["display_duration"],
         }
         await manager.broadcast(payload)
 
 async def nfc_scan_loop():
     """
-    Runs forever in the background.  For each scanned UID it:
-      1. Looks up the card in the database.
-      2. Logs the scan.
-      3. Broadcasts an event to all connected overlay windows.
+    Runs forever in the background.  For each TagScan it either:
+      - Writes a pending card_id to the tag (if a write was requested), or
+      - Looks up the card_id in the database and broadcasts to the overlay.
     """
-    reader = create_reader()
-    async for uid in reader.scan_loop():
-        card: Optional[Card] = db.lookup_uid(uid)
-        db.log_scan(uid, card.id if card else None)
+    global _reader, _pending_write, _pending_write_deadline
+    _reader = create_reader()
+    async for scan in _reader.scan_loop():
+        import time as _time
+
+        # When demo mode is active in simulation, suppress NFC scan events
+        # so demo has full control of the overlay. On real hardware, physical
+        # taps always override demo mode.
+        if demo_state["active"] and SIMULATE_NFC:
+            continue
+
+        # ── Write mode ────────────────────────────────────────────────────────
+        if _pending_write is not None:
+            if _time.monotonic() > _pending_write_deadline:
+                log.warning("Pending write timed out — clearing")
+                await manager.broadcast({"event": "write_timeout"})
+                _pending_write = None
+            else:
+                card_id_to_write = _pending_write
+                _pending_write   = None
+                success = await _reader.write_card_id(card_id_to_write)
+                if success:
+                    log.info("Wrote card_id=%s to tag %s", card_id_to_write, scan.uid)
+                    db.assign_tag(scan.uid, card_id_to_write)   # record for admin UI
+                    db.log_scan(scan.uid, card_id_to_write)
+                    await blink_success()
+                    await manager.broadcast({
+                        "event":   "tag_written",
+                        "uid":     scan.uid,
+                        "card_id": card_id_to_write,
+                    })
+                else:
+                    log.error("Write failed for tag %s", scan.uid)
+                    await manager.broadcast({"event": "write_failed", "uid": scan.uid})
+                continue   # don't also broadcast a card_scanned for this scan
+
+        # ── Read mode ─────────────────────────────────────────────────────────
+        if scan.card_id is None:
+            log.info("Blank or unrecognised tag: %s", scan.uid)
+            await blink_unknown()
+            db.log_scan(scan.uid, None)
+            await manager.broadcast({"event": "blank_tag", "uid": scan.uid})
+            continue
+
+        card: Optional[Card] = db.get_card_by_id(scan.card_id)
+        db.log_scan(scan.uid, scan.card_id)
 
         if card:
-            log.info("Card found: %s (%s)", card.name, uid)
+            log.info("Card found: %s (%s)", card.name, scan.card_id)
             await blink_success()
             payload = {
                 "event":    "card_scanned",
-                "uid":      uid,
+                "uid":      scan.uid,
                 "card": {
                     "id":             card.id,
                     "name":           card.name,
@@ -196,11 +253,12 @@ async def nfc_scan_loop():
                 "display_duration": overlay_settings["display_duration"],
             }
         else:
-            log.warning("Unknown tag: %s", uid)
+            log.warning("Card ID on tag not in database: %s", scan.card_id)
             await blink_unknown()
             payload = {
-                "event": "unknown_tag",
-                "uid":   uid,
+                "event":   "unknown_card_id",
+                "uid":     scan.uid,
+                "card_id": scan.card_id,
             }
 
         await manager.broadcast(payload)
@@ -309,7 +367,9 @@ async def set_demo(body: dict):
     Start or stop the demo scan loop.
 
     Body: { "active": true }  or  { "active": false }
-    Optional: { "active": true, "interval": 3 }  to change scan speed.
+    Optional fields:
+      interval  — seconds between scans (1–60)
+      card_id   — show this specific card every cycle (null = random)
     """
     global demo_task
 
@@ -318,6 +378,13 @@ async def set_demo(body: dict):
         if not 1 <= interval <= 60:
             raise HTTPException(400, "interval must be between 1 and 60 seconds")
         demo_state["interval"] = interval
+
+    if "card_id" in body:
+        cid = body["card_id"]
+        if cid is not None:
+            if db.get_card_by_id(cid) is None:
+                raise HTTPException(404, f"Card {cid!r} not in database")
+        demo_state["card_id"] = cid
 
     active = body.get("active")
     if active is None:
@@ -361,6 +428,47 @@ async def update_settings(body: dict):
     return overlay_settings
 
 
+@app.post("/api/write-tag")
+async def write_tag(body: dict):
+    """
+    Queue a card ID to be written to the next tag presented to the reader.
+
+    The user taps (or holds) a card on the reader after calling this endpoint.
+    The scan loop sees the pending write and calls reader.write_card_id().
+
+    Body: { "card_id": "OGN001" }
+
+    The result arrives as a WebSocket event:
+      tag_written   — success
+      write_failed  — tag was in range but write failed
+      write_timeout — no tag appeared within 30 seconds
+    """
+    global _pending_write, _pending_write_deadline
+    import time as _time
+
+    card_id = body.get("card_id", "").strip()
+    if not card_id:
+        raise HTTPException(400, "card_id is required")
+    card = db.get_card_by_id(card_id)
+    if card is None:
+        raise HTTPException(404, f"Card {card_id!r} not in database")
+
+    _pending_write          = card_id
+    _pending_write_deadline = _time.monotonic() + 30.0   # 30-second window
+
+    log.info("Pending write queued: card_id=%s (30 s window)", card_id)
+    return {"status": "waiting", "card_id": card_id}
+
+
+@app.delete("/api/write-tag")
+async def cancel_write():
+    """Cancel a pending tag write."""
+    global _pending_write, _pending_write_deadline
+    _pending_write          = None
+    _pending_write_deadline = 0.0
+    return {"status": "cancelled"}
+
+
 @app.get("/api/assignments")
 async def list_assignments():
     """Return all current UID → card mappings for the admin page."""
@@ -376,6 +484,12 @@ async def list_assignments():
 @app.get("/api/scans/recent")
 async def recent_scans(limit: int = 20):
     return db.recent_scans(limit)
+
+
+@app.get("/riot.txt")
+async def riot_verification():
+    """Riot developer portal domain verification file."""
+    return FileResponse(str(BASE_DIR / "riot.txt"))
 
 
 @app.get("/api/health")
