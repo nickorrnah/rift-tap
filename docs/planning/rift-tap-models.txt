@@ -1,0 +1,23 @@
+Rift Tap Models
+    Rift Tap Basic Model (name pending)
+        Super basic model that allows for the core card scanning and browser source functionality off of a 1 cable gadget mode pi.
+
+        Uses a raspberry pi 3a+, a model using a pi zero 2 is also doable, but there is no supply currently for the zero 2.
+
+    Rift Tap Pro Model (name pending) 
+        Higher end model that will come with a touchscreen module. May require a higher end pi, exact model undecided.
+
+        The touchscreen will have the ability to be used as a point tracker, similar to a lifeboard, allowing players to quickly tap specific quadrants of the screen to add or subtract points from each player, while visually displaying the score at all times.
+
+        Touchscreen will also allow users to change the setting of the device.
+
+        Touchscreen will also have the ability to display a card when it is scanned as an additional optional feedback piece.
+
+        May need dedicated buttons added to ease of use (might save this for a v2 pro down the line)
+
+        All the other core features from the basic model.
+
+        Designing the touchscreen to work with the nfc reader will potentially be a challenge.
+
+        If possible, goal would be to make this version also function as a 1 cable usb gadget.
+

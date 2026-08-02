@@ -1,25 +1,50 @@
 Rift Tap
     Software Improvements
         Save settings and preserve them on restart.
-            default behaviour should have the simulate scans set to false
+            add a save settings button on the top of the page 
+                setting changes should be ephemeral fro mthe settings page until a user hits save (we can store the state as edits to a local.env file or something)
+                so the preview and live overlay would still get updated immediately to reflect the current settings, but if the user doesn't hit save and exits the settings page, the settings will revert to their previous state.
 
         Put overlay preview on the settings page
+            overlay preview now exists, but it is a scaled down tiny window.  Instead, I'd like to just play the browser source directly on the settings page itself, so the user can get the full sized view of whats happening on the settings page itself.  Since the overlay projects into the lower right corner, it won't overlap on top of any of the setting controls anyways. This won't pop out a whole new tab.
+            We can make it a toggle between the preview being live placed onto the settings page or just getting the mini window view that currently exists.
 
         Setting for battlefield cards to be displayed in landscape instead of portrait
+            Need to assign battlefield cards
         
-        Better chip programming flows
-            When card ID is displayed in search, it should show the letters in all caps so instead of ven-031 it would show VEN-031
-                this is working for deck import, but not for single card search
+        Need to properly fix the card db 
+            missing cards 
+            missing card images 
+            add basic card types 
+                runes, battlefields, legends, main deck, tokens
+            Add a db dumper that dumps all db entries to a csv file to be used to view the db and see missing data
+            Add a db intake method that takes a csv in and reseeds the db from that csv.
 
-        Add riftbound card backs (blue, white, black) for animations
-		    also add toggle for showing card backs
+        Add support for adding a second browser source endpoint for points tracking, so there will now be a card overlay page and a points overlay page that can both be pointed to separately as a distinct browser sources.
+
+        Add support for wifi mode, so the user can instead just give the pi power and connect to it wirelessly.
+            This mode will require the user to configure a wifi connection for the pi, and to setup a username and password in order to access the settings page, otherwise anyone else on the network could connect to the device and change settings.
+
+            Wifi config settings can be saved and persisted between power cycles.
+
+            Admin username and password will need to be redone after a power boot.  This is to avoid having to setup a 3rd party auth flow.  User will connect to wifi, configure admin creds to get into the rift-tap settings page via internet, which will persist until the device is powered off and on again, at which point the user will setup a new settings page username and password.  This is just basic protection to stop any rando on the same network from connecting to settings page and messing with it without the intended user's consent.
+
+            There should be disclaimers that heavily encourage the use of the wired mode over wireless instead when feasible.
+
+        Add actual software lifecycle management to allow for super easy OTA updates.  Either to update code app code itself or just to add new cards to the db.
 		
     Hardware Improvements    
         Visual/audio feedback of a scan
-            will need to find a small, low profile mic and led module that
+            will need to find a small, low profile speaker and led module that can be used 
+                will need to add settings to allow user to control if they want led and/or speaker feedback.
+
+            Current hat has gpio pass through on top, so we should be able to just directly plug into the top of the hat. although this will require slightly more distance to be placed between the reader and the top of the product case, impacting scan performance slightly.
         
         For pro model with a screen, add feature for touchscreen to act as a point tracker like a lifeboard
+
+        For pro model, rerender ui with a layout optimized for mobile like screen ratios.
 	
-	
+        For both models, add optional battery add on to allow the device to be used fully wirelessly
+            need to decide between AA batteries or some form of directly rechargeable solution.
 	
 	

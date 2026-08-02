@@ -32,8 +32,8 @@ from typing import Optional
 # Allow `from config import …` when running from the src/ directory.
 sys.path.insert(0, str(Path(__file__).parent))
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, UploadFile, File
+from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from card_db import CardDatabase, Card
@@ -525,6 +525,106 @@ async def recent_scans(limit: int = 20):
 async def riot_verification():
     """Riot developer portal domain verification file."""
     return FileResponse(str(BASE_DIR / "riot.txt"))
+
+
+@app.get("/api/cards/export.csv")
+async def export_cards_csv():
+    """
+    Download all card records as a CSV file.
+
+    The file is UTF-8 with BOM so Excel opens it correctly without
+    needing to configure the import wizard.
+
+    Workflow:
+      1. Download CSV from this endpoint
+      2. Open in Excel / Google Sheets
+      3. Fill in the card_type column (unit, action, rune, battlefield,
+         legend, champion, token …)
+      4. Fix any names or missing data
+      5. Save as CSV and upload via POST /api/cards/import
+    """
+    import csv, io
+    rows = db._conn.execute(
+        "SELECT id, name, set_code, card_number, card_type, "
+        "cost, traits, rules_text, image_filename "
+        "FROM cards ORDER BY set_code, card_number, id"
+    ).fetchall()
+
+    buf = io.StringIO()
+    buf.write("\ufeff")  # UTF-8 BOM for Excel compatibility
+    fieldnames = ["id", "name", "set_code", "card_number", "card_type",
+                  "cost", "traits", "rules_text", "image_filename"]
+    writer = csv.DictWriter(buf, fieldnames=fieldnames, lineterminator="\r\n")
+    writer.writeheader()
+    for row in rows:
+        writer.writerow(dict(row))
+
+    data = buf.getvalue().encode("utf-8")
+    return StreamingResponse(
+        iter([data]),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": "attachment; filename=rift-tap-cards.csv"},
+    )
+
+
+@app.post("/api/cards/import")
+async def import_cards_csv(file: UploadFile = File(...)):
+    """
+    Upload a CSV to update the card database.
+
+    Behaviour:
+      - Upserts every row (insert or update by id).
+      - Rows with a blank or missing id are skipped.
+      - Optional columns (cost, traits …) default to empty / None if absent.
+      - Does NOT delete cards that are absent from the CSV, so a partial
+        update (e.g. just the new-set rows) is safe.
+
+    Returns a summary: { inserted, updated, skipped, total }.
+    """
+    import csv, io
+
+    raw = await file.read()
+    # Strip BOM if present, then decode
+    text = raw.decode("utf-8-sig")  # handles both BOM and plain UTF-8
+    reader = csv.DictReader(io.StringIO(text))
+
+    inserted = updated = skipped = 0
+    for row in reader:
+        card_id = (row.get("id") or "").strip()
+        name    = (row.get("name") or "").strip()
+        if not card_id or not name:
+            skipped += 1
+            continue
+
+        cost_raw = (row.get("cost") or "").strip()
+        cost = int(cost_raw) if cost_raw.isdigit() else None
+
+        # Check whether this id already exists
+        exists = db._conn.execute(
+            "SELECT 1 FROM cards WHERE id = ?", (card_id,)
+        ).fetchone()
+
+        card = Card(
+            id=card_id,
+            name=name,
+            set_code=(row.get("set_code") or "").strip(),
+            card_number=(row.get("card_number") or "").strip(),
+            card_type=(row.get("card_type") or "").strip(),
+            cost=cost,
+            traits=(row.get("traits") or "").strip(),
+            rules_text=(row.get("rules_text") or "").strip(),
+            image_filename=(row.get("image_filename") or "").strip(),
+        )
+        db.upsert_card(card)
+        if exists:
+            updated += 1
+        else:
+            inserted += 1
+
+    total = inserted + updated + skipped
+    log.info("CSV import: %d inserted, %d updated, %d skipped (total %d rows)",
+             inserted, updated, skipped, total)
+    return {"inserted": inserted, "updated": updated, "skipped": skipped, "total": total}
 
 
 @app.get("/api/health")

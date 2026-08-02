@@ -266,14 +266,36 @@
 
 <main>
 
-  <!-- ── Card Library Sync ──────────────────────────────────────────────── -->
+  <!-- ── Card Database ─────────────────────────────────────────────────── -->
   <div class="panel">
-    <div class="panel-header">Card Library</div>
+    <div class="panel-header">Card Database</div>
 
     <div class="setting-row">
       <div class="setting-info">
-        <div class="setting-label">Card library</div>
-        <div class="setting-desc">Update the card list and download any new card images. Only missing images are fetched — existing ones are untouched. Requires internet access on this device.</div>
+        <div class="setting-label">Export to CSV</div>
+        <div class="setting-desc">Download all card records as a spreadsheet. Open in Excel or Google Sheets, fill in <strong>card_type</strong> values (unit, action, rune, battlefield, legend, champion, token), then re-import below.</div>
+      </div>
+      <a href="/api/cards/export.csv" download class="btn btn-primary" style="flex-shrink:0;text-decoration:none;text-align:center">Download CSV</a>
+    </div>
+
+    <div class="setting-row" style="flex-wrap:wrap;gap:10px">
+      <div class="setting-info">
+        <div class="setting-label">Import from CSV</div>
+        <div class="setting-desc">Upload an edited CSV to update the database. Rows are upserted by card ID — cards not in the file are left unchanged.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;min-width:180px">
+        <input type="file" id="csv-file-input" accept=".csv" style="display:none" />
+        <button id="csv-upload-btn" class="btn btn-primary">Choose CSV…</button>
+        <div id="csv-file-label" style="font-size:0.75rem;color:#6a7a9a">No file selected</div>
+      </div>
+    </div>
+
+    <div id="csv-result" style="display:none;margin:0 18px 14px;padding:10px 14px;background:#0f1117;border:1px solid #2a2d3a;border-radius:6px;font-size:0.82rem"></div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Update from API</div>
+        <div class="setting-desc">Download new card images and metadata from the Riot API. Requires internet access on this device.</div>
       </div>
       <button id="sync-btn" class="btn btn-primary" style="flex-shrink:0">Update Cards</button>
     </div>
@@ -666,6 +688,51 @@
     toastEl.className = isError ? "error show" : "show";
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { toastEl.className = isError ? "error" : ""; }, 3000);
+  }
+
+  // ── CSV import ─────────────────────────────────────────────────────────
+  const csvFileInput  = document.getElementById("csv-file-input");
+  const csvUploadBtn  = document.getElementById("csv-upload-btn");
+  const csvFileLabel  = document.getElementById("csv-file-label");
+  const csvResultEl   = document.getElementById("csv-result");
+
+  csvUploadBtn.addEventListener("click", () => csvFileInput.click());
+
+  csvFileInput.addEventListener("change", () => {
+    const file = csvFileInput.files[0];
+    if (!file) return;
+    csvFileLabel.textContent = file.name;
+    csvUploadBtn.textContent = "Upload \u2192 " + file.name;
+    csvUploadBtn.onclick = () => uploadCsv(file);
+  });
+
+  async function uploadCsv(file) {
+    csvUploadBtn.disabled = true;
+    csvUploadBtn.textContent = "Uploading\u2026";
+    csvResultEl.style.display = "none";
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res  = await fetch("/api/cards/import", { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || res.statusText);
+      csvResultEl.style.display = "block";
+      csvResultEl.style.color   = "#80e090";
+      csvResultEl.textContent   =
+        `\u2713 Import complete \u2014 ` +
+        `${data.inserted} inserted, ${data.updated} updated, ` +
+        `${data.skipped} skipped (${data.total} rows total)`;
+    } catch (err) {
+      csvResultEl.style.display = "block";
+      csvResultEl.style.color   = "#e08080";
+      csvResultEl.textContent   = "\u2717 Import failed: " + err.message;
+    } finally {
+      csvUploadBtn.disabled = false;
+      csvUploadBtn.textContent = "Choose CSV\u2026";
+      csvUploadBtn.onclick     = () => csvFileInput.click();
+      csvFileInput.value       = "";
+      csvFileLabel.textContent = "No file selected";
+    }
   }
 
   // ── Card library sync ──────────────────────────────────────────────────

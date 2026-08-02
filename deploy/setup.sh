@@ -222,6 +222,15 @@ EOF
 # =============================================================================
 info "Applying system tweaks..."
 
+# Disable WiFi power management — the default power-save mode causes the
+# radio to sleep after inactivity, adding 500ms–2s of latency on the next
+# request which makes the server feel unresponsive.
+mkdir -p /etc/NetworkManager/conf.d
+cat > /etc/NetworkManager/conf.d/wifi-powersave-off.conf <<'EOF'
+[connection]
+wifi.powersave = 2
+EOF
+
 # Faster boot: disable waiting for network during boot (we manage networking)
 systemctl disable NetworkManager-wait-online.service 2>/dev/null || true
 

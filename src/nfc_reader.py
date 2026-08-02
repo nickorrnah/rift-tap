@@ -225,20 +225,20 @@ class PN532Reader(NFCReader):
     async def scan_loop(self) -> AsyncIterator[TagScan]:
         log.info("PN532 reader active on %s", self._interface)
         import functools
-        last_card_id: Optional[str] = None
+        last_uid:       Optional[str] = None   # cooldown keyed on UID, not card_id
+        last_card_id:   Optional[str] = None   # last good card_id for this UID
         last_scan_time: float = 0.0
 
         while True:
-            # read_passive_target(card_baud, timeout) — use functools.partial
-            # so 0.5 is passed as the timeout kwarg, not as card_baud.
             poll = functools.partial(self._pn532.read_passive_target, timeout=0.5)
             uid_bytes: Optional[bytes] = await asyncio.get_event_loop().run_in_executor(
                 None, poll
             )
 
             if uid_bytes is None:
-                # No tag in range — reset cooldown so removal + re-tap works
-                last_card_id  = None
+                # No tag in range — reset so next tap always fires
+                last_uid       = None
+                last_card_id   = None
                 last_scan_time = 0.0
                 self._last_uid_bytes = None
                 await asyncio.sleep(0.05)
@@ -248,15 +248,23 @@ class PN532Reader(NFCReader):
             uid = self._uid_hex(uid_bytes)
 
             # Read NDEF data from user memory (starts at block 4)
-            raw   = self._read_tag_blocks(4, self._READ_BLOCKS)
+            raw     = self._read_tag_blocks(4, self._READ_BLOCKS)
             card_id = decode_card_id(raw) if raw else None
 
             now = time.monotonic()
-            if card_id == last_card_id and (now - last_scan_time) < SCAN_COOLDOWN_SECONDS:
+
+            # ── UID-based cooldown ─────────────────────────────────────────
+            # Cooldown is based on UID, not card_id.  This means:
+            #  - Same chip within the cooldown window → skip (deduplication)
+            #  - Occasional failed NDEF reads (card_id flips to None while the
+            #    chip is still in range) are suppressed rather than firing a
+            #    spurious blank_tag event.
+            if uid == last_uid and (now - last_scan_time) < SCAN_COOLDOWN_SECONDS:
                 await asyncio.sleep(0.05)
                 continue
 
-            last_card_id  = card_id
+            last_uid       = uid
+            last_card_id   = card_id
             last_scan_time = now
             log.info("Tag detected: uid=%s card_id=%s", uid, card_id)
             yield TagScan(uid=uid, card_id=card_id)
