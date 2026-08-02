@@ -164,7 +164,7 @@ sudo -u "$APP_USER" python3 -m venv "$APP_DIR/.venv" --system-site-packages
 # forcing PyPI ensures we get the correct packages.
 sudo -u "$APP_USER" "$APP_DIR/.venv/bin/pip" install --quiet \
     --index-url https://pypi.org/simple \
-    "fastapi>=0.111.0" "uvicorn[standard]>=0.29.0" websockets httpx python-dotenv
+    -r "$APP_DIR/requirements.txt"
 
 # Install Adafruit NFC libraries
 sudo -u "$APP_USER" "$APP_DIR/.venv/bin/pip" install --quiet \
