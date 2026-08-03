@@ -1,0 +1,25 @@
+id,name,set_code,card_number,card_type,cost,traits,rules_text,image_filename
+ogs-001,"Annie, Fiery",OGS,001,main,,,,ogs-001.webp
+ogs-002,Firestorm,OGS,002,main,,,,ogs-002.webp
+ogs-003,Incinerate,OGS,003,main,,,,ogs-003.webp
+ogs-004,"Yi, Meditative",OGS,004,main,,,,ogs-004.webp
+ogs-005,Zephyr Sage,OGS,005,main,,,,ogs-005.webp
+ogs-006,"Lux, Illuminated",OGS,006,main,,,,ogs-006.webp
+ogs-007,"Garen, Rugged",OGS,007,main,,,,ogs-007.webp
+ogs-008,Gentlemen's Duel,OGS,008,main,,,,ogs-008.webp
+ogs-009,"Yi, Honed",OGS,009,main,,,,ogs-009.webp
+ogs-010,"Annie, Stubborn",OGS,010,main,,,,ogs-010.webp
+ogs-011,Flash,OGS,011,main,,,,ogs-011.webp
+ogs-012,Blast of Power,OGS,012,main,,,,ogs-012.webp
+ogs-013,"Garen, Commander",OGS,013,main,,,,ogs-013.webp
+ogs-014,"Lux, Crownguard",OGS,014,main,,,,ogs-014.webp
+ogs-015,Recruit the Vanguard,OGS,015,main,,,,ogs-015.webp
+ogs-016,Vanguard Attendant,OGS,016,main,,,,ogs-016.webp
+ogs-017,"Annie, Dark Child",OGS,017,legend,,,,ogs-017.webp
+ogs-018,Tibbers,OGS,018,main,,,,ogs-018.webp
+ogs-019,"Master Yi, Wuju Bladesman",OGS,019,legend,,,,ogs-019.webp
+ogs-020,Highlander,OGS,020,main,,,,ogs-020.webp
+ogs-021,"Lux, Lady of Luminosity",OGS,021,legend,,,,ogs-021.webp
+ogs-022,Final Spark,OGS,022,main,,,,ogs-022.webp
+ogs-023,"Garen, Might of Demacia",OGS,023,legend,,,,ogs-023.webp
+ogs-024,Decisive Strike,OGS,024,main,,,,ogs-024.webp

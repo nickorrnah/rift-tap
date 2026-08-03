@@ -4,7 +4,7 @@ riot.txt
 
 # ── Database ──────────────────────────────────────────────────────────────────
 # The database is created fresh via scripts/seed_db.py — no need to track it.
-data/
+data/cards.db
 
 # ── Card images ───────────────────────────────────────────────────────────────
 # Images sourced from the Riot API are not redistributable.

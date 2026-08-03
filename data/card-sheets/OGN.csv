@@ -1,0 +1,355 @@
+id,name,set_code,card_number,card_type,cost,traits,rules_text,image_filename
+ogn-001,Blazing Scorcher,OGN,001,main,,,,ogn-001.webp
+ogn-002,Brazen Buccaneer,OGN,002,main,,,,ogn-002.webp
+ogn-003,Chemtech Enforcer,OGN,003,main,,,,ogn-003.webp
+ogn-004,Cleave,OGN,004,main,,,,ogn-004.webp
+ogn-005,Disintegrate,OGN,005,main,,,,ogn-005.webp
+ogn-006,Flame Chompers,OGN,006,main,,,,ogn-006.webp
+ogn-007,Fury Rune,OGN,007,rune,,,,ogn-007.webp
+ogn-007a,Fury Rune,OGN,007a,rune,,,,ogn-007a.webp
+ogn-008,Get Excited!,OGN,008,main,,,,ogn-008.webp
+ogn-009,Hextech Ray,OGN,009,main,,,,ogn-009.webp
+ogn-010,Legion Rearguard,OGN,010,main,,,,ogn-010.webp
+ogn-011,Magma Wurm,OGN,011,main,,,,ogn-011.webp
+ogn-012,Noxus Hopeful,OGN,012,main,,,,ogn-012.webp
+ogn-013,Pouty Poro,OGN,013,main,,,,ogn-013.webp
+ogn-014,Sky Splitter,OGN,014,main,,,,ogn-014.webp
+ogn-015,Captain Farron,OGN,015,main,,,,ogn-015.webp
+ogn-016,Dangerous Duo,OGN,016,main,,,,ogn-016.webp
+ogn-017,Iron Ballista,OGN,017,main,,,,ogn-017.webp
+ogn-018,Noxus Saboteur,OGN,018,main,,,,ogn-018.webp
+ogn-019,Raging Soul,OGN,019,main,,,,ogn-019.webp
+ogn-020,Scrapyard Champion,OGN,020,main,,,,ogn-020.webp
+ogn-021,Sun Disc,OGN,021,main,,,,ogn-021.webp
+ogn-022,Thermo Beam,OGN,022,main,,,,ogn-022.webp
+ogn-023,Unlicensed Armory,OGN,023,main,,,,ogn-023.webp
+ogn-024,Void Seeker,OGN,024,main,,,,ogn-024.webp
+ogn-025,Blind Fury,OGN,025,main,,,,ogn-025.webp
+ogn-026,Brynhir Thundersong,OGN,026,main,,,,ogn-026.webp
+ogn-027,"Darius, Trifarian",OGN,027,main,,,,ogn-027.webp
+ogn-027a,"Darius, Trifarian",OGN,027a,main,,,,ogn-027a.webp
+ogn-028,"Draven, Showboat",OGN,028,main,,,,ogn-028.webp
+ogn-029,Falling Star,OGN,029,main,,,,ogn-029.webp
+ogn-030,"Jinx, Demolitionist",OGN,030,main,,,,ogn-030.webp
+ogn-030a,"Jinx, Demolitionist",OGN,030a,main,,,,ogn-030a.webp
+ogn-031,Raging Firebrand,OGN,031,main,,,,ogn-031.webp
+ogn-032,Ravenborn Tome,OGN,032,main,,,,ogn-032.webp
+ogn-033,Shakedown,OGN,033,main,,,,ogn-033.webp
+ogn-034,"Tryndamere, Barbarian",OGN,034,main,,,,ogn-034.webp
+ogn-035,"Vayne, Hunter",OGN,035,main,,,,ogn-035.webp
+ogn-036,"Vi, Destructive",OGN,036,main,,,,ogn-036.webp
+ogn-037,Immortal Phoenix,OGN,037,main,,,,ogn-037.webp
+ogn-038,Kadregrin the Infernal,OGN,038,main,,,,ogn-038.webp
+ogn-039,"Kai'Sa, Survivor",OGN,039,main,,,,ogn-039.webp
+ogn-039a,"Kai'Sa, Survivor",OGN,039a,main,,,,ogn-039a.webp
+ogn-040,Seal of Rage,OGN,040,main,,,,ogn-040.webp
+ogn-041,"Volibear, Furious",OGN,041,main,,,,ogn-041.webp
+ogn-041a,"Volibear, Furious",OGN,041a,main,,,,ogn-041a.webp
+ogn-042,Calm Rune,OGN,042,rune,,,,ogn-042.webp
+ogn-042a,Calm Rune,OGN,042a,rune,,,,ogn-042a.webp
+ogn-043,Charm,OGN,043,main,,,,ogn-043.webp
+ogn-044,Clockwork Keeper,OGN,044,main,,,,ogn-044.webp
+ogn-045,Defy,OGN,045,main,,,,ogn-045.webp
+ogn-046,En Garde,OGN,046,main,,,,ogn-046.webp
+ogn-047,Find Your Center,OGN,047,main,,,,ogn-047.webp
+ogn-048,Meditation,OGN,048,main,,,,ogn-048.webp
+ogn-049,Playful Phantom,OGN,049,main,,,,ogn-049.webp
+ogn-050,Rune Prison,OGN,050,main,,,,ogn-050.webp
+ogn-051,Solari Shieldbearer,OGN,051,main,,,,ogn-051.webp
+ogn-052,Stalwart Poro,OGN,052,main,,,,ogn-052.webp
+ogn-053,Stand United,OGN,053,main,,,,ogn-053.webp
+ogn-054,Sunlit Guardian,OGN,054,main,,,,ogn-054.webp
+ogn-055,Wielder of Water,OGN,055,main,,,,ogn-055.webp
+ogn-056,Adaptatron,OGN,056,main,,,,ogn-056.webp
+ogn-057,Block,OGN,057,main,,,,ogn-057.webp
+ogn-058,Discipline,OGN,058,main,,,,ogn-058.webp
+ogn-059,Eclipse Herald,OGN,059,main,,,,ogn-059.webp
+ogn-060,Mask of Foresight,OGN,060,main,,,,ogn-060.webp
+ogn-061,Poro Herder,OGN,061,main,,,,ogn-061.webp
+ogn-062,Reinforce,OGN,062,main,,,,ogn-062.webp
+ogn-063,Spirit's Refuge,OGN,063,main,,,,ogn-063.webp
+ogn-064,Wind Wall,OGN,064,main,,,,ogn-064.webp
+ogn-065,Wizened Elder,OGN,065,main,,,,ogn-065.webp
+ogn-066,"Ahri, Alluring",OGN,066,main,,,,ogn-066.webp
+ogn-066a,"Ahri, Alluring",OGN,066a,main,,,,ogn-066a.webp
+ogn-067,"Blitzcrank, Impassive",OGN,067,main,,,,ogn-067.webp
+ogn-068,"Caitlyn, Patrolling",OGN,068,main,,,,ogn-068.webp
+ogn-069,Last Stand,OGN,069,main,,,,ogn-069.webp
+ogn-070,Mageseeker Warden,OGN,070,main,,,,ogn-070.webp
+ogn-071,Party Favors,OGN,071,main,,,,ogn-071.webp
+ogn-072,Solari Shrine,OGN,072,main,,,,ogn-072.webp
+ogn-073,"Sona, Harmonious",OGN,073,main,,,,ogn-073.webp
+ogn-074,"Taric, Protector",OGN,074,main,,,,ogn-074.webp
+ogn-075,Tasty Faefolk,OGN,075,main,,,,ogn-075.webp
+ogn-076,"Yasuo, Remorseful",OGN,076,main,,,,ogn-076.webp
+ogn-076a,"Yasuo, Remorseful",OGN,076a,main,,,,ogn-076a.webp
+ogn-077,Zhonya's Hourglass,OGN,077,main,,,,ogn-077.webp
+ogn-078,"Lee Sin, Ascetic",OGN,078,main,,,,ogn-078.webp
+ogn-078a,"Lee Sin, Ascetic",OGN,078a,main,,,,ogn-078a.webp
+ogn-079,"Leona, Zealot",OGN,079,main,,,,ogn-079.webp
+ogn-079a,"Leona, Zealot",OGN,079a,main,,,,ogn-079a.webp
+ogn-080,Mystic Reversal,OGN,080,main,,,,ogn-080.webp
+ogn-081,Seal of Focus,OGN,081,main,,,,ogn-081.webp
+ogn-082,Whiteflame Protector,OGN,082,main,,,,ogn-082.webp
+ogn-083,Consult the Past,OGN,083,main,,,,ogn-083.webp
+ogn-084,Eager Apprentice,OGN,084,main,,,,ogn-084.webp
+ogn-085,Falling Comet,OGN,085,main,,,,ogn-085.webp
+ogn-086,Jeweled Colossus,OGN,086,main,,,,ogn-086.webp
+ogn-087,Lecturing Yordle,OGN,087,main,,,,ogn-087.webp
+ogn-088,Mega-Mech,OGN,088,main,,,,ogn-088.webp
+ogn-089,Mind Rune,OGN,089,rune,,,,ogn-089.webp
+ogn-089a,Mind Rune,OGN,089a,rune,,,,ogn-089a.webp
+ogn-090,Orb of Regret,OGN,090,main,,,,ogn-090.webp
+ogn-091,Pit Crew,OGN,091,main,,,,ogn-091.webp
+ogn-092,Riptide Rex,OGN,092,main,,,,ogn-092.webp
+ogn-093,Smoke Screen,OGN,093,main,,,,ogn-093.webp
+ogn-094,Sprite Call,OGN,094,main,,,,ogn-094.webp
+ogn-095,Stupefy,OGN,095,main,,,,ogn-095.webp
+ogn-096,Watchful Sentry,OGN,096,main,,,,ogn-096.webp
+ogn-097,Blastcone Fae,OGN,097,main,,,,ogn-097.webp
+ogn-098,Energy Conduit,OGN,098,main,,,,ogn-098.webp
+ogn-099,Garbage Grabber,OGN,099,main,,,,ogn-099.webp
+ogn-100,Gemcraft Seer,OGN,100,main,,,,ogn-100.webp
+ogn-101,Mushroom Pouch,OGN,101,main,,,,ogn-101.webp
+ogn-102,Portal Rescue,OGN,102,main,,,,ogn-102.webp
+ogn-103,Ravenbloom Student,OGN,103,main,,,,ogn-103.webp
+ogn-104,Retreat,OGN,104,main,,,,ogn-104.webp
+ogn-105,Singularity,OGN,105,main,,,,ogn-105.webp
+ogn-106,Sprite Mother,OGN,106,main,,,,ogn-106.webp
+ogn-107,Ava Achiever,OGN,107,main,,,,ogn-107.webp
+ogn-108,Convergent Mutation,OGN,108,main,,,,ogn-108.webp
+ogn-109,"Dr. Mundo, Expert",OGN,109,main,,,,ogn-109.webp
+ogn-110,"Ekko, Recurrent",OGN,110,main,,,,ogn-110.webp
+ogn-111,"Heimerdinger, Inventor",OGN,111,main,,,,ogn-111.webp
+ogn-112,"Kai'Sa, Evolutionary",OGN,112,main,,,,ogn-112.webp
+ogn-112a,"Kai'Sa, Evolutionary",OGN,112a,main,,,,ogn-112a.webp
+ogn-113,"Malzahar, Fanatic",OGN,113,main,,,,ogn-113.webp
+ogn-114,Progress Day,OGN,114,main,,,,ogn-114.webp
+ogn-115,Promising Future,OGN,115,main,,,,ogn-115.webp
+ogn-116,Thousand-Tailed Watcher,OGN,116,main,,,,ogn-116.webp
+ogn-117,"Viktor, Innovator",OGN,117,main,,,,ogn-117.webp
+ogn-117a,"Viktor, Innovator",OGN,117a,main,,,,ogn-117a.webp
+ogn-118,Wraith of Echoes,OGN,118,main,,,,ogn-118.webp
+ogn-119,"Ahri, Inquisitive",OGN,119,main,,,,ogn-119.webp
+ogn-119a,"Ahri, Inquisitive",OGN,119a,main,,,,ogn-119a.webp
+ogn-120,Seal of Insight,OGN,120,main,,,,ogn-120.webp
+ogn-121,"Teemo, Strategist",OGN,121,main,,,,ogn-121.webp
+ogn-121a,"Teemo, Strategist",OGN,121a,main,,,,ogn-121a.webp
+ogn-122,Time Warp,OGN,122,main,,,,ogn-122.webp
+ogn-123,Unchecked Power,OGN,123,main,,,,ogn-123.webp
+ogn-124,Arena Bar,OGN,124,main,,,,ogn-124.webp
+ogn-125,Bilgewater Bully,OGN,125,main,,,,ogn-125.webp
+ogn-126,Body Rune,OGN,126,rune,,,,ogn-126.webp
+ogn-126a,Body Rune,OGN,126a,rune,,,,ogn-126a.webp
+ogn-127,Cannon Barrage,OGN,127,main,,,,ogn-127.webp
+ogn-128,Challenge,OGN,128,main,,,,ogn-128.webp
+ogn-129,Confront,OGN,129,main,,,,ogn-129.webp
+ogn-130,Crackshot Corsair,OGN,130,main,,,,ogn-130.webp
+ogn-131,Dune Drake,OGN,131,main,,,,ogn-131.webp
+ogn-132,First Mate,OGN,132,main,,,,ogn-132.webp
+ogn-133,Flurry of Blades,OGN,133,main,,,,ogn-133.webp
+ogn-134,Mobilize,OGN,134,main,,,,ogn-134.webp
+ogn-135,Pakaa Cub,OGN,135,main,,,,ogn-135.webp
+ogn-136,Pit Rookie,OGN,136,main,,,,ogn-136.webp
+ogn-137,Stormclaw Ursine,OGN,137,main,,,,ogn-137.webp
+ogn-138,Catalyst of Aeons,OGN,138,main,,,,ogn-138.webp
+ogn-139,Cithria of Cloudfield,OGN,139,main,,,,ogn-139.webp
+ogn-140,Herald of Scales,OGN,140,main,,,,ogn-140.webp
+ogn-141,Kinkou Monk,OGN,141,main,,,,ogn-141.webp
+ogn-142,Mountain Drake,OGN,142,main,,,,ogn-142.webp
+ogn-143,Pirate's Haven,OGN,143,main,,,,ogn-143.webp
+ogn-144,Spoils of War,OGN,144,main,,,,ogn-144.webp
+ogn-145,Unyielding Spirit,OGN,145,main,,,,ogn-145.webp
+ogn-146,Wallop,OGN,146,main,,,,ogn-146.webp
+ogn-147,Wildclaw Shaman,OGN,147,main,,,,ogn-147.webp
+ogn-148,"Anivia, Primal",OGN,148,main,,,,ogn-148.webp
+ogn-149,Carnivorous Snapvine,OGN,149,main,,,,ogn-149.webp
+ogn-150,Kraken Hunter,OGN,150,main,,,,ogn-150.webp
+ogn-151,"Lee Sin, Centered",OGN,151,main,,,,ogn-151.webp
+ogn-151a,"Lee Sin, Centered",OGN,151a,main,,,,ogn-151a.webp
+ogn-152,Mistfall,OGN,152,main,,,,ogn-152.webp
+ogn-153,Overt Operation,OGN,153,main,,,,ogn-153.webp
+ogn-154,Primal Strength,OGN,154,main,,,,ogn-154.webp
+ogn-155,"Qiyana, Victorious",OGN,155,main,,,,ogn-155.webp
+ogn-156,Sabotage,OGN,156,main,,,,ogn-156.webp
+ogn-157,"Udyr, Wildman",OGN,157,main,,,,ogn-157.webp
+ogn-158,"Volibear, Imposing",OGN,158,main,,,,ogn-158.webp
+ogn-158a,"Volibear, Imposing",OGN,158a,main,,,,ogn-158a.webp
+ogn-159,"Warwick, Hunter",OGN,159,main,,,,ogn-159.webp
+ogn-160,Dazzling Aurora,OGN,160,main,,,,ogn-160.webp
+ogn-161,Deadbloom Predator,OGN,161,main,,,,ogn-161.webp
+ogn-162,"Miss Fortune, Captain",OGN,162,main,,,,ogn-162.webp
+ogn-162a,"Miss Fortune, Captain",OGN,162a,main,,,,ogn-162a.webp
+ogn-163,Seal of Strength,OGN,163,main,,,,ogn-163.webp
+ogn-164,"Sett, Brawler",OGN,164,main,,,,ogn-164.webp
+ogn-164a,"Sett, Brawler",OGN,164a,main,,,,ogn-164a.webp
+ogn-165,Cemetery Attendant,OGN,165,main,,,,ogn-165.webp
+ogn-166,Chaos Rune,OGN,166,rune,,,,ogn-166.webp
+ogn-166a,Chaos Rune,OGN,166a,rune,,,,ogn-166a.webp
+ogn-167,Ember Monk,OGN,167,main,,,,ogn-167.webp
+ogn-168,Fight or Flight,OGN,168,main,,,,ogn-168.webp
+ogn-169,Gust,OGN,169,main,,,,ogn-169.webp
+ogn-170,Morbid Return,OGN,170,main,,,,ogn-170.webp
+ogn-171,Mystic Poro,OGN,171,main,,,,ogn-171.webp
+ogn-172,Rebuke,OGN,172,main,,,,ogn-172.webp
+ogn-173,Ride the Wind,OGN,173,main,,,,ogn-173.webp
+ogn-174,Sai Scout,OGN,174,main,,,,ogn-174.webp
+ogn-175,Shipyard Skulker,OGN,175,main,,,,ogn-175.webp
+ogn-176,Sneaky Deckhand,OGN,176,main,,,,ogn-176.webp
+ogn-177,Stealthy Pursuer,OGN,177,main,,,,ogn-177.webp
+ogn-178,Undercover Agent,OGN,178,main,,,,ogn-178.webp
+ogn-179,Acceptable Losses,OGN,179,main,,,,ogn-179.webp
+ogn-180,Fading Memories,OGN,180,main,,,,ogn-180.webp
+ogn-181,Pack of Wonders,OGN,181,main,,,,ogn-181.webp
+ogn-182,Scrapheap,OGN,182,main,,,,ogn-182.webp
+ogn-183,Stacked Deck,OGN,183,main,,,,ogn-183.webp
+ogn-184,The Syren,OGN,184,main,,,,ogn-184.webp
+ogn-185,Traveling Merchant,OGN,185,main,,,,ogn-185.webp
+ogn-186,Treasure Trove,OGN,186,main,,,,ogn-186.webp
+ogn-187,Whirlwind,OGN,187,main,,,,ogn-187.webp
+ogn-188,Zaunite Bouncer,OGN,188,main,,,,ogn-188.webp
+ogn-189,"Kayn, Unleashed",OGN,189,main,,,,ogn-189.webp
+ogn-190,"Kog'Maw, Caustic",OGN,190,main,,,,ogn-190.webp
+ogn-191,Maddened Marauder,OGN,191,main,,,,ogn-191.webp
+ogn-192,Mindsplitter,OGN,192,main,,,,ogn-192.webp
+ogn-193,"Miss Fortune, Buccaneer",OGN,193,main,,,,ogn-193.webp
+ogn-193a,"Miss Fortune, Buccaneer",OGN,193a,main,,,,ogn-193a.webp
+ogn-193b,"Miss Fortune, Buccaneer",OGN,193b,main,,,,ogn-193b.jpg
+ogn-194,"Nocturne, Horrifying",OGN,194,main,,,,ogn-194.webp
+ogn-195,Rhasa the Sunderer,OGN,195,main,,,,ogn-195.webp
+ogn-196,Soulgorger,OGN,196,main,,,,ogn-196.webp
+ogn-197,"Teemo, Scout",OGN,197,main,,,,ogn-197.webp
+ogn-197a,"Teemo, Scout",OGN,197a,main,,,,ogn-197a.webp
+ogn-198,The Harrowing,OGN,198,main,,,,ogn-198.webp
+ogn-199,Tideturner,OGN,199,main,,,,ogn-199.webp
+ogn-200,"Twisted Fate, Gambler",OGN,200,main,,,,ogn-200.webp
+ogn-201,Invert Timelines,OGN,201,main,,,,ogn-201.webp
+ogn-202,"Jinx, Rebel",OGN,202,main,,,,ogn-202.webp
+ogn-202a,"Jinx, Rebel",OGN,202a,main,,,,ogn-202a.webp
+ogn-203,Possession,OGN,203,main,,,,ogn-203.webp
+ogn-204,Seal of Discord,OGN,204,main,,,,ogn-204.webp
+ogn-205,"Yasuo, Windrider",OGN,205,main,,,,ogn-205.webp
+ogn-205a,"Yasuo, Windrider",OGN,205a,main,,,,ogn-205a.webp
+ogn-206,Back to Back,OGN,206,main,,,,ogn-206.webp
+ogn-207,Call to Glory,OGN,207,main,,,,ogn-207.webp
+ogn-208,Cruel Patron,OGN,208,main,,,,ogn-208.webp
+ogn-209,Cull the Weak,OGN,209,main,,,,ogn-209.webp
+ogn-210,Daring Poro,OGN,210,main,,,,ogn-210.webp
+ogn-211,Faithful Manufactor,OGN,211,main,,,,ogn-211.webp
+ogn-212,Forge of the Future,OGN,212,main,,,,ogn-212.webp
+ogn-213,Hidden Blade,OGN,213,main,,,,ogn-213.webp
+ogn-214,Order Rune,OGN,214,rune,,,,ogn-214.webp
+ogn-214a,Order Rune,OGN,214a,rune,,,,ogn-214a.webp
+ogn-215,Petty Officer,OGN,215,main,,,,ogn-215.webp
+ogn-216,Soaring Scout,OGN,216,main,,,,ogn-216.webp
+ogn-217,Trifarian Gloryseeker,OGN,217,main,,,,ogn-217.webp
+ogn-218,Vanguard Captain,OGN,218,main,,,,ogn-218.webp
+ogn-219,Vanguard Sergeant,OGN,219,main,,,,ogn-219.webp
+ogn-220,Facebreaker,OGN,220,main,,,,ogn-220.webp
+ogn-221,Imperial Decree,OGN,221,main,,,,ogn-221.webp
+ogn-222,Noxian Drummer,OGN,222,main,,,,ogn-222.webp
+ogn-223,Peak Guardian,OGN,223,main,,,,ogn-223.webp
+ogn-224,Salvage,OGN,224,main,,,,ogn-224.webp
+ogn-225,Solari Chief,OGN,225,main,,,,ogn-225.webp
+ogn-226,Spectral Matron,OGN,226,main,,,,ogn-226.webp
+ogn-227,Symbol of the Solari,OGN,227,main,,,,ogn-227.webp
+ogn-228,Vanguard Helm,OGN,228,main,,,,ogn-228.webp
+ogn-229,Vengeance,OGN,229,main,,,,ogn-229.webp
+ogn-230,Albus Ferros,OGN,230,main,,,,ogn-230.webp
+ogn-231,Commander Ledros,OGN,231,main,,,,ogn-231.webp
+ogn-232,"Fiora, Victorious",OGN,232,main,,,,ogn-232.webp
+ogn-233,Grand Strategem,OGN,233,main,,,,ogn-233.webp
+ogn-234,Harnessed Dragon,OGN,234,main,,,,ogn-234.webp
+ogn-235,"Karma, Channeler",OGN,235,main,,,,ogn-235.webp
+ogn-236,"Karthus, Eternal",OGN,236,main,,,,ogn-236.webp
+ogn-237,King's Edict,OGN,237,main,,,,ogn-237.webp
+ogn-238,"Leona, Determined",OGN,238,main,,,,ogn-238.webp
+ogn-238a,"Leona, Determined",OGN,238a,main,,,,ogn-238a.webp
+ogn-239,Machine Evangel,OGN,239,main,,,,ogn-239.webp
+ogn-240,"Sett, Kingpin",OGN,240,main,,,,ogn-240.webp
+ogn-240a,"Sett, Kingpin",OGN,240a,main,,,,ogn-240a.webp
+ogn-241,"Shen, Kinkou",OGN,241,main,,,,ogn-241.webp
+ogn-242,Baited Hook,OGN,242,main,,,,ogn-242.webp
+ogn-243,"Darius, Executioner",OGN,243,main,,,,ogn-243.webp
+ogn-243a,"Darius, Executioner",OGN,243a,main,,,,ogn-243a.webp
+ogn-244,Divine Judgment,OGN,244,main,,,,ogn-244.webp
+ogn-245,Seal of Unity,OGN,245,main,,,,ogn-245.webp
+ogn-246,"Viktor, Leader",OGN,246,main,,,,ogn-246.webp
+ogn-246a,"Viktor, Leader",OGN,246a,main,,,,ogn-246a.webp
+ogn-247,"Kai'Sa, Daughter of the Void",OGN,247,legend,,,,ogn-247.webp
+ogn-248,Icathian Rain,OGN,248,main,,,,ogn-248.webp
+ogn-249,"Volibear, Relentless Storm",OGN,249,legend,,,,ogn-249.webp
+ogn-250,Stormbringer,OGN,250,main,,,,ogn-250.webp
+ogn-251,"Jinx, Loose Cannon",OGN,251,legend,,,,ogn-251.webp
+ogn-252,Super Mega Death Rocket!,OGN,252,main,,,,ogn-252.webp
+ogn-253,"Darius, Hand of Noxus",OGN,253,legend,,,,ogn-253.webp
+ogn-254,Noxian Guillotine,OGN,254,main,,,,ogn-254.webp
+ogn-255,"Ahri, Nine-Tailed Fox",OGN,255,legend,,,,ogn-255.webp
+ogn-256,Fox-Fire,OGN,256,main,,,,ogn-256.webp
+ogn-257,"Lee Sin, Blind Monk",OGN,257,legend,,,,ogn-257.webp
+ogn-258,Dragon's Rage,OGN,258,main,,,,ogn-258.webp
+ogn-259,"Yasuo, Unforgiven",OGN,259,legend,,,,ogn-259.webp
+ogn-260,Last Breath,OGN,260,main,,,,ogn-260.webp
+ogn-261,"Leona, Radiant Dawn",OGN,261,legend,,,,ogn-261.webp
+ogn-262,Zenith Blade,OGN,262,main,,,,ogn-262.webp
+ogn-263,"Teemo, Swift Scout",OGN,263,legend,,,,ogn-263.webp
+ogn-264,Guerilla Warfare,OGN,264,main,,,,ogn-264.webp
+ogn-265,"Viktor, Herald of the Arcane",OGN,265,legend,,,,ogn-265.webp
+ogn-266,Siphon Power,OGN,266,main,,,,ogn-266.webp
+ogn-267,"Miss Fortune, Bounty Hunter",OGN,267,legend,,,,ogn-267.webp
+ogn-268,Bullet Time,OGN,268,main,,,,ogn-268.webp
+ogn-269,"Sett, The Boss",OGN,269,legend,,,,ogn-269.webp
+ogn-270,Showstopper,OGN,270,main,,,,ogn-270.webp
+ogn-271,Recruit (DE),OGN,271,token,,,,ogn-271.webp
+ogn-272,Recruit (NX),OGN,272,token,,,,ogn-272.webp
+ogn-273,Recruit (ZN),OGN,273,token,,,,ogn-273.webp
+ogn-274,Sprite,OGN,274,token,,,,ogn-274.webp
+ogn-275,Altar to Unity,OGN,275,battlefield,,,,ogn-275.webp
+ogn-276,Aspirant's Climb,OGN,276,battlefield,,,,ogn-276.webp
+ogn-277,Back-Alley Bar,OGN,277,battlefield,,,,ogn-277.webp
+ogn-278,Bandle Tree,OGN,278,battlefield,,,,ogn-278.webp
+ogn-279,Fortified Position,OGN,279,battlefield,,,,ogn-279.webp
+ogn-280,Grove of the God-Willow,OGN,280,battlefield,,,,ogn-280.webp
+ogn-281,Hallowed Tomb,OGN,281,battlefield,,,,ogn-281.webp
+ogn-282,Monastery of Hirana,OGN,282,battlefield,,,,ogn-282.webp
+ogn-283,Navori Fighting Pit,OGN,283,battlefield,,,,ogn-283.webp
+ogn-284,Obelisk of Power,OGN,284,battlefield,,,,ogn-284.webp
+ogn-285,Reaver's Row,OGN,285,battlefield,,,,ogn-285.webp
+ogn-286,Reckoner's Arena,OGN,286,battlefield,,,,ogn-286.webp
+ogn-287,Sigil of the Storm,OGN,287,battlefield,,,,ogn-287.webp
+ogn-288,Startipped Peak,OGN,288,battlefield,,,,ogn-288.webp
+ogn-289,Targon's Peak,OGN,289,battlefield,,,,ogn-289.webp
+ogn-290,The Arena's Greatest,OGN,290,battlefield,,,,ogn-290.webp
+ogn-291,The Candlelit Sanctum,OGN,291,battlefield,,,,ogn-291.webp
+ogn-292,The Dreaming Tree,OGN,292,battlefield,,,,ogn-292.webp
+ogn-293,The Grand Plaza,OGN,293,battlefield,,,,ogn-293.webp
+ogn-294,Trifarian War Camp,OGN,294,battlefield,,,,ogn-294.webp
+ogn-295,Vilemaw's Lair,OGN,295,battlefield,,,,ogn-295.webp
+ogn-296,Void Gate,OGN,296,battlefield,,,,ogn-296.webp
+ogn-297,Windswept Hillock,OGN,297,battlefield,,,,ogn-297.webp
+ogn-298,Zaun Warrens,OGN,298,battlefield,,,,ogn-298.webp
+ogn-299,"Kai'Sa, Daughter of the Void",OGN,299,legend,,,,ogn-299.webp
+ogn-299s,"Kai'Sa, Daughter of the Void",OGN,299s,legend,,,,ogn-299s.webp
+ogn-300,"Volibear, Relentless Storm",OGN,300,legend,,,,ogn-300.webp
+ogn-300s,"Volibear, Relentless Storm",OGN,300s,legend,,,,ogn-300s.webp
+ogn-301,"Jinx, Loose Cannon",OGN,301,legend,,,,ogn-301.webp
+ogn-301s,"Jinx, Loose Cannon",OGN,301s,legend,,,,ogn-301s.webp
+ogn-302,"Darius, Hand of Noxus",OGN,302,legend,,,,ogn-302.webp
+ogn-302s,"Darius, Hand of Noxus",OGN,302s,legend,,,,ogn-302s.webp
+ogn-303,"Ahri, Nine-Tailed Fox",OGN,303,legend,,,,ogn-303.webp
+ogn-303s,"Ahri, Nine-Tailed Fox",OGN,303s,legend,,,,ogn-303s.webp
+ogn-304,"Lee Sin, Blind Monk",OGN,304,legend,,,,ogn-304.webp
+ogn-304s,"Lee Sin, Blind Monk",OGN,304s,legend,,,,ogn-304s.webp
+ogn-305,"Yasuo, Unforgiven",OGN,305,legend,,,,ogn-305.webp
+ogn-305s,"Yasuo, Unforgiven",OGN,305s,legend,,,,ogn-305s.webp
+ogn-306,"Leona, Radiant Dawn",OGN,306,legend,,,,ogn-306.webp
+ogn-306s,"Leona, Radiant Dawn",OGN,306s,legend,,,,ogn-306s.webp
+ogn-307,"Teemo, Swift Scout",OGN,307,legend,,,,ogn-307.webp
+ogn-307s,"Teemo, Swift Scout",OGN,307s,legend,,,,ogn-307s.webp
+ogn-308,"Viktor, Herald of the Arcane",OGN,308,legend,,,,ogn-308.webp
+ogn-308s,"Viktor, Herald of the Arcane",OGN,308s,legend,,,,ogn-308s.webp
+ogn-309,"Miss Fortune, Bounty Hunter",OGN,309,legend,,,,ogn-309.webp
+ogn-309s,"Miss Fortune, Bounty Hunter",OGN,309s,legend,,,,ogn-309s.webp
+ogn-310,"Sett, The Boss",OGN,310,legend,,,,ogn-310.webp
+ogn-310s,"Sett, The Boss",OGN,310s,legend,,,,ogn-310s.webp
+ogn-000,Buff,OGN,000,token,,,,ogn-xxx.webp

@@ -1,0 +1,291 @@
+id,name,set_code,card_number,card_type,cost,traits,rules_text,image_filename
+sfd-001,Against the Odds,SFD,001,main,,,,sfd-001.webp
+sfd-002,Armed Assailant,SFD,002,main,,,,sfd-002.webp
+sfd-003,Blood Rush,SFD,003,main,,,,sfd-003.webp
+sfd-004,Bushwhack,SFD,004,main,,,,sfd-004.webp
+sfd-005,Detonate,SFD,005,main,,,,sfd-005.webp
+sfd-006,Eager Drakehound,SFD,006,main,,,,sfd-006.webp
+sfd-007,Gem Jammer,SFD,007,main,,,,sfd-007.webp
+sfd-008,Sentinel Adept,SFD,008,main,,,,sfd-008.webp
+sfd-009,Serrated Dirk,SFD,009,main,,,,sfd-009.webp
+sfd-010,Void Drone,SFD,010,main,,,,sfd-010.webp
+sfd-011,Angle Shot,SFD,011,main,,,,sfd-011.webp
+sfd-012,Battering Ram,SFD,012,main,,,,sfd-012.webp
+sfd-013,Blast Corps Cadet,SFD,013,main,,,,sfd-013.webp
+sfd-014,Minotaur Reckoner,SFD,014,main,,,,sfd-014.webp
+sfd-015,Perched Grimwyrm,SFD,015,main,,,,sfd-015.webp
+sfd-016,Recurve Bow,SFD,016,main,,,,sfd-016.webp
+sfd-017,Sudden Storm,SFD,017,main,,,,sfd-017.webp
+sfd-018,Void Hatchling,SFD,018,main,,,,sfd-018.webp
+sfd-019,Assembly Rig,SFD,019,main,,,,sfd-019.webp
+sfd-020,"Draven, Vanquisher",SFD,020,main,,,,sfd-020.webp
+sfd-020a,"Draven, Vanquisher",SFD,020a,main,,,,sfd-020a.webp
+sfd-021,Ferrous Forerunner,SFD,021,main,,,,sfd-021.webp
+sfd-022,Long Sword,SFD,022,main,,,,sfd-022.webp
+sfd-023,Piercing Light,SFD,023,main,,,,sfd-023.webp
+sfd-024,"Rell, Magnetic",SFD,024,main,,,,sfd-024.webp
+sfd-025,"Rengar, Pouncing",SFD,025,main,,,,sfd-025.webp
+sfd-026,"Rumble, Hotheaded",SFD,026,main,,,,sfd-026.webp
+sfd-026a,"Rumble, Hotheaded",SFD,026a,main,,,,sfd-026a.webp
+sfd-027,Dunebreaker,SFD,027,main,,,,sfd-027.webp
+sfd-028,"Lucian, Gunslinger",SFD,028,main,,,,sfd-028.webp
+sfd-028a,"Lucian, Gunslinger",SFD,028a,main,,,,sfd-028a.webp
+sfd-029,"Rek'Sai, Breacher",SFD,029,main,,,,sfd-029.webp
+sfd-029a,"Rek'Sai, Breacher",SFD,029a,main,,,,sfd-029a.webp
+sfd-030,Skyfall of Areion,SFD,030,main,,,,sfd-030.webp
+sfd-031,Desert's Call,SFD,031,main,,,,sfd-031.webp
+sfd-032,Disarming Rake,SFD,032,main,,,,sfd-032.webp
+sfd-033,Doran's Shield,SFD,033,main,,,,sfd-033.webp
+sfd-034,Feral Strength,SFD,034,main,,,,sfd-034.webp
+sfd-035,Guardian of the Passage,SFD,035,main,,,,sfd-035.webp
+sfd-036,Lonely Poro,SFD,036,main,,,,sfd-036.webp
+sfd-037,Navori Scout,SFD,037,main,,,,sfd-037.webp
+sfd-038,Ribbon Dancer,SFD,038,main,,,,sfd-038.webp
+sfd-039,Royal Entourage,SFD,039,main,,,,sfd-039.webp
+sfd-040,Thwonk!,SFD,040,main,,,,sfd-040.webp
+sfd-041,Apprentice Smith,SFD,041,main,,,,sfd-041.webp
+sfd-042,Brutalizer,SFD,042,main,,,,sfd-042.webp
+sfd-043,Emperor's Divide,SFD,043,main,,,,sfd-043.webp
+sfd-044,Legion Quartermaster,SFD,044,main,,,,sfd-044.webp
+sfd-045,Not So Fast,SFD,045,main,,,,sfd-045.webp
+sfd-046,Poro Snax,SFD,046,main,,,,sfd-046.webp
+sfd-047,Simian Ancestor,SFD,047,main,,,,sfd-047.webp
+sfd-048,Stellacorn Herder,SFD,048,main,,,,sfd-048.webp
+sfd-049,"Aphelios, Exalted",SFD,049,main,,,,sfd-049.webp
+sfd-050,"Azir, Ascendant",SFD,050,main,,,,sfd-050.webp
+sfd-050a,"Azir, Ascendant",SFD,050a,main,,,,sfd-050a.webp
+sfd-051,Guardian Angel,SFD,051,main,,,,sfd-051.webp
+sfd-052,Heart of Dark Ice,SFD,052,main,,,,sfd-052.webp
+sfd-053,"Janna, Savior",SFD,053,main,,,,sfd-053.webp
+sfd-054,"Jax, Unmatched",SFD,054,main,,,,sfd-054.webp
+sfd-054a,"Jax, Unmatched",SFD,054a,main,,,,sfd-054a.webp
+sfd-055,Needlessly Large Yordle,SFD,055,main,,,,sfd-055.webp
+sfd-056,Sterak's Gage,SFD,056,main,,,,sfd-056.webp
+sfd-057,"Irelia, Fervent",SFD,057,main,,,,sfd-057.webp
+sfd-057a,"Irelia, Fervent",SFD,057a,main,,,,sfd-057a.webp
+sfd-058,"Ornn, Blacksmith",SFD,058,main,,,,sfd-058.webp
+sfd-058a,"Ornn, Blacksmith",SFD,058a,main,,,,sfd-058a.webp
+sfd-059,Svellsongur,SFD,059,main,,,,sfd-059.webp
+sfd-060,Tianna Crownguard,SFD,060,main,,,,sfd-060.webp
+sfd-061,Aspiring Engineer,SFD,061,main,,,,sfd-061.webp
+sfd-062,Bubble Bot,SFD,062,main,,,,sfd-062.webp
+sfd-063,Chemtech Cask,SFD,063,main,,,,sfd-063.webp
+sfd-064,Cloth Armor,SFD,064,main,,,,sfd-064.webp
+sfd-065,Forecaster,SFD,065,main,,,,sfd-065.webp
+sfd-066,Frigid Touch,SFD,066,main,,,,sfd-066.webp
+sfd-067,Frostcoat Cub,SFD,067,main,,,,sfd-067.webp
+sfd-068,Gearhead,SFD,068,main,,,,sfd-068.webp
+sfd-069,Plundering Poro,SFD,069,main,,,,sfd-069.webp
+sfd-070,Wages of Pain,SFD,070,main,,,,sfd-070.webp
+sfd-071,Breakneck Mech,SFD,071,main,,,,sfd-071.webp
+sfd-072,Dropboarder,SFD,072,main,,,,sfd-072.webp
+sfd-073,Experimental Hexplate,SFD,073,main,,,,sfd-073.webp
+sfd-074,Pickpocket,SFD,074,main,,,,sfd-074.webp
+sfd-075,Prize of Progress,SFD,075,main,,,,sfd-075.webp
+sfd-076,Production Surge,SFD,076,main,,,,sfd-076.webp
+sfd-077,Rocket Barrage,SFD,077,main,,,,sfd-077.webp
+sfd-078,Temporal Portal,SFD,078,main,,,,sfd-078.webp
+sfd-079,"Bard, Mercurial",SFD,079,main,,,,sfd-079.webp
+sfd-080,Bellows Breath,SFD,080,main,,,,sfd-080.webp
+sfd-081,Card Sharp,SFD,081,main,,,,sfd-081.webp
+sfd-082,"Ezreal, Dashing",SFD,082,main,,,,sfd-082.webp
+sfd-082a,"Ezreal, Dashing",SFD,082a,main,,,,sfd-082a.webp
+sfd-083,Hextech Anomaly,SFD,083,main,,,,sfd-083.webp
+sfd-084,"Jayce, Man of Progress",SFD,084,main,,,,sfd-084.webp
+sfd-085,"Ornn, Forge God",SFD,085,main,,,,sfd-085.webp
+sfd-085a,"Ornn, Forge God",SFD,085a,main,,,,sfd-085a.webp
+sfd-086,World Atlas,SFD,086,main,,,,sfd-086.webp
+sfd-087,Premonition,SFD,087,main,,,,sfd-087.webp
+sfd-088,"Renata Glasc, Mastermind",SFD,088,main,,,,sfd-088.webp
+sfd-088a,"Renata Glasc, Mastermind",SFD,088a,main,,,,sfd-088a.webp
+sfd-089,"Rumble, Scrapper",SFD,089,main,,,,sfd-089.webp
+sfd-089a,"Rumble, Scrapper",SFD,089a,main,,,,sfd-089a.webp
+sfd-090,The Zero Drive,SFD,090,main,,,,sfd-090.webp
+sfd-091,Buhru Captain,SFD,091,main,,,,sfd-091.webp
+sfd-092,Combat Chef,SFD,092,main,,,,sfd-092.webp
+sfd-093,Dauntless Vanguard,SFD,093,main,,,,sfd-093.webp
+sfd-094,Direwing,SFD,094,main,,,,sfd-094.webp
+sfd-095,Doran's Blade,SFD,095,main,,,,sfd-095.webp
+sfd-096,Laurent Bladekeeper,SFD,096,main,,,,sfd-096.webp
+sfd-097,Punch First,SFD,097,main,,,,sfd-097.webp
+sfd-098,Sea Monkey,SFD,098,main,,,,sfd-098.webp
+sfd-099,Veteran Poro,SFD,099,main,,,,sfd-099.webp
+sfd-100,Yordle Explorer,SFD,100,main,,,,sfd-100.webp
+sfd-101,Fae Dragon,SFD,101,main,,,,sfd-101.webp
+sfd-102,Hexdrinker,SFD,102,main,,,,sfd-102.webp
+sfd-103,Jaull-Fish,SFD,103,main,,,,sfd-103.webp
+sfd-104,Petricite Monument,SFD,104,main,,,,sfd-104.webp
+sfd-105,Ruin Runner,SFD,105,main,,,,sfd-105.webp
+sfd-106,Show of Strength,SFD,106,main,,,,sfd-106.webp
+sfd-107,Strike Down,SFD,107,main,,,,sfd-107.webp
+sfd-108,Warmog's Armor,SFD,108,main,,,,sfd-108.webp
+sfd-109,"Akshan, Mischievous",SFD,109,main,,,,sfd-109.webp
+sfd-110,"Fiora, Peerless",SFD,110,main,,,,sfd-110.webp
+sfd-110a,"Fiora, Peerless",SFD,110a,main,,,,sfd-110a.webp
+sfd-111,Here to Help,SFD,111,main,,,,sfd-111.webp
+sfd-112,Kato the Arm,SFD,112,main,,,,sfd-112.webp
+sfd-113,"Lucian, Merciless",SFD,113,main,,,,sfd-113.webp
+sfd-113a,"Lucian, Merciless",SFD,113a,main,,,,sfd-113a.webp
+sfd-114,Marching Orders,SFD,114,main,,,,sfd-114.webp
+sfd-115,Trinity Force,SFD,115,main,,,,sfd-115.webp
+sfd-116,"Yone, Blademaster",SFD,116,main,,,,sfd-116.webp
+sfd-117,Ancient Henge,SFD,117,main,,,,sfd-117.webp
+sfd-118,Boneshiver,SFD,118,main,,,,sfd-118.webp
+sfd-119,"Jax, Unrelenting",SFD,119,main,,,,sfd-119.webp
+sfd-119a,"Jax, Unrelenting",SFD,119a,main,,,,sfd-119a.webp
+sfd-120,"Sivir, Ambitious",SFD,120,main,,,,sfd-120.webp
+sfd-120a,"Sivir, Ambitious",SFD,120a,main,,,,sfd-120a.webp
+sfd-121,Black Market Broker,SFD,121,main,,,,sfd-121.webp
+sfd-122,Called Shot,SFD,122,main,,,,sfd-122.webp
+sfd-123,Corrupt Enforcer,SFD,123,main,,,,sfd-123.webp
+sfd-124,Doran's Ring,SFD,124,main,,,,sfd-124.webp
+sfd-125,Fae Porter,SFD,125,main,,,,sfd-125.webp
+sfd-126,Loyal Pup,SFD,126,main,,,,sfd-126.webp
+sfd-127,Master Bingwen,SFD,127,main,,,,sfd-127.webp
+sfd-128,Overzealous Fan,SFD,128,main,,,,sfd-128.webp
+sfd-129,Temptation,SFD,129,main,,,,sfd-129.webp
+sfd-130,Treasure Hunter,SFD,130,main,,,,sfd-130.webp
+sfd-131,Ancient Warmonger,SFD,131,main,,,,sfd-131.webp
+sfd-132,Beast Below,SFD,132,main,,,,sfd-132.webp
+sfd-133,Boots of Swiftness,SFD,133,main,,,,sfd-133.webp
+sfd-134,Cull,SFD,134,main,,,,sfd-134.webp
+sfd-135,Factory Recall,SFD,135,main,,,,sfd-135.webp
+sfd-136,Hard Bargain,SFD,136,main,,,,sfd-136.webp
+sfd-137,Harpoon Squad,SFD,137,main,,,,sfd-137.webp
+sfd-138,Windsinger,SFD,138,main,,,,sfd-138.webp
+sfd-139,Edge of Night,SFD,139,main,,,,sfd-139.webp
+sfd-140,"Fizz, Trickster",SFD,140,main,,,,sfd-140.webp
+sfd-141,"Irelia, Graceful",SFD,141,main,,,,sfd-141.webp
+sfd-141a,"Irelia, Graceful",SFD,141a,main,,,,sfd-141a.webp
+sfd-142,Jae Medarda,SFD,142,main,,,,sfd-142.webp
+sfd-143,"Sivir, Mercenary",SFD,143,main,,,,sfd-143.webp
+sfd-143a,"Sivir, Mercenary",SFD,143a,main,,,,sfd-143a.webp
+sfd-144,Spirit Wheel,SFD,144,main,,,,sfd-144.webp
+sfd-145,Switcheroo,SFD,145,main,,,,sfd-145.webp
+sfd-146,"Vex, Cheerless",SFD,146,main,,,,sfd-146.webp
+sfd-147,Downwell,SFD,147,main,,,,sfd-147.webp
+sfd-148,"Draven, Audacious",SFD,148,main,,,,sfd-148.webp
+sfd-148a,"Draven, Audacious",SFD,148a,main,,,,sfd-148a.webp
+sfd-149,"Ezreal, Prodigy",SFD,149,main,,,,sfd-149.webp
+sfd-149a,"Ezreal, Prodigy",SFD,149a,main,,,,sfd-149a.webp
+sfd-150,Last Rites,SFD,150,main,,,,sfd-150.webp
+sfd-151,Bonds of Strength,SFD,151,main,,,,sfd-151.webp
+sfd-152,Eminent Benefactor,SFD,152,main,,,,sfd-152.webp
+sfd-153,Eye of the Herald,SFD,153,main,,,,sfd-153.webp
+sfd-154,Guards!,SFD,154,main,,,,sfd-154.webp
+sfd-155,Honest Broker,SFD,155,main,,,,sfd-155.webp
+sfd-156,Laurent Duelist,SFD,156,main,,,,sfd-156.webp
+sfd-157,Royal Guard,SFD,157,main,,,,sfd-157.webp
+sfd-158,Sandshifter,SFD,158,main,,,,sfd-158.webp
+sfd-159,Trusty Ramhound,SFD,159,main,,,,sfd-159.webp
+sfd-160,Zaun Punk,SFD,160,main,,,,sfd-160.webp
+sfd-161,B.F. Sword,SFD,161,main,,,,sfd-161.webp
+sfd-162,Blood Money,SFD,162,main,,,,sfd-162.webp
+sfd-163,Deathgrip,SFD,163,main,,,,sfd-163.webp
+sfd-164,Drag Under,SFD,164,main,,,,sfd-164.webp
+sfd-165,Glasc Mixologist,SFD,165,main,,,,sfd-165.webp
+sfd-166,Rally the Troops,SFD,166,main,,,,sfd-166.webp
+sfd-167,Unsung Hero,SFD,167,main,,,,sfd-167.webp
+sfd-168,Vanguard Armory,SFD,168,main,,,,sfd-168.webp
+sfd-169,Altar of Memories,SFD,169,main,,,,sfd-169.webp
+sfd-170,"Rek'Sai, Swarm Queen",SFD,170,main,,,,sfd-170.webp
+sfd-170a,"Rek'Sai, Swarm Queen",SFD,170a,main,,,,sfd-170a.webp
+sfd-171,"Renata Glasc, Industrialist",SFD,171,main,,,,sfd-171.webp
+sfd-171a,"Renata Glasc, Industrialist",SFD,171a,main,,,,sfd-171a.webp
+sfd-172,Sacred Shears,SFD,172,main,,,,sfd-172.webp
+sfd-173,"Soraka, Wanderer",SFD,173,main,,,,sfd-173.webp
+sfd-174,Trove Golem,SFD,174,main,,,,sfd-174.webp
+sfd-175,Undertitan,SFD,175,main,,,,sfd-175.webp
+sfd-176,"Xin Zhao, Vigilant",SFD,176,main,,,,sfd-176.webp
+sfd-177,"Azir, Sovereign",SFD,177,main,,,,sfd-177.webp
+sfd-177a,"Azir, Sovereign",SFD,177a,main,,,,sfd-177a.webp
+sfd-178,Blade of the Ruined King,SFD,178,main,,,,sfd-178.webp
+sfd-179,Corina Veraza,SFD,179,main,,,,sfd-179.webp
+sfd-180,"Fiora, Worthy",SFD,180,main,,,,sfd-180.webp
+sfd-180a,"Fiora, Worthy",SFD,180a,main,,,,sfd-180a.webp
+sfd-181,"Rumble, Mechanized Menace",SFD,181,legend,,,,sfd-181.webp
+sfd-182,Danger Zone,SFD,182,main,,,,sfd-182.webp
+sfd-183,"Lucian, Purifier",SFD,183,legend,,,,sfd-183.webp
+sfd-184,Relentless Pursuit,SFD,184,main,,,,sfd-184.webp
+sfd-185,"Draven, Glorious Executioner",SFD,185,legend,,,,sfd-185.webp
+sfd-186,Spinning Axe,SFD,186,main,,,,sfd-186.webp
+sfd-187,"Rek'Sai, Void Burrower",SFD,187,legend,,,,sfd-187.webp
+sfd-188,Void Rush,SFD,188,main,,,,sfd-188.webp
+sfd-189,"Ornn, Fire Below the Mountain",SFD,189,legend,,,,sfd-189.webp
+sfd-190,Forgefire Cape,SFD,190,main,,,,sfd-190.webp
+sfd-191,Rabadon's Deathcrown,SFD,191,main,,,,sfd-191.webp
+sfd-192,Shurelya's Requiem,SFD,192,main,,,,sfd-192.webp
+sfd-193,"Jax, Grandmaster at Arms",SFD,193,legend,,,,sfd-193.webp
+sfd-194,Counter Strike,SFD,194,main,,,,sfd-194.webp
+sfd-195,"Irelia, Blade Dancer",SFD,195,legend,,,,sfd-195.webp
+sfd-196,Defiant Dance,SFD,196,main,,,,sfd-196.webp
+sfd-197,"Azir, Emperor of the Sands",SFD,197,legend,,,,sfd-197.webp
+sfd-198,Arise!,SFD,198,main,,,,sfd-198.webp
+sfd-199,"Ezreal, Prodigal Explorer",SFD,199,legend,,,,sfd-199.webp
+sfd-200,Arcane Shift,SFD,200,main,,,,sfd-200.webp
+sfd-201,"Renata, Chem-Baroness",SFD,201,legend,,,,sfd-201.webp
+sfd-202,Hostile Takeover,SFD,202,main,,,,sfd-202.webp
+sfd-203,"Sivir, Battle Mistress",SFD,203,legend,,,,sfd-203.webp
+sfd-204,On the Hunt,SFD,204,main,,,,sfd-204.webp
+sfd-205,"Fiora, Grand Duelist",SFD,205,legend,,,,sfd-205.webp
+sfd-206,Riposte,SFD,206,main,,,,sfd-206.webp
+sfd-207,Emperor's Dais,SFD,207,battlefield,,,,sfd-207.webp
+sfd-208,Forge of the Fluft,SFD,208,battlefield,,,,sfd-208.webp
+sfd-209,Forgotten Monument,SFD,209,battlefield,,,,sfd-209.webp
+sfd-210,Hall of Legends,SFD,210,battlefield,,,,sfd-210.webp
+sfd-211,Marai Spire,SFD,211,battlefield,,,,sfd-211.webp
+sfd-212,Minefield,SFD,212,battlefield,,,,sfd-212.webp
+sfd-213,Ornn's Forge,SFD,213,battlefield,,,,sfd-213.webp
+sfd-214,Power Nexus,SFD,214,battlefield,,,,sfd-214.webp
+sfd-215,Ravenbloom Conservatory,SFD,215,battlefield,,,,sfd-215.webp
+sfd-216,Rockfall Path,SFD,216,battlefield,,,,sfd-216.webp
+sfd-217,Seat of Power,SFD,217,battlefield,,,,sfd-217.webp
+sfd-218,Sunken Temple,SFD,218,battlefield,,,,sfd-218.webp
+sfd-219,The Papertree,SFD,219,battlefield,,,,sfd-219.webp
+sfd-220,Treasure Hoard,SFD,220,battlefield,,,,sfd-220.webp
+sfd-221,Veiled Temple,SFD,221,battlefield,,,,sfd-221.webp
+sfd-222,Seal of Rage,SFD,222,main,,,,sfd-222.webp
+sfd-223,"Vayne, Hunter",SFD,223,main,,,,sfd-223.webp
+sfd-223s,"Vayne, Hunter",SFD,223s,main,,,,sfd-223s.webp
+sfd-224,"Aphelios, Exalted",SFD,224,main,,,,sfd-224.webp
+sfd-224s,"Aphelios, Exalted",SFD,224s,main,,,,sfd-224s.webp
+sfd-225,"Irelia, Fervent",SFD,225,main,,,,sfd-225.webp
+sfd-225s,"Irelia, Fervent",SFD,225s,main,,,,sfd-225s.webp
+sfd-226,Seal of Focus,SFD,226,main,,,,sfd-226.webp
+sfd-227,"Ahri, Inquisitive",SFD,227,main,,,,sfd-227.webp
+sfd-227s,"Ahri, Inquisitive",SFD,227s,main,,,,sfd-227s.webp
+sfd-228,"Bard, Mercurial",SFD,228,main,,,,sfd-228.webp
+sfd-228s,"Bard, Mercurial",SFD,228s,main,,,,sfd-228s.webp
+sfd-229,Seal of Insight,SFD,229,main,,,,sfd-229.webp
+sfd-230,"Teemo, Strategist",SFD,230,main,,,,sfd-230.webp
+sfd-230s,"Teemo, Strategist",SFD,230s,main,,,,sfd-230s.webp
+sfd-231,Seal of Strength,SFD,231,main,,,,sfd-231.webp
+sfd-232,"Sett, Brawler",SFD,232,main,,,,sfd-232.webp
+sfd-232s,"Sett, Brawler",SFD,232s,main,,,,sfd-232s.webp
+sfd-233,"Yone, Blademaster",SFD,233,main,,,,sfd-233.webp
+sfd-233s,"Yone, Blademaster",SFD,233s,main,,,,sfd-233s.webp
+sfd-234,Seal of Discord,SFD,234,main,,,,sfd-234.webp
+sfd-235,"Yasuo, Windrider",SFD,235,main,,,,sfd-235.webp
+sfd-235s,"Yasuo, Windrider",SFD,235s,main,,,,sfd-235s.webp
+sfd-236,"Darius, Executioner",SFD,236,main,,,,sfd-236.webp
+sfd-236s,"Darius, Executioner",SFD,236s,main,,,,sfd-236s.webp
+sfd-237,"Karma, Channeler",SFD,237,main,,,,sfd-237.webp
+sfd-237s,"Karma, Channeler",SFD,237s,main,,,,sfd-237s.webp
+sfd-238,Seal of Unity,SFD,238,main,,,,sfd-238.webp
+sfd-239,"Soraka, Wanderer",SFD,239,main,,,,sfd-239.webp
+sfd-239s,"Soraka, Wanderer",SFD,239s,main,,,,sfd-239s.webp
+sfd-240,"Rumble, Mechanized Menace",SFD,240,legend,,,,sfd-240.webp
+sfd-241,"Lucian, Purifier",SFD,241,legend,,,,sfd-241.webp
+sfd-242,"Draven, Glorious Executioner",SFD,242,legend,,,,sfd-242.webp
+sfd-243,"Rek'Sai, Void Burrower",SFD,243,legend,,,,sfd-243.webp
+sfd-244,"Ornn, Fire Below the Mountain",SFD,244,legend,,,,sfd-244.webp
+sfd-245,"Jax, Grandmaster at Arms",SFD,245,legend,,,,sfd-245.webp
+sfd-246,"irelia, Blade Dancer",SFD,246,legend,,,,sfd-246.webp
+sfd-247,"Azir, Emperor of the Sands",SFD,247,legend,,,,sfd-247.webp
+sfd-248,"Ezreal, Prodigal Explorer",SFD,248,legend,,,,sfd-248.webp
+sfd-249,"Renata, Chem-Baroness",SFD,249,legend,,,,sfd-249.webp
+sfd-250,"Sivir, Battle Mistress",SFD,250,legend,,,,sfd-250.webp
+sfd-251,Grand Duelist,SFD,251,legend,,,,sfd-251.webp
+sfd-t01,Mech ,SFD,t01,token,,,,sfd-t01.webp
+sfd-t02,Sand Soldier,SFD,t02,token,,,,sfd-t02.webp
+sfd-t03,Gold,SFD,t03,token,,,,sfd-t03.webp

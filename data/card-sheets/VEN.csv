@@ -1,0 +1,244 @@
+id,name,set_code,card_number,card_type,cost,traits,rules_text,image_filename
+ven-001,Baccai Sandspinner,VEN,001,main,,,,ven-001.webp
+ven-002,Blade Twirler,VEN,002,main,,,,ven-002.webp
+ven-003,Brittle Steel,VEN,003,main,,,,ven-003.webp
+ven-004,Dune Surfer,VEN,004,main,,,,ven-004.webp
+ven-005,Forsaken Baccai,VEN,005,main,,,,ven-005.webp
+ven-006,Oasis Raider,VEN,006,main,,,,ven-006.webp
+ven-007,Punching Poro,VEN,007,main,,,,ven-007.webp
+ven-008,Ruthless Strike,VEN,008,main,,,,ven-008.webp
+ven-009,Baccai Reaper,VEN,009,main,,,,ven-009.webp
+ven-010,Consuming Curse,VEN,010,main,,,,ven-010.webp
+ven-011,Pendulum Blade,VEN,011,main,,,,ven-011.webp
+ven-012,Perfect Execution,VEN,012,main,,,,ven-012.webp
+ven-013,Shadow Assassin,VEN,013,main,,,,ven-013.webp
+ven-014,Shadow Fiend,VEN,014,main,,,,ven-014.webp
+ven-015,Decree of Rage,VEN,015,main,,,,ven-015.webp
+ven-016,Eclipse Dragon,VEN,016,main,,,,ven-016.webp
+ven-017,"Morgana, Vindictive",VEN,017,main,,,,ven-017.webp
+ven-018,Rage Amplifier,VEN,018,main,,,,ven-018.webp
+ven-019,"Renekton, Rage Fueled",VEN,019,main,,,,ven-019.webp
+ven-019a,"Renekton, Rage Fueled",VEN,019a,main,,,,ven-019a.webp
+ven-020,Twilight Reveler,VEN,020,main,,,,ven-020.webp
+ven-021,"Akali, Deadly Weapon",VEN,021,main,,,,ven-021.webp
+ven-021a,"Akali, Deadly Weapon",VEN,021a,main,,,,ven-021a.webp
+ven-022,Endless Riches,VEN,022,main,,,,ven-022.webp
+ven-023,"Zed, From the Shadows",VEN,023,main,,,,ven-023.webp
+ven-023a,"Zed, From the Shadows",VEN,023a,main,,,,ven-023a.webp
+ven-024,Affectionate Poro,VEN,024,main,,,,ven-024.webp
+ven-025,Esteemed Hierophant,VEN,025,main,,,,ven-025.webp
+ven-026,Field Musicians,VEN,026,main,,,,ven-026.webp
+ven-027,Hand Hammer,VEN,027,main,,,,ven-027.webp
+ven-028,Mournful Witness,VEN,028,main,,,,ven-028.webp
+ven-029,Ol' Poro,VEN,029,main,,,,ven-029.webp
+ven-030,Serene Ascetic,VEN,030,main,,,,ven-030.webp
+ven-031,Twilight Shroud,VEN,031,main,,,,ven-031.webp
+ven-032,Frostcoat Mother,VEN,032,main,,,,ven-032.webp
+ven-033,Pakaa Protector,VEN,033,main,,,,ven-033.webp
+ven-034,Resonating Strike,VEN,034,main,,,,ven-034.webp
+ven-035,Sanction,VEN,035,main,,,,ven-035.webp
+ven-036,Sandstone Chimera,VEN,036,main,,,,ven-036.webp
+ven-037,Tomb-Raider Barbara,VEN,037,main,,,,ven-037.webp
+ven-038,"Akali, Silent",VEN,038,main,,,,ven-038.webp
+ven-038a,"Akali, Silent",VEN,038a,main,,,,ven-038a.webp
+ven-039,Crumbling Sands,VEN,039,main,,,,ven-039.webp
+ven-040,Decree of Focus,VEN,040,main,,,,ven-040.webp
+ven-041,"Riven, Shattered",VEN,041,main,,,,ven-041.webp
+ven-041a,"Riven, Shattered",VEN,041a,main,,,,ven-041a.webp
+ven-042,"Shen, Scourge of Shadows",VEN,042,main,,,,ven-042.webp
+ven-042a,"Shen, Scourge of Shadows",VEN,042a,main,,,,ven-042a.webp
+ven-043,Steel Paws,VEN,043,main,,,,ven-043.webp
+ven-044,Astral Heron,VEN,044,main,,,,ven-044.webp
+ven-045,Helm of Suppression,VEN,045,main,,,,ven-045.webp
+ven-046,"Nasus, Ascended",VEN,046,main,,,,ven-046.webp
+ven-046a,"Nasus, Ascended",VEN,046a,main,,,,ven-046a.webp
+ven-047,Apprentice Mage,VEN,047,main,,,,ven-047.webp
+ven-048,Cloud Drake,VEN,048,main,,,,ven-048.webp
+ven-049,Dredge Up,VEN,049,main,,,,ven-049.webp
+ven-050,Grumpy Rockbear,VEN,050,main,,,,ven-050.webp
+ven-051,Iterative Design,VEN,051,main,,,,ven-051.webp
+ven-052,Mesmerize,VEN,052,main,,,,ven-052.webp
+ven-053,Otterpus,VEN,053,main,,,,ven-053.webp
+ven-054,Questionable Tome,VEN,054,main,,,,ven-054.webp
+ven-055,Applied Researchers,VEN,055,main,,,,ven-055.webp
+ven-056,Clairvoyance,VEN,056,main,,,,ven-056.webp
+ven-057,Covert Informant,VEN,057,main,,,,ven-057.webp
+ven-058,Patched Porobot,VEN,058,main,,,,ven-058.webp
+ven-059,Shock Blast,VEN,059,main,,,,ven-059.webp
+ven-060,Sky Cruiser,VEN,060,main,,,,ven-060.webp
+ven-061,Decree of Insight,VEN,061,main,,,,ven-061.webp
+ven-062,Hextech Formula,VEN,062,main,,,,ven-062.webp
+ven-063,"Nasus, Guardian of Knowledge",VEN,063,main,,,,ven-063.webp
+ven-063a,"Nasus, Guardian of Knowledge",VEN,063a,main,,,,ven-063a.webp
+ven-064,Plaza Guardian,VEN,064,main,,,,ven-064.webp
+ven-065,"Swain, Visionary",VEN,065,main,,,,ven-065.webp
+ven-066,Temporal Breach,VEN,066,main,,,,ven-066.webp
+ven-067,Bottled Constellation,VEN,067,main,,,,ven-067.webp
+ven-068,"Jayce, Brilliant Inventor",VEN,068,main,,,,ven-068.webp
+ven-068a,"Jayce, Brilliant Inventor",VEN,068a,main,,,,ven-068a.webp
+ven-069,"Mel, Newly Awakened",VEN,069,main,,,,ven-069.webp
+ven-069a,"Mel, Newly Awakened",VEN,069a,main,,,,ven-069a.webp
+ven-070,Brutal Hunter,VEN,070,main,,,,ven-070.webp
+ven-071,Fretful Feline,VEN,071,main,,,,ven-071.webp
+ven-072,Guttural Roar,VEN,072,main,,,,ven-072.webp
+ven-073,Jagged Cutlass,VEN,073,main,,,,ven-073.webp
+ven-074,Legion Marauder,VEN,074,main,,,,ven-074.webp
+ven-075,Platewyrm Egg,VEN,075,main,,,,ven-075.webp
+ven-076,Repair Specialist,VEN,076,main,,,,ven-076.webp
+ven-077,Tools of Empire,VEN,077,main,,,,ven-077.webp
+ven-078,Baccai Witherclaw,VEN,078,main,,,,ven-078.webp
+ven-079,Dame the Despoiler,VEN,079,main,,,,ven-079.webp
+ven-080,Noxian Demolitionist,VEN,080,main,,,,ven-080.webp
+ven-081,Onslaught,VEN,081,main,,,,ven-081.webp
+ven-082,Profiteer,VEN,082,main,,,,ven-082.webp
+ven-083,Rampage,VEN,083,main,,,,ven-083.webp
+ven-084,"Ambessa, The Wolf",VEN,084,main,,,,ven-084.webp
+ven-084a,"Ambessa, The Wolf",VEN,084a,main,,,,ven-084a.webp
+ven-085,Decree of Strength,VEN,085,main,,,,ven-085.webp
+ven-086,"Gangplank, Naval",VEN,086,main,,,,ven-086.webp
+ven-087,Hextech Disc,VEN,087,main,,,,ven-087.webp
+ven-088,"Jayce, Hammer in Hand",VEN,088,main,,,,ven-088.webp
+ven-088a,"Jayce, Hammer in Hand",VEN,088a,main,,,,ven-088a.webp
+ven-089,Wild Claw,VEN,089,main,,,,ven-089.webp
+ven-090,Cataclysmic Duel,VEN,090,main,,,,ven-090.webp
+ven-091,Corrupted Dragon,VEN,091,main,,,,ven-091.webp
+ven-092,"Renekton, Brute",VEN,092,main,,,,ven-092.webp
+ven-092a,"Renekton, Brute",VEN,092a,main,,,,ven-092a.webp
+ven-093,Kinkou Lifeblade,VEN,093,main,,,,ven-093.webp
+ven-094,Mask Mother,VEN,094,main,,,,ven-094.webp
+ven-095,Shadow Order Disciple,VEN,095,main,,,,ven-095.webp
+ven-096,Shadowblade Lurker,VEN,096,main,,,,ven-096.webp
+ven-097,Spiderling,VEN,097,main,,,,ven-097.webp
+ven-098,Stargazer,VEN,098,main,,,,ven-098.webp
+ven-099,Tornado Warrior,VEN,099,main,,,,ven-099.webp
+ven-100,Up from the Deep,VEN,100,main,,,,ven-100.webp
+ven-101,Gust Monk,VEN,101,main,,,,ven-101.webp
+ven-102,Ravenbloom Prefect,VEN,102,main,,,,ven-102.webp
+ven-103,Shadows of the Past,VEN,103,main,,,,ven-103.webp
+ven-104,Tail-Cloaked Matriarch,VEN,104,main,,,,ven-104.webp
+ven-105,Twilight Step,VEN,105,main,,,,ven-105.webp
+ven-106,Wind and Ghosts,VEN,106,main,,,,ven-106.webp
+ven-107,Decree of Discord,VEN,107,main,,,,ven-107.webp
+ven-108,Forgotten Relic,VEN,108,main,,,,ven-108.webp
+ven-109,"Illaoi, Prophet of the Great Kraken",VEN,109,main,,,,ven-109.webp
+ven-110,"Mel, Defiant Soul",VEN,110,main,,,,ven-110.webp
+ven-110a,"Mel, Defiant Soul",VEN,110a,main,,,,ven-110a.webp
+ven-111,Minah Swiftfoot,VEN,111,main,,,,ven-111.webp
+ven-112,"Zed, Without a Sound",VEN,112,main,,,,ven-112.webp
+ven-112a,"Zed, Without a Sound",VEN,112a,main,,,,ven-112a.webp
+ven-113,"Kennen, Storm of Shuriken",VEN,113,main,,,,ven-113.webp
+ven-113a,"Kennen, Storm of Shuriken",VEN,113a,main,,,,ven-113a.webp
+ven-114,Kharox,VEN,114,main,,,,ven-114.webp
+ven-115,Ocean Drake,VEN,115,main,,,,ven-115.webp
+ven-116,Dragon Form,VEN,116,main,,,,ven-116.webp
+ven-117,Disciple of Shen,VEN,117,main,,,,ven-117.webp
+ven-118,Horns of the Dragon,VEN,118,main,,,,ven-118.webp
+ven-119,Keeper of Law,VEN,119,main,,,,ven-119.webp
+ven-120,"Masa, Crashing Thunder",VEN,120,main,,,,ven-120.webp
+ven-121,Reluctant Leader,VEN,121,main,,,,ven-121.webp
+ven-122,Solari Sunhawk,VEN,122,main,,,,ven-122.webp
+ven-123,Soulspinner,VEN,123,main,,,,ven-123.webp
+ven-124,Escaped Grayback,VEN,124,main,,,,ven-124.webp
+ven-125,Hungry Wolf,VEN,125,main,,,,ven-125.webp
+ven-126,Ki Barrier,VEN,126,main,,,,ven-126.webp
+ven-127,Lacerate,VEN,127,main,,,,ven-127.webp
+ven-128,Noxian Emissary,VEN,128,main,,,,ven-128.webp
+ven-129,Sacred Protector,VEN,129,main,,,,ven-129.webp
+ven-130,Aurok General,VEN,130,main,,,,ven-130.webp
+ven-131,Decree of Unity,VEN,131,main,,,,ven-131.webp
+ven-132,Fallen Feline,VEN,132,main,,,,ven-132.webp
+ven-133,Glowstone,VEN,133,main,,,,ven-133.webp
+ven-134,"Kayle, Justified",VEN,134,main,,,,ven-134.webp
+ven-135,"Kennen, Keeper of Balance",VEN,135,main,,,,ven-135.webp
+ven-135a,"Kennen, Keeper of Balance",VEN,135a,main,,,,ven-135a.webp
+ven-136,"Ambessa, Respected and Feared",VEN,136,main,,,,ven-136.webp
+ven-136a,"Ambessa, Respected and Feared",VEN,136a,main,,,,ven-136a.webp
+ven-137,Shady Spectacles,VEN,137,main,,,,ven-137.webp
+ven-138,"Shen, Leader of the Kinkou",VEN,138,main,,,,ven-138.webp
+ven-139,"Akali, Rogue Assassin",VEN,139,legend,,,,ven-139.webp
+ven-140,Shuriken Flip,VEN,140,main,,,,ven-140.webp
+ven-141,"Renekton, Butcher of the Sands",VEN,141,legend,,,,ven-141.webp
+ven-142,Dominus,VEN,142,main,,,,ven-142.webp
+ven-143,"Zed, Master of Shadows",VEN,143,legend,,,,ven-143.webp
+ven-144,Death Mark,VEN,144,main,,,,ven-144.webp
+ven-145,"Nasus, Curator of the Sands",VEN,145,legend,,,,ven-145.webp
+ven-146,Siphoning Strike,VEN,146,main,,,,ven-146.webp
+ven-147,"Shen, Eye of Twilight",VEN,147,legend,,,,ven-147.webp
+ven-148,Shadow Dash,VEN,148,main,,,,ven-148.webp
+ven-149,"Jayce, Defender of Tomorrow",VEN,149,legend,,,,ven-149.webp
+ven-150,Acceleration Gate,VEN,150,main,,,,ven-150.webp
+ven-151,"Mel, Soul's Reflection",VEN,151,legend,,,,ven-151.webp
+ven-152,Rebuttal,VEN,152,main,,,,ven-152.webp
+ven-153,"Ambessa, Matriarch of War",VEN,153,legend,,,,ven-153.webp
+ven-154,Public Execution,VEN,154,main,,,,ven-154.webp
+ven-155,"Kennen, Heart of the Tempest",VEN,155,legend,,,,ven-155.webp
+ven-156,Lightning Rush,VEN,156,main,,,,ven-156.webp
+ven-157,Dragon Roost,VEN,157,battlefield,,,,ven-157.webp
+ven-158,"Heisho, Shell of the World",VEN,158,battlefield,,,,ven-158.webp
+ven-159,Kinkou Temple,VEN,159,battlefield,,,,ven-159.webp
+ven-160,Mystic Vortex,VEN,160,battlefield,,,,ven-160.webp
+ven-161,Piltovan Forge,VEN,161,battlefield,,,,ven-161.webp
+ven-162,Protective Sands,VEN,162,battlefield,,,,ven-162.webp
+ven-163,Risen Altar,VEN,163,battlefield,,,,ven-163.webp
+ven-164,Sandswept Tomb,VEN,164,battlefield,,,,ven-164.webp
+ven-165,Shadow Temple,VEN,165,battlefield,,,,ven-165.webp
+ven-166,Threshold of the Gray,VEN,166,battlefield,,,,ven-166.webp
+ven-167,"Vi, Destructive",VEN,167,main,,,,ven-167.webp
+ven-168,"Jinx, Demolitionist",VEN,168,main,,,,ven-168.webp
+ven-169,"Zed, From the Shadows",VEN,169,main,,,,ven-169.webp
+ven-170,"Shen, Scourge of Shadows",VEN,170,main,,,,ven-170.webp
+ven-171,"Riven, Shattered",VEN,171,main,,,,ven-171.webp
+ven-172,"Draven, Showboat",VEN,172,main,,,,ven-172.webp
+ven-173,"Swain, Visionary",VEN,173,main,,,,ven-173.webp
+ven-174,"Irelia, Fervent",VEN,174,main,,,,ven-174.webp
+ven-175,"Jayce, Man of Progress",VEN,175,main,,,,ven-175.webp
+ven-176,"Viktor, Innovator",VEN,176,main,,,,ven-176.webp
+ven-177,"Renekton, Brute",VEN,177,main,,,,ven-177.webp
+ven-178,"Nasus, Guardian of Knowledge",VEN,178,main,,,,ven-178.webp
+ven-179,"Rengar, Trophy Hunter",VEN,179,main,,,,ven-179.webp
+ven-180,"Kha'Zix, Evolving Hunter",VEN,180,main,,,,ven-180.webp
+ven-181,"Gangplank, Naval",VEN,181,main,,,,ven-181.webp
+ven-182,"Illaoi, Prophet of the Great Kraken",VEN,182,main,,,,ven-182.webp
+ven-183,"Diana, No Longer Human",VEN,183,main,,,,ven-183.webp
+ven-184,"Leona, Determined",VEN,184,main,,,,ven-184.webp
+ven-185,"Kayle, Justified",VEN,185,main,,,,ven-185.webp
+ven-186,"Morgana, Vindictive",VEN,186,main,,,,ven-186.webp
+ven-187,"Ambessa, Respected and Feared",VEN,187,main,,,,ven-187.webp
+ven-188,"Mel, Defiant Soul",VEN,188,legend,,,,ven-188.webp
+ven-188s,"Mel, Defiant Soul",VEN,188s,legend,,,,
+ven-189,"Akali, Rogue Assassin",VEN,189,legend,,,,ven-189.webp
+ven-189s,"Akali, Rogue Assassin",VEN,189s,legend,,,,
+ven-190,"Renekton, Butcher of the Sands",VEN,190,legend,,,,ven-190.webp
+ven-190s,"Renekton, Butcher of the Sands",VEN,190s,legend,,,,
+ven-191,"Zed, Master of Shadows",VEN,191,legend,,,,ven-191.webp
+ven-191s,"Zed, Master of Shadows",VEN,191s,legend,,,,
+ven-192,"Nasus, Curator of the Sands",VEN,192,legend,,,,ven-192.webp
+ven-192s,"Nasus, Curator of the Sands",VEN,192s,legend,,,,1783617667341-yb02f8e6hpj.webp
+ven-193,"Shen, Eye of Twilight",VEN,193,legend,,,,ven-193.webp
+ven-193s,"Shen, Eye of Twilight",VEN,193s,legend,,,,1783583901433-zyix3fvqr8o.webp
+ven-194,"Jayce, Defender of Tomorrow",VEN,194,legend,,,,ven-194.webp
+ven-194s,"Jayce, Defender of Tomorrow",VEN,194s,legend,,,,
+ven-195,"Mel, Soul's Reflection",VEN,195,legend,,,,ven-195.webp
+ven-195s,"Mel, Soul's Reflection",VEN,195s,legend,,,,
+ven-196,"Ambessa, Matriarch of War",VEN,196,legend,,,,ven-196.webp
+ven-196s,"Ambessa, Matriarch of War",VEN,196s,legend,,,,
+ven-197,"Kennen, Heart of the Tempest",VEN,197,legend,,,,ven-197.webp
+ven-197s,"Kennen, Heart of the Tempest",VEN,197s,legend,,,,
+ven-r01,Fury Rune,VEN,r01,rune,,,,
+ven-r02,Calm Rune,VEN,r02,rune,,,,
+ven-r03,Mind Rune,VEN,r03,rune,,,,
+ven-r04,Body Rune,VEN,r04,rune,,,,
+ven-r05,Chaos Rune,VEN,r05,rune,,,,
+ven-r06,Order Rune,VEN,r06,rune,,,,
+ven-sp1,"Kai'sa, Survivor",VEN,sp1,main,,,,ven-sp1.webp
+ven-sp2,"Sona, Harmonious",VEN,sp2,main,,,,ven-sp2.webp
+ven-sp3,"Ahri, Inquisitive",VEN,sp3,main,,,,ven-sp3.webp
+ven-sp4,"Sett, Brawler",VEN,sp4,main,,,,ven-sp4.webp
+ven-sp5,"Ezreal, Prodigy",VEN,sp5,main,,,,ven-sp5.webp
+ven-sp6,"Lux, Crownguard",VEN,sp6,main,,,,ven-sp6.webp
+ven-t01,Empowered,VEN,t01,token,,,,
+ven-t02,ven-t02,VEN,t02,token,,,,
+ven-t03,ven-t03,VEN,t03,token,,,,
+ven-t04,Recruit,VEN,t04,token,,,,
+ven-t05,Shadow Clone,VEN,t05,token,,,,
+ven-t06,Tentacle,VEN,t06,token,,,,
