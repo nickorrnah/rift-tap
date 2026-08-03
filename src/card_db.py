@@ -155,6 +155,36 @@ class CardDatabase:
                 "image_filename": card.image_filename,
             })
 
+    def reseed_cards(self, cards: list[Card]) -> None:
+        """
+        Replace the entire card catalog: delete every row in `cards`, then
+        insert the given list from scratch, all in one transaction so a
+        failure partway through rolls back to the pre-reseed state instead
+        of leaving the table empty.
+
+        tag_assignments, scan_log and app_settings are untouched — card IDs
+        are stable across catalog updates, so existing NFC tag mappings
+        keep resolving.
+        """
+        with self._conn:
+            self._conn.execute("DELETE FROM cards")
+            self._conn.executemany("""
+                INSERT INTO cards
+                    (id, name, set_code, card_number, card_type, cost, traits, rules_text, image_filename)
+                VALUES
+                    (:id, :name, :set_code, :card_number, :card_type, :cost, :traits, :rules_text, :image_filename)
+            """, [{
+                "id":             card.id,
+                "name":           card.name,
+                "set_code":       card.set_code,
+                "card_number":    card.card_number,
+                "card_type":      card.card_type,
+                "cost":           card.cost,
+                "traits":         card.traits,
+                "rules_text":     card.rules_text,
+                "image_filename": card.image_filename,
+            } for card in cards])
+
     def get_card_by_id(self, card_id: str) -> Optional[Card]:
         row = self._conn.execute(
             "SELECT * FROM cards WHERE id = ?", (card_id,)

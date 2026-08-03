@@ -9,16 +9,27 @@ Rift Tap
             overlay preview now exists, but it is a scaled down tiny window.  Instead, I'd like to just play the browser source directly on the settings page itself, so the user can get the full sized view of whats happening on the settings page itself.  Since the overlay projects into the lower right corner, it won't overlap on top of any of the setting controls anyways. This won't pop out a whole new tab.
             We can make it a toggle between the preview being live placed onto the settings page or just getting the mini window view that currently exists.
 
-        Setting for battlefield cards to be displayed in landscape instead of portrait
-            Need to assign battlefield cards
+        Need to stop pi from auto turning off/disconnecting its connection after a timeout.  Want it always on while powered.
         
-        Need to properly fix the card db 
-            missing cards 
-            missing card images 
-            add basic card types 
-                runes, battlefields, legends, main deck, tokens
-            Add a db dumper that dumps all db entries to a csv file to be used to view the db and see missing data
-            Add a db intake method that takes a csv in and reseeds the db from that csv.
+        Support for multiple rift-tap devices to be hooked into one PC host.
+            If a scan happens on any device, the data is pushed to the same feed.  Basically support for each player to have a rift tap next to them instead of one shared one in the center of the table.
+
+            Setting a room-based session might work with like a 6 letter room code
+
+        Support for multiple rift-tap device to be remotely hooked into one feed.
+            Similar to the above feature, but now internet connected, so that up to 4 players at remote setups could hook into one shared feed.  
+
+            Room based system with password protection on the room itself.
+
+            Will likely need to host a 3rd party service in the cloud that the rift-tap devices somehow auth into. 
+
+            Creds could probably be created unique per device, then stored and encrypted on the device during setup and shared with host authenticator server in the cloud. 
+
+            May be easier to just support internet connected rooms rather than both offline and online room types.
+
+        Mis-scans happening semi-frequently when repeatedly scanning the same card
+            this could also be due to quick deterioration of the nfc sticker or may have something to do with foiled cards.
+                more investigation required.
 
         Add support for adding a second browser source endpoint for points tracking, so there will now be a card overlay page and a points overlay page that can both be pointed to separately as a distinct browser sources.
 
@@ -32,6 +43,18 @@ Rift Tap
             There should be disclaimers that heavily encourage the use of the wired mode over wireless instead when feasible.
 
         Add actual software lifecycle management to allow for super easy OTA updates.  Either to update code app code itself or just to add new cards to the db.
+
+        Allow for point score tracking via the web ui.
+            Doing it this way allows both basic and pro models to at least output the html source for points tracking and such somewhat easily, pro model just gets easy taps for it.
+
+            See relevant section in pro model for additional details on this feature.
+
+            This feature will need its own settings panel. (We'll break down the settings page into multiple tabs, one for the card ui, one for global settings, one for point tracking settings)
+
+            Need to allow users to choose to either display the point tracker html source as one entire source, or to output each element as an individual source.
+                This will allow a user to have fine grained access over which parts of the point tracker they actually want to display and to be able to move them around freely.  So if a user just wants the full point tracker UI they can get it one go, or they can choose to get just player 1's score and player 2's scores as separate elements and then import and move them around freely.
+
+                This feature should be discussed more, as users may already be able to achieve this functionality by just creating a duplicate of the original browser source and cropping it, making this feature a minor quality of life feature that is not native to a target user's workflow.
 		
     Hardware Improvements    
         Visual/audio feedback of a scan
@@ -41,6 +64,16 @@ Rift Tap
             Current hat has gpio pass through on top, so we should be able to just directly plug into the top of the hat. although this will require slightly more distance to be placed between the reader and the top of the product case, impacting scan performance slightly.
         
         For pro model with a screen, add feature for touchscreen to act as a point tracker like a lifeboard
+            players will be able to score by conquering (right tap) or by holding (left tap)
+
+            Keep track of how players scored and be able to display that via a button tap.
+
+            integrate with turn indicator if enabled to show what turns the scores occurred.
+
+            All of these capabilities can be toggled on/off via settings
+
+        For pro model, add the ability to track turns as well.
+            toggleable off/on in settings
 
         For pro model, rerender ui with a layout optimized for mobile like screen ratios.
 	

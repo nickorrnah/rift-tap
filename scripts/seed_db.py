@@ -1,13 +1,16 @@
 """
-scripts/seed_db.py — Build the card database from the compiled card ID list.
+scripts/seed_db.py — Rebuild the card database from data/card-sheets/*.csv.
 
-Data source: docs/planning/card-id-list.txt
-  Format:    {card_id}\t{card_name}  (one card per line)
-  Example:   ogn-001\tBlazing Scorcher
+Data source: data/card-sheets/{SET}.csv (one file per set, e.g. OGN.csv)
+  Columns:   id,name,set_code,card_number,card_type,cost,traits,rules_text,image_filename
 
-Image lookup: images/{card_id}.webp
-  Cards with no downloaded image get image_filename="" and will show
-  the placeholder in the overlay until their image is available.
+Image lookup: images/{image_filename}
+  Cards with a blank or missing image_filename show the placeholder in the
+  overlay until their image is available.
+
+This wipes the entire `cards` table and reinserts from scratch — the CSVs
+are the source of truth for the card catalog. NFC tag assignments are left
+untouched since card IDs are stable across catalog updates.
 
 Run:
     cd card-scanner
@@ -19,80 +22,40 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from card_db import CardDatabase, Card
-from config import DB_PATH, BASE_DIR, IMAGE_DIR
+from card_db import CardDatabase
+from card_sheets import load_cards_from_sheets
+from config import DB_PATH, BASE_DIR
 
-CARD_LIST = BASE_DIR / "docs" / "planning" / "card-id-list.txt"
+CARD_SHEETS_DIR = BASE_DIR / "data" / "card-sheets"
 
 
 def seed():
-    if not CARD_LIST.exists():
-        print(f"ERROR: card list not found at {CARD_LIST}")
+    if not CARD_SHEETS_DIR.is_dir():
+        print(f"ERROR: card sheets directory not found at {CARD_SHEETS_DIR}")
         sys.exit(1)
 
-    db = CardDatabase(DB_PATH)
+    cards, report = load_cards_from_sheets(CARD_SHEETS_DIR)
 
-    lines = CARD_LIST.read_text(encoding="utf-8").splitlines()
-    cards = []
-    for line in lines:
-        line = line.strip()
-        if not line:
-            continue
+    print(f"Reseeding {len(cards)} cards into {DB_PATH} ...")
+    for filename, count in report["per_file"].items():
+        print(f"  {filename}: {count} cards")
 
-        # Support both tab and space as separator (some lines use spaces)
-        if "\t" in line:
-            parts = line.split("\t", 1)
-        else:
-            parts = line.split(" ", 1)
+    if report["skipped"]:
+        print(f"  {len(report['skipped'])} rows skipped (missing id or name):")
+        for entry in report["skipped"]:
+            print(f"    {entry['file']} row {entry['row_number']}: {entry['reason']}")
 
-        card_id = parts[0].strip().rstrip("*")  # strip trailing * (special marker)
-        name    = parts[1].strip() if len(parts) > 1 else card_id  # fall back to ID if no name
-
-        # Check if the image exists
-        image_path = IMAGE_DIR / f"{card_id}.webp"
-        image_filename = f"{card_id}.webp" if image_path.exists() else ""
-
-        cards.append(Card(
-            id=card_id,
-            name=name,
-            set_code=card_id.split("-")[0].upper() if "-" in card_id else "",
-            card_number=card_id.split("-")[1] if "-" in card_id else "",
-            card_type="",
-            cost=None,
-            traits="",
-            rules_text="",
-            image_filename=image_filename,
-        ))
-
-    print(f"Seeding {len(cards)} cards into {DB_PATH} ...")
-
-    # ── Test card ───────────────────────────────────────────────────────
-    # A hand-drawn placeholder used for OBS setup and demo mode.
-    # Always inserted regardless of the card list.
-    cards.insert(0, Card(
-        id="tst-000",
-        name="Placeholder Card",
-        set_code="TST",
-        card_number="000",
-        card_type="",
-        cost=None,
-        traits="",
-        rules_text="",
-        image_filename="punching-poro.png",
-    ))
-
-    for card in cards:
-        db.upsert_card(card)
-
-    with_image    = sum(1 for c in cards if c.image_filename)
-    without_image = sum(1 for c in cards if not c.image_filename)
-
+    with_image    = len(cards) - len(report["missing_images"])
+    without_image = len(report["missing_images"])
     print(f"  {with_image} cards with images")
     print(f"  {without_image} cards missing images (will show placeholder)")
-    print("Done.")
+
+    db = CardDatabase(DB_PATH)
+    db.reseed_cards(cards)
     db.close()
+
+    print("Done.")
 
 
 if __name__ == "__main__":
     seed()
-

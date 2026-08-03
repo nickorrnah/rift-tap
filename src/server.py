@@ -1,4 +1,4 @@
-"""
+﻿"""
 server.py — FastAPI web server: HTTP endpoints + WebSocket broadcast.
 
 FastAPI is chosen here for a few reasons worth understanding:
@@ -32,11 +32,12 @@ from typing import Optional
 # Allow `from config import …` when running from the src/ directory.
 sys.path.insert(0, str(Path(__file__).parent))
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, UploadFile, File
-from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from card_db import CardDatabase, Card
+from card_sheets import load_cards_from_sheets
 from nfc_reader import create_reader, NFCReader, TagScan
 from led_feedback import blink_success, blink_unknown
 from config import BASE_DIR, IMAGE_DIR, DISPLAY_DURATION_SECONDS, DB_PATH, SIMULATE_NFC
@@ -527,104 +528,32 @@ async def riot_verification():
     return FileResponse(str(BASE_DIR / "riot.txt"))
 
 
-@app.get("/api/cards/export.csv")
-async def export_cards_csv():
+@app.post("/api/cards/reseed")
+async def reseed_cards():
     """
-    Download all card records as a CSV file.
+    Wipe the card catalog and rebuild it from data/card-sheets/*.csv.
 
-    The file is UTF-8 with BOM so Excel opens it correctly without
-    needing to configure the import wizard.
+    This is destructive by design: the entire `cards` table is cleared and
+    reloaded from the CSVs bundled in the repo, so updating the catalog is
+    just a matter of pulling a new release and hitting this endpoint.
+    tag_assignments, scan_log and app_settings are left untouched — card
+    IDs are stable across catalog updates, so existing NFC tag mappings
+    keep resolving after a reseed.
 
-    Workflow:
-      1. Download CSV from this endpoint
-      2. Open in Excel / Google Sheets
-      3. Fill in the card_type column (unit, action, rune, battlefield,
-         legend, champion, token …)
-      4. Fix any names or missing data
-      5. Save as CSV and upload via POST /api/cards/import
+    Returns a summary: { total, per_file, skipped, missing_images }.
     """
-    import csv, io
-    rows = db._conn.execute(
-        "SELECT id, name, set_code, card_number, card_type, "
-        "cost, traits, rules_text, image_filename "
-        "FROM cards ORDER BY set_code, card_number, id"
-    ).fetchall()
+    sheets_dir = BASE_DIR / "data" / "card-sheets"
+    if not sheets_dir.is_dir():
+        raise HTTPException(404, f"No card sheets found at {sheets_dir}")
 
-    buf = io.StringIO()
-    buf.write("\ufeff")  # UTF-8 BOM for Excel compatibility
-    fieldnames = ["id", "name", "set_code", "card_number", "card_type",
-                  "cost", "traits", "rules_text", "image_filename"]
-    writer = csv.DictWriter(buf, fieldnames=fieldnames, lineterminator="\r\n")
-    writer.writeheader()
-    for row in rows:
-        writer.writerow(dict(row))
+    cards, report = load_cards_from_sheets(sheets_dir)
+    db.reseed_cards(cards)
 
-    data = buf.getvalue().encode("utf-8")
-    return StreamingResponse(
-        iter([data]),
-        media_type="text/csv; charset=utf-8",
-        headers={"Content-Disposition": "attachment; filename=rift-tap-cards.csv"},
+    log.info(
+        "Card reseed: %d cards from %d files, %d skipped, %d missing images",
+        len(cards), len(report["per_file"]), len(report["skipped"]), len(report["missing_images"]),
     )
-
-
-@app.post("/api/cards/import")
-async def import_cards_csv(file: UploadFile = File(...)):
-    """
-    Upload a CSV to update the card database.
-
-    Behaviour:
-      - Upserts every row (insert or update by id).
-      - Rows with a blank or missing id are skipped.
-      - Optional columns (cost, traits …) default to empty / None if absent.
-      - Does NOT delete cards that are absent from the CSV, so a partial
-        update (e.g. just the new-set rows) is safe.
-
-    Returns a summary: { inserted, updated, skipped, total }.
-    """
-    import csv, io
-
-    raw = await file.read()
-    # Strip BOM if present, then decode
-    text = raw.decode("utf-8-sig")  # handles both BOM and plain UTF-8
-    reader = csv.DictReader(io.StringIO(text))
-
-    inserted = updated = skipped = 0
-    for row in reader:
-        card_id = (row.get("id") or "").strip()
-        name    = (row.get("name") or "").strip()
-        if not card_id or not name:
-            skipped += 1
-            continue
-
-        cost_raw = (row.get("cost") or "").strip()
-        cost = int(cost_raw) if cost_raw.isdigit() else None
-
-        # Check whether this id already exists
-        exists = db._conn.execute(
-            "SELECT 1 FROM cards WHERE id = ?", (card_id,)
-        ).fetchone()
-
-        card = Card(
-            id=card_id,
-            name=name,
-            set_code=(row.get("set_code") or "").strip(),
-            card_number=(row.get("card_number") or "").strip(),
-            card_type=(row.get("card_type") or "").strip(),
-            cost=cost,
-            traits=(row.get("traits") or "").strip(),
-            rules_text=(row.get("rules_text") or "").strip(),
-            image_filename=(row.get("image_filename") or "").strip(),
-        )
-        db.upsert_card(card)
-        if exists:
-            updated += 1
-        else:
-            inserted += 1
-
-    total = inserted + updated + skipped
-    log.info("CSV import: %d inserted, %d updated, %d skipped (total %d rows)",
-             inserted, updated, skipped, total)
-    return {"inserted": inserted, "updated": updated, "skipped": skipped, "total": total}
+    return {"total": len(cards), **report}
 
 
 @app.get("/api/health")
