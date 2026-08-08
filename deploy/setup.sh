@@ -231,6 +231,23 @@ cat > /etc/NetworkManager/conf.d/wifi-powersave-off.conf <<'EOF'
 wifi.powersave = 2
 EOF
 
+# Disable USB autosuspend — the dwc2 gadget link the laptop connects
+# through can otherwise get suspended by the kernel after a period of
+# inactivity, which drops the usb0 connection until the next burst of
+# traffic wakes it back up. We want it always on while the device is
+# powered, so disable autosuspend globally via the kernel cmdline...
+grep -q "usbcore.autosuspend=-1" "$CMDLINE" || sed -i 's/$/ usbcore.autosuspend=-1/' "$CMDLINE"
+info "  usbcore.autosuspend=-1 → $CMDLINE"
+
+# ...and reinforce it with a udev rule, since autosuspend can otherwise be
+# re-enabled per-device by the kernel/driver on hotplug (e.g. unplugging
+# and replugging the USB cable) independently of the boot-time cmdline value.
+cat > /etc/udev/rules.d/99-rift-tap-usb-power.rules <<'EOF'
+# Keep every USB device (including the dwc2 gadget link to the laptop)
+# powered on at all times — never let the kernel autosuspend it.
+SUBSYSTEM=="usb", ATTR{power/control}="on"
+EOF
+
 # Faster boot: disable waiting for network during boot (we manage networking)
 systemctl disable NetworkManager-wait-online.service 2>/dev/null || true
 

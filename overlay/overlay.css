@@ -64,6 +64,12 @@ html, body {
   gap:            10px;
 }
 
+/* Landscape battlefield cards need a wider panel than portrait cards —
+   see the #card-image-wrap.landscape comment below for why. */
+#card-panel.landscape {
+  width: 390px;
+}
+
 #card-panel.hidden   { display: none; }
 
 #card-panel.entering {
@@ -194,6 +200,10 @@ html, body {
 }
 
 /* ── Card image ───────────────────────────────────────────────────────────── */
+#card-image-wrap {
+  display: block;
+}
+
 #card-image {
   width:         100%;
   border-radius: 8px;
@@ -202,15 +212,36 @@ html, body {
   transition:    opacity 0.3s ease;  /* smooth back→face cross-fade */
 }
 
-/* Landscape battlefield cards — rotate 90° clockwise and constrain */
+/* Landscape battlefield cards — rotate 90° clockwise.
+   Card art is stored portrait (same file/aspect ratio as every other
+   card), so rotating it swaps its visual footprint: what was the image's
+   height becomes its on-screen width, and vice versa. A `transform` does
+   NOT change the element's layout box, so #card-image is sized to its
+   PRE-rotation dimensions (height:340px here, matching a portrait card's
+   max-height budget — width follows from the image's own aspect ratio).
+   #card-image-wrap is a plain flex box sized to the desired POST-rotation
+   footprint (340 wide × ~244 tall) so the panel reserves exactly that
+   much layout space — no dead gap above/below before the card info text
+   — and centers the rotated image inside it. #card-panel.landscape is
+   widened above to fit this wider footprint (a portrait-width panel
+   would otherwise clip or squeeze it back down). */
+#card-panel.landscape #card-image-wrap {
+  width:           340px;
+  height:          244px;
+  max-width:       100%;
+  margin:          0 auto;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+}
+
 #card-panel.landscape #card-image {
-  transform:  rotate(90deg);
-  max-height: none;
-  max-width:  100%;
-  width:      auto;
-  height:     280px;
-  display:    block;
-  margin:     0 auto;
+  transform:     rotate(90deg);
+  max-height:    none;
+  max-width:     none;
+  width:         auto;
+  height:        340px;
+  border-radius: 8px;
 }
 
 /* ── Text ─────────────────────────────────────────────────────────────────── */

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--
   admin/index.html — Tag Assignment Interface
 
@@ -356,8 +356,9 @@
         <div style="font-size:0.88rem;color:#f0d070;font-weight:700" id="deck-current-label">Ready</div>
         <div style="font-size:0.78rem;color:#6a7a9a;margin-top:4px" id="deck-progress-label"></div>
         <div style="display:flex;gap:8px;margin-top:10px">
-          <button id="deck-skip-btn"  class="btn" style="background:#2a2d3a;color:#a0b8d0">Skip</button>
-          <button id="deck-stop-btn"  class="btn" style="background:#3a1a1a;color:#f08080">Stop</button>
+          <button id="deck-skip-btn"    class="btn" style="background:#2a2d3a;color:#a0b8d0">Skip</button>
+          <button id="deck-pause-btn"   class="btn" style="background:#2a2d3a;color:#a0b8d0">Pause</button>
+          <button id="deck-restart-btn" class="btn" style="background:#2a2d3a;color:#a0b8d0">Restart</button>
         </div>
       </div>
       <div id="deck-queue" style="margin-top:14px;display:flex;flex-direction:column;gap:6px"></div>
@@ -420,13 +421,21 @@
         refreshAssignments();
         refreshScanLog();
       } else if (msg.event === "write_failed") {
-        showToast("Write failed — hold the card flat on the reader and try again", true);
-        assignBtn.disabled = false;
-        assignBtn.textContent = `Write to Tag → ${selectedCardName}`;
+        if (deckActive) {
+          handleDeckWriteFailure("Write failed — hold the sleeve flat and tap again");
+        } else {
+          showToast("Write failed — hold the card flat on the reader and try again", true);
+          assignBtn.disabled = false;
+          assignBtn.textContent = `Write to Tag → ${selectedCardName}`;
+        }
       } else if (msg.event === "write_timeout") {
-        showToast("Timed out — no tag detected within 30 seconds", true);
-        assignBtn.disabled = false;
-        assignBtn.textContent = `Write to Tag → ${selectedCardName}`;
+        if (deckActive) {
+          handleDeckWriteFailure("Timed out waiting for a tap — try again");
+        } else {
+          showToast("Timed out — no tag detected within 30 seconds", true);
+          assignBtn.disabled = false;
+          assignBtn.textContent = `Write to Tag → ${selectedCardName}`;
+        }
       } else if (msg.event === "settings") {
         applySettings(msg);
       } else if (msg.event === "demo_state") {
@@ -672,11 +681,13 @@
   const deckCurrentLbl = document.getElementById("deck-current-label");
   const deckProgressLbl= document.getElementById("deck-progress-label");
   const deckSkipBtn    = document.getElementById("deck-skip-btn");
-  const deckStopBtn    = document.getElementById("deck-stop-btn");
+  const deckPauseBtn   = document.getElementById("deck-pause-btn");
+  const deckRestartBtn = document.getElementById("deck-restart-btn");
 
   let deckQueue    = [];  // [{count, name, cardId, cardName, altCards}]
   let deckIndex    = 0;
   let deckActive   = false;
+  let deckPaused   = false;
 
   deckToggleBtn.addEventListener("click", () => {
     const open = deckImportBody.style.display !== "none";
@@ -689,13 +700,21 @@
     deckQueueEl.innerHTML = "";
     deckWriteBar.style.display = "none";
     deckQueue = []; deckIndex = 0; deckActive = false;
+    deckPaused = false;
+    deckPauseBtn.textContent = "Pause";
+    deckSkipBtn.disabled = false;
+    fetch("/api/write-tag", { method: "DELETE" }).catch(() => {});
   });
 
-  // Arm the current entry's write-tag request
-  function deckRearm() {
+  // Arm the current entry's write-tag request. Pass errorMsg when re-arming
+  // after a failed/timed-out write so the label keeps showing what went
+  // wrong instead of reverting straight back to "Tap a sleeve".
+  function deckRearm(errorMsg) {
     const e = deckQueue[deckIndex];
     if (!e || e.status !== "resolved") return;
-    deckCurrentLbl.textContent  = `Tap a sleeve \u2014 writing: ${e.cardId.toUpperCase()} \u2014 ${e.cardName}`;
+    deckCurrentLbl.textContent  = errorMsg
+      ? `\u2717 ${errorMsg} \u2014 retrying: ${e.cardId.toUpperCase()} \u2014 ${e.cardName}`
+      : `Tap a sleeve \u2014 writing: ${e.cardId.toUpperCase()} \u2014 ${e.cardName}`;
     deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
     fetch("/api/write-tag", {
       method: "POST",
@@ -776,6 +795,9 @@
     if (firstResolved !== -1) {
       deckIndex  = firstResolved;
       deckActive = true;
+      deckPaused = false;
+      deckPauseBtn.textContent = "Pause";
+      deckSkipBtn.disabled = false;
       deckWriteBar.style.display = "block";
       deckRearm();
     }
@@ -824,25 +846,31 @@
 
   function updateDeckWriteBar() {
     if (deckIndex >= deckQueue.length) {
-      deckCurrentLbl.textContent  = "\u2713 All done!";
+      deckCurrentLbl.textContent  = "✓ All done!";
       deckProgressLbl.textContent = `${deckQueue.length} cards processed`;
       deckActive = false;
       return;
     }
+    if (deckPaused) {
+      deckCurrentLbl.textContent  = "⏸ Paused — click Resume to continue";
+      deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
+      return;
+    }
     const e = deckQueue[deckIndex];
     if (e.status === "resolved") {
-      deckCurrentLbl.textContent  = `Tap a sleeve \u2014 writing: ${e.cardId.toUpperCase()} \u2014 ${e.cardName}`;
+      deckCurrentLbl.textContent  = `Tap a sleeve — writing: ${e.cardId.toUpperCase()} — ${e.cardName}`;
       deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
     } else {
-      deckCurrentLbl.textContent  = `\u26a0 ${e.name} not found \u2014 click Skip`;
+      deckCurrentLbl.textContent  = `⚠ ${e.name} not found — click Skip`;
       deckProgressLbl.textContent = `${deckIndex + 1} of ${deckQueue.length}`;
     }
   }
 
   // Write button removed — queue arms itself automatically after parse.
-  // Skip and Stop remain for manual control.
+  // Skip, Pause/Resume and Restart remain for manual control.
 
   deckSkipBtn.addEventListener("click", () => {
+    if (deckPaused) return;
     deckIndex++;
     // Skip any further unresolved entries automatically
     while (deckIndex < deckQueue.length && deckQueue[deckIndex].status !== "resolved") deckIndex++;
@@ -851,16 +879,59 @@
     if (deckActive && deckIndex < deckQueue.length) deckRearm();
   });
 
-  deckStopBtn.addEventListener("click", () => {
-    deckActive = false;
-    deckWriteBar.style.display = "none";
-    deckQueue = []; deckIndex = 0;
-    deckQueueEl.innerHTML = "";
+  // Pause cancels the currently armed write on the server so an unrelated
+  // tag tapped while paused isn't accidentally written to. Resume re-arms
+  // the same queue entry the user paused on.
+  deckPauseBtn.addEventListener("click", async () => {
+    if (!deckActive || deckQueue.length === 0) return;
+
+    if (deckPaused) {
+      deckPaused = false;
+      deckPauseBtn.textContent = "Pause";
+      deckSkipBtn.disabled = false;
+      updateDeckWriteBar();
+      if (deckIndex < deckQueue.length) deckRearm();
+    } else {
+      deckPaused = true;
+      deckPauseBtn.textContent = "Resume";
+      deckSkipBtn.disabled = true;
+      updateDeckWriteBar();
+      try {
+        await fetch("/api/write-tag", { method: "DELETE" });
+      } catch (err) {
+        showToast("Pause error: " + err.message, true);
+      }
+    }
   });
+
+  // Restart the tap-through from the first resolved card without having to
+  // re-paste and re-resolve the whole decklist.
+  deckRestartBtn.addEventListener("click", () => {
+    if (deckQueue.length === 0) return;
+    deckIndex = deckQueue.findIndex(e => e.status === "resolved");
+    if (deckIndex === -1) return;
+    deckActive = true;
+    deckPaused = false;
+    deckPauseBtn.textContent = "Pause";
+    deckSkipBtn.disabled = false;
+    deckWriteBar.style.display = "block";
+    renderDeckQueue();
+    deckRearm();
+  });
+
+  // A write failed or timed out mid-deck-import. Stay on the current entry —
+  // don't advance the queue — and re-arm the same pending write so the next
+  // tap (a retry of this sleeve, or any other) is written correctly instead
+  // of silently going nowhere.
+  function handleDeckWriteFailure(reason) {
+    if (!deckActive || deckPaused || deckQueue.length === 0) return;
+    showToast(reason, true);
+    deckRearm(reason);
+  }
 
   // Hook into the existing tag_written WebSocket event to advance the deck queue
   function handleDeckWriteSuccess() {
-    if (!deckActive || deckQueue.length === 0) return;
+    if (!deckActive || deckPaused || deckQueue.length === 0) return;
     deckIndex++;
     // Auto-skip any unresolved entries
     while (deckIndex < deckQueue.length && deckQueue[deckIndex].status !== "resolved") deckIndex++;

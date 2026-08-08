@@ -52,6 +52,36 @@
     }
     .ws-badge.connected { background: #1a3a1f; color: #4caf50; }
 
+    .unsaved-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: #f0d070;
+    }
+    .unsaved-badge.show { display: flex; }
+    .unsaved-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #f0d070;
+    }
+
+    .save-btn {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #f0d070;
+      background: #2a2410;
+      color: #f0d070;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      white-space: nowrap;
+    }
+    .save-btn:hover:not(:disabled) { background: #3a3018; }
+    .save-btn:disabled { opacity: 0.4; cursor: default; }
+
     /* ── Layout ───────────────────────────────────────────────────────────── */
     main {
       max-width: 600px;
@@ -233,6 +263,53 @@
     }
     .unit-label { font-size: 0.78rem; color: #4a5a6a; flex-shrink: 0; }
 
+    /* ── Overlay preview ──────────────────────────────────────────────────── */
+    .overlay-preview-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid #2a2d3a;
+      background: #000;
+      position: relative;
+    }
+    /* Full mode: the real overlay at true 1:1 size, floating fixed over the
+       page in the same bottom-right corner it projects to in OBS. The wrap
+       crops it down to just that corner via overflow:hidden. !important
+       guards against the inline transform/height scaleOverlayPreview() sets
+       for mini mode winning on specificity. */
+    .overlay-preview-wrap.full-mode {
+      position: fixed !important;
+      top: auto !important;
+      left: auto !important;
+      bottom: 0 !important;
+      right: 0 !important;
+      width: 700px !important;
+      height: 640px !important;
+      aspect-ratio: auto !important;
+      border: none !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      z-index: 500;
+      pointer-events: none;
+    }
+    .overlay-preview-frame {
+      width: 1920px;
+      height: 1080px;
+      border: none;
+      display: block;
+      transform-origin: top left;
+      pointer-events: none;
+    }
+    .overlay-preview-frame.full-mode {
+      position: absolute !important;
+      top: auto !important;
+      left: auto !important;
+      bottom: 0 !important;
+      right: 0 !important;
+      transform: none !important;
+    }
+
     /* ── Toast ────────────────────────────────────────────────────────────── */
     #toast {
       position: fixed;
@@ -261,6 +338,8 @@
     <h1>Rift Tap — Settings</h1>
     <div class="subtitle">Overlay and scanner configuration</div>
   </div>
+  <span id="unsaved-badge" class="unsaved-badge"><span class="unsaved-dot"></span>Unsaved changes</span>
+  <button id="save-settings-btn" class="save-btn" disabled>Save Settings</button>
   <span id="ws-badge" class="ws-badge">● Connecting…</span>
 </header>
 
@@ -391,22 +470,21 @@
   <!-- ── Overlay preview ────────────────────────────────────────────────── -->
   <div class="panel">
     <div class="panel-header">Overlay Preview</div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Full-size preview</div>
+        <div class="setting-desc">Play the overlay at true size, floating over this page in the same corner it projects to in OBS, instead of a scaled-down mini window. Enable demo mode above to see card animations.</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-full-preview" />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+
     <div style="padding:14px 18px">
-      <div class="setting-desc" style="margin-bottom:10px">Live preview of the OBS Browser Source. Enable demo mode above to see card animations.</div>
-      <div id="overlay-preview-wrap" style="
-        width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:8px;
-        border:1px solid #2a2d3a; background:#000; position:relative;
-      ">
-        <iframe
-          id="overlay-preview"
-          src="/overlay/index.html"
-          scrolling="no"
-          style="
-            width:1920px; height:1080px; border:none; display:block;
-            transform-origin:top left;
-            pointer-events:none;
-          "
-        ></iframe>
+      <div id="overlay-preview-wrap" class="overlay-preview-wrap">
+        <iframe id="overlay-preview" class="overlay-preview-frame" src="/overlay/index.html" scrolling="no"></iframe>
       </div>
     </div>
   </div>
@@ -520,6 +598,42 @@
   const toggleLandscapeEl = document.getElementById("toggle-landscape");
   const displayDurationEl = document.getElementById("display-duration");
 
+  // ── Save / unsaved-changes tracking ─────────────────────────────────────
+  // Setting edits are ephemeral: they update the live overlay immediately
+  // via postSettings(), but are only durably persisted when the user hits
+  // Save. If the page is closed/navigated away from with unsaved changes,
+  // revertIfDirty() below tells the server to discard them.
+  const saveSettingsBtn = document.getElementById("save-settings-btn");
+  const unsavedBadgeEl  = document.getElementById("unsaved-badge");
+  let settingsDirty = false;
+
+  function setDirty(dirty) {
+    settingsDirty = dirty;
+    saveSettingsBtn.disabled = !dirty;
+    unsavedBadgeEl.classList.toggle("show", dirty);
+  }
+
+  saveSettingsBtn.addEventListener("click", async () => {
+    saveSettingsBtn.disabled = true;
+    saveSettingsBtn.textContent = "Saving…";
+    try {
+      await fetch("/api/settings/save", { method: "POST" });
+      setDirty(false);
+      showToast("Settings saved");
+    } catch (err) {
+      showToast("Save error: " + err.message, true);
+      saveSettingsBtn.disabled = false;
+    } finally {
+      saveSettingsBtn.textContent = "Save Settings";
+    }
+  });
+
+  function revertIfDirty() {
+    if (settingsDirty) navigator.sendBeacon("/api/settings/revert");
+  }
+  window.addEventListener("pagehide", revertIfDirty);
+  window.addEventListener("beforeunload", revertIfDirty);
+
   function applySettings(s) {
     toggleInfoEl.checked      = !!s.show_card_info;
     toggleDotEl.checked       = !!s.show_status_dot;
@@ -528,6 +642,10 @@
     if (s.display_duration    != null) displayDurationEl.value = s.display_duration;
     if (s.entrance_animation)          selectEnterEl.value     = s.entrance_animation;
     if (s.exit_animation)              selectExitEl.value      = s.exit_animation;
+    // The displayed state now matches the server's authoritative live
+    // state (initial load, a save, a revert, or another tab's change) —
+    // whatever local edits preceded it are moot.
+    setDirty(false);
   }
 
   toggleInfoEl.addEventListener("change",      () => postSettings({ show_card_info:        toggleInfoEl.checked }));
@@ -553,6 +671,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      setDirty(true);
     } catch (err) {
       showToast("Settings error: " + err.message, true);
     }
@@ -765,15 +884,26 @@
     }
   }
 
-  // ── Overlay preview scaling ────────────────────────────────────────────
+  // ── Overlay preview: mini (scaled, in-panel) vs full-size (true scale,
+  // floating over the page in the corner it actually projects to in OBS) ──
+  const previewWrapEl        = document.getElementById("overlay-preview-wrap");
+  const previewFrameEl       = document.getElementById("overlay-preview");
+  const toggleFullPreviewEl  = document.getElementById("toggle-full-preview");
+
   function scaleOverlayPreview() {
-    const wrap   = document.getElementById("overlay-preview-wrap");
-    const iframe = document.getElementById("overlay-preview");
-    if (!wrap || !iframe) return;
-    const scale = wrap.clientWidth / 1920;
-    iframe.style.transform = `scale(${scale})`;
-    wrap.style.height = (1080 * scale) + "px";
+    if (!previewWrapEl || !previewFrameEl) return;
+    if (previewWrapEl.classList.contains("full-mode")) return;  // true size — no scaling
+    const scale = previewWrapEl.clientWidth / 1920;
+    previewFrameEl.style.transform = `scale(${scale})`;
   }
+
+  toggleFullPreviewEl.addEventListener("change", () => {
+    const full = toggleFullPreviewEl.checked;
+    previewWrapEl.classList.toggle("full-mode", full);
+    previewFrameEl.classList.toggle("full-mode", full);
+    if (!full) scaleOverlayPreview();
+  });
+
   scaleOverlayPreview();
   window.addEventListener("resize", scaleOverlayPreview);
 

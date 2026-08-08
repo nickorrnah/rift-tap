@@ -449,6 +449,10 @@ async def update_settings(body: dict):
     Update one or more overlay settings and broadcast the change to all
     connected clients so the overlay updates instantly without a refresh.
 
+    This is deliberately NOT persisted — edits are live/ephemeral until the
+    user hits Save (POST /api/settings/save). If the settings page is left
+    without saving, the client reverts them (POST /api/settings/revert).
+
     Example body: { "show_card_info": true }
     """
     allowed = {"show_card_info", "display_duration", "show_status_dot",
@@ -458,7 +462,28 @@ async def update_settings(body: dict):
     if unknown:
         raise HTTPException(400, f"Unknown settings: {unknown}")
     overlay_settings.update(body)
-    db.save_settings(body)          # persist across restarts
+    await manager.broadcast({"event": "settings", **overlay_settings})
+    return overlay_settings
+
+
+@app.post("/api/settings/save")
+async def save_settings():
+    """Persist the current live overlay settings so they survive a restart."""
+    db.save_settings(overlay_settings)
+    return overlay_settings
+
+
+@app.post("/api/settings/revert")
+async def revert_settings():
+    """
+    Discard unsaved changes: reload the last-saved settings from the
+    database and broadcast them so every connected client (overlay
+    included) resets too. Called when the settings page is closed or
+    navigated away from without saving.
+    """
+    saved = _load_settings()
+    overlay_settings.clear()
+    overlay_settings.update(saved)
     await manager.broadcast({"event": "settings", **overlay_settings})
     return overlay_settings
 

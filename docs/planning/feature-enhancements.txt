@@ -1,15 +1,9 @@
 Rift Tap
     Software Improvements
-        Save settings and preserve them on restart.
-            add a save settings button on the top of the page 
-                setting changes should be ephemeral fro mthe settings page until a user hits save (we can store the state as edits to a local.env file or something)
-                so the preview and live overlay would still get updated immediately to reflect the current settings, but if the user doesn't hit save and exits the settings page, the settings will revert to their previous state.
+        (implemented, still needs manual human testing) Deck import breaks if a bad scan occurs
+            We should fail gracefully instead and handle this.  If a user is scanning in from a decklist and a card fails to scan, we should display an error and not move on from the current card.  However, we should still be able to assign whatever the next card with a good scan is.
 
-        Put overlay preview on the settings page
-            overlay preview now exists, but it is a scaled down tiny window.  Instead, I'd like to just play the browser source directly on the settings page itself, so the user can get the full sized view of whats happening on the settings page itself.  Since the overlay projects into the lower right corner, it won't overlap on top of any of the setting controls anyways. This won't pop out a whole new tab.
-            We can make it a toggle between the preview being live placed onto the settings page or just getting the mini window view that currently exists.
-
-        Need to stop pi from auto turning off/disconnecting its connection after a timeout.  Want it always on while powered.
+        (Implemented, still need to manually test when hardware arrives) Need to stop pi from auto turning off/disconnecting its connection after a timeout.  Want it always on while powered.
         
         Support for multiple rift-tap devices to be hooked into one PC host.
             If a scan happens on any device, the data is pushed to the same feed.  Basically support for each player to have a rift tap next to them instead of one shared one in the center of the table.
